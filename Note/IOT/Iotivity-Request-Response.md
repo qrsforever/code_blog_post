@@ -1,0 +1,191 @@
+---
+
+title: Iotivity之请求响应流程图
+date: 2018-04-24 16:40:06
+tags: [ IOT, C ]
+categories: [ Note ]
+
+---
+
+```
+                                                                                                   12
+                                                                                                   CAQueueingThreadBaseRoutine
+                                                                                                              | thread3 (send)
+                                                                                                              |
+                                                                                           +---------> queue_add_element ---------+
+                                                                                           |                                      |
+                                                                                           |          +----------------+          |
+                                                                                           |          |      next      |          |
+                                                                                           |          |  +----------+  |          |
+                                                                                           |          |  | msg,size |  |          |
+                                                                                           |          |  +----------+  |          |
+                                                                                           |          +----------------+          |
+                                                                                           |                   ^                  |
+                      +--------------------------------------------------------+           |                   |                  |
+                      |     thead5        +-------------+                      |           |                   |                  |
+                      |         \         |             |                      |           |          +----------------+          |
+                      v          \        v             |                      |           |          |      next      |          |
+                 sendDataToAll    ---- sendData  CASendUnicastData     CASendMulticastData |          |  +----------+  |          |
+                      ^                   ^             ^                      ^           |          |  | msg,size |  |          |
+                      | g_adapterHandler  |             |                      |           |          |  +----------+  |          |
+                      +---------+---------+             +-----------+----------+           |          +----------------+          |
+                                |                                   |                      |                   ^                  |
+                                |                                   |                      |                   |                  |
+                                | +---------------------------------|-------------+        |                   +------+           |
+                                | | (x)                    |                      |        |                          |           |
+                                | | CAReceiveThreadProcess | CASendThreadProcess  | <---+  |    CAQueueingThread      |           |
+                                | |                        |     thread3          |     |  |    +---------------------|-------+   |
+                                | +-----------------------------------------------+     |  |    |            |                |   |
+                                |                                   ^                   +-------- threadTask |   dataQueue    |   |
+                                |     thread4          ♡-3          |                      |    |            |                |   |
+                                |    CAReceivedPacketCallback       |                      |    +-----------------------------+   |
+                                |         parse | pdu               |                      |                                      |
+                                |               |                   |                      +---------- queue_add_element <--------+
+                                |        g_receiveThread       g_sendThread                                   |
+                                |               ^                   ^                               (4)       |         [3]
+                                |               | CAQueueingThread  |                               CAQueueingThreadAddData
+                                |               +---------+---------+                                         ^
+                                |                         |                                                   |
++-------------------------------+-------------------------+---------------------------------------------------+--------------+
+| DIR: connectivity             |                         |                                                   |              |
+|                               |                         |                                                   |              |
+|                       interfacecontroller               |                   retransmission                  |              |
+|                               |                         |                          |                        |              |
+|                               |                         |                          |                        |              |
+| connectivitymanager           |                  messagehandler                    |                 queueingthread        |
+|        |                      |                         |                          |                        |              |
++--------+----------------------+-------------------------+--------------------------+------------------------+--------------+
+         |                      |                         |                          |                        |
+    1    |                      |              2          |                          |             4          |
+    CAInitialize                |              CAInitializeMessageHandler            |             CAQueueingThreadInitialize
+                                |                                                    |             CAQueueingThreadStart
+                                |                                                    |                     (create)
+                      3         |      ♡-1                                           |
+                      CASetPacketReceivedCallback                                    |
+                      CASetErrorHandleCallback                                       |
+                                                                         5           |
+                         g_adapterHandler  --------------\               CARetransmissionInitialize
+                                                          \              CARetransmissionStart
+                                                           \ 1...n
+             CAInitializeRA             CAInitializeNFC     ------------------------\
+                       \                  /                                          \             +--------------------------+
+                        \                /                                            -----------> |   CAConnectivityHandler  |
+                      6  \  transtype   /                                 ♡-2                      |--------------------------|
+                      CAInitializeAdapters                   +--> CAReceivedPacketCallback  <--------startAdapter(gen thread4)|
+                      /         |        \                   |                                     | stopAdapter              |
+                     /          |         \                  +--> CAAdapterChangedCallback         | startListenServer        |
+                    /           |          \          params |                                     | stopListenServer         |
+       CAInitializeTCP   CAInitializeEDR   CAInitializeIP ---+--> CAConnectionChangedCallback      | startDiscoveryServer     |
+                                                             |                                     | sendData      (unicast)  |
+                                                         non +--> CAAdapterErrorHandleCallback     | sendDataToAll (muticast) |
+    7                                                        |                                     | getNetInfo               |
+    CASelectNetwork                                          +--> CARegisterCallback  -----------> | readData                 |
+                                                                                         handler   | terminate                |
+                                                                                                   | transportType            |
+    8                                          9                                                   +--------------------------+
+    CARegisterHandler                          CASetInterfaceCallbacks
+      /     |     \                             /         |         \
+     /      |      \                           /          |          \
+    /       |       \     call                /           |           \
+Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHandler
+ cb-a     cb-b     cb-c             cb-a                cb-b               cb-c
+=========================      =====================================================
+                                                          ^
+                                                          | call
+                                               11         |              ♡-4
+                                               CAHandleRequestResponseCallbacks
+-----------------------------------------------------------------------------------------------------------------------------------
+|
+|+---------------------------------+      +---------------------------------------------------------------+
+|| HandleVirtualResource           |  +-->|                     ♡ OCServerRequest ♡                       |<-----------------+
+|| HandleDefaultDeviceEntityHandler|  |   |---------------------------------------------------------------|                  |
+|| HandleResourceWithEntityHandler |  |   |   method, resourceUrl, acceptFormat, payloadFormat, devAddr   |                  |
+|+---------------------------------+  |   |   numResponses, qos, options, observeResult, delayedResNeeded |                  |
+|      ^ uri                          |   |   ehResponseHandler, requestId, requestToken, coapID, query   |                  |
+|      |                              |   +---------------------------------------------------------------+                  |
+|ProcessRequest   AddServerRequest----+              |                                                                       |
+|      ^ +2        +1 ^                      [2]     v       cb-2                                                            |
+|      |              |                      HandleSingleResponse                                                            |
+|     HandleStackRequests                                   |                                                                |
+|            ^                                              v                                                                |
+|            |                                      OCSendResponse --->  CASendResponse  --->  CAQueueingThreadAddData       |
+|      OCHandleRequests                                                                                                      |
+|            ^                   =================================================================================           |
+|      cb-a  |                                     cb-b                                    cb-c                              |
+|      HandleCARequests                            HandleCAResponses                       HandleCAErrorResponse             |
+|            ^                                           ^                                         ^                         |
+|            |   ♡-5                                     |                                         |                         |
+|            +----------------- -------------------------.-----------------------------------------+                         |
+|                                                        |                                                                   |
+|                                                       CSDK                                                                 |
+|                                          +-----------------------------+                                                   |
+|                                          |                             |                                                   |
+|                                          |    OCInitializeInternal     |                                                   |
+|           server sample                  |             ^               |                   client sample                   |
+|     +-----------------------+            |             |               |             +----------------------+              |
+|     |                       |            |             |               |             |                      |              |
+|     |Platform::start()   ----------------+--------> OCInit2 <----------+-----------------  Platform::start()|              |
+|     |                       |            |                             |             |                      |              |
+|     |                       |            |                             |             |                      |              |
+|     |     +--------------+  |            |                             |             |   +--------------+   |              |
+|     |     |     start    |  |            |                             |             |   |     start    |   |              |
+|     |     |              |  |            |                             |             |   |              |   |              |
+|     |     |              |  |thread2     |                             |      thread2|   |              |   |              |
+|     |     |  processFunc  ---------------+-------> OCProcess <---------+-----------------  listeningFunc|   |              |
+|     |     |              |  |            |             |               |             |   |              |   |              |
+|     |     +--------------+  |            |             |               |             |   +--------------+   |              |
+|     |    wrapper            |            +-------------+---------------+             |   wrapper            |              |
+|     |                       |                          |                             |                      |              |
+|     +-----------------------+                          |                             +----------------------+              |
+|     main thread                               /--------+                                          main thread              |
+|                                              /                                                                             |
+|                          /------------------/                                    /                                         |
+|                         /                                                       /                                          |
+|   10                   v                                                       /                                           |
++-- CAHandleRequestResponse                                                     /                                            |
+                                                                               /          (1)                                |
+==============================================================================/           Platform::findResource             |
+CSDK                                                                                                   |                     |
+                                                    (2)                                                |                     |
+                        gen: resHandle & token      OCDoResource    <----------------------------------+                     |
+                      /---------------------------- OCDoRequest       (host, uri, conntype, callback)                        |
+                     /                                                                          | cb-1                       |
+              (3)   /                                                                           |                            |
+              AddClientCB                                                                  FindCallback                      |
+                                                                                                                             |
+                                                    (4)                                                                      |
+                                                    OCSendRequest  --->  CASendRequest  --->  CAQueueingThreadAddData        |
+                                                                                                                             |
+               +--------------------+                                                                                        |
+               |    ClientCB        |                                                                                        |
+               |--------------------|      +--> con                                                                          |
+               |    callback(cb-1)  |      |                                                                                 |
+               |    context         |      +--> non                                                                          |
+               |    type            |------|                                                                                 |
+text <---+     |    token           |      +--> ack                                                                          |
+         |     |    options         |      |                                            +------------------------+           |
+xml  <---+     |    payload         |      +--> reset            discover               |OCEntityHandlerResponse |           |
+         |-----|    payloadFormat   |                               ^                   |------------------------|           |
+json <---+     |    handle          |                               |                   |     requestHandle      |-----------+
+         |     |    method          +---+-----+-----+-----+-----+---+                   |     ehResult           |
+cbor <---+     |    sequenceNumber  |   |     |     |     |     |                       |     resourceUri        |
+               |    requestUri      |   v     v     v     v     v                       |     resourceHandle(x)  |
+          +----|    devAddr         |  get   put  post  delete observe                ^ |     payload            |
+          |    |--------------------|                                                /  +------------------------+
+          |    |    next            |                                               /
+          |    +--------------------+                                              /
+          |                                               +------------------------
+          v             +---> ip                          | call: requestHandle->ehResponseHandler
+   +---------------+    |                           [1]   |                         cb-2
+   |   OCDevAddr   |    +---> bluetooth             OCDoResponse
+   |---------------|    |
+   |    adapter    |----+---> nfc
+   |    flags      |    |
+   |    port       |    +---> tcp
+   |    addr       |    |
+   |---------------|    +---> xmpp
+   |   routeData   |
+   |   remoteId    |
+   +---------------+
+
+```
