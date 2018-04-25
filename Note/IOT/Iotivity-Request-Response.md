@@ -23,7 +23,7 @@ categories: [ Note ]
                       +--------------------------------------------------------+           |                   |                  |
                       |     thead5        +-------------+                      |           |                   |                  |
                       |         \         |             |                      |           |          +----------------+          |
-                      v          \        v             |                      |           |          |      next      |          |
+                 ((7))v          \        v             |                      |((6))      |          |      next      |          |
                  sendDataToAll    ---- sendData  CASendUnicastData     CASendMulticastData |          |  +----------+  |          |
                       ^                   ^             ^                      ^           |          |  | msg,size |  |          |
                       | g_adapterHandler  |             |                      |           |          |  +----------+  |          |
@@ -38,28 +38,28 @@ categories: [ Note ]
                                 |                                   ^                   +-------- threadTask |   dataQueue    |   |
                                 |    thread4           r-3          |                      |    |            |                |   |
                                 |    CAReceivedPacketCallback ------+-------\              |    +-----------------------------+   |
-                                |         (parse pdu)               |        \             |                                      |
-                                |                                   |         \            +---------- queue_add_element <--------+
-                                |        g_receiveThread       g_sendThread    \                              |
-                                |               ^                   ^           \       r-4        ((5))      |      [[3]]
-                                |               | CAQueueingThread  |            ----------------> CAQueueingThreadAddData
-                                |               +---------+---------+                                         ^
-                                |                         |                                                   |
-+-------------------------------+-------------------------+---------------------------------------------------+--------------+
-| DIR: connectivity             |                         |                                                   |              |
-|                               |                         |                                                   |              |
-|                       interfacecontroller               |                   retransmission                  |              |
-|                               |                         |                          |                        |              |
-|                               |                         |                          |                        |              |
-| connectivitymanager           |                  messagehandler                    |                 queueingthread        |
-|        |                      |                         |                          |                        |              |
-+--------+----------------------+-------------------------+--------------------------+------------------------+--------------+
-         |                      |                         |                          |                        |
-    h-1  |                      |              h-2        |                          |             h-4        |
-    CAInitialize                |              CAInitializeMessageHandler            |             CAQueueingThreadInitialize
-                                |                                                    |             CAQueueingThreadStart
-                                |                                                    |                     (create)
-                      h-3       |      r-1                                           |
+                                |     |                             |        \             |                                      |
+                                |     |                             |         \            +---------- queue_add_element <--------+
+                                |     |  g_receiveThread       g_sendThread    \                              |
+                                |     |         ^                   ^           \       r-4        ((5))      |      [[3]]
+                                |     +-----+   | CAQueueingThread  |            ----------------> CAQueueingThreadAddData
+                                |      set  |   +---------+---------+                                         ^
+                                |           |             |                                                   |
++-------------------------------+-----------+-------------+---------------------------------------------------+--------------+
+| DIR: connectivity             |           |             |                                                   |              |
+|                                           |             |                                                   |              |
+|                       interfacecontroller |             |                   retransmission                  |              |
+|                               |           |             |                          |                        |              |
+|                               |           |                                        |                                       |
+| connectivitymanager           |           |      messagehandler                    |                 queueingthread        |
+|        |                      |           |             |                          |                        |              |
++--------+----------------------+-----------+-------------+--------------------------+------------------------+--------------+
+         |                      |           |             |                          |                        |
+    h-1  |                      |           |  h-2        |                          |             h-4        |
+    CAInitialize                |           |  CAInitializeMessageHandler            |             CAQueueingThreadInitialize
+                                |           |                                        |             CAQueueingThreadStart
+                                |           |                                        |                 (thread create)
+                      h-3       |      r-1  v                                        |
                       CASetPacketReceivedCallback                                    |
                       CASetErrorHandleCallback                                       |
                                                                          h-5         |
@@ -77,7 +77,7 @@ categories: [ Note ]
        CAInitializeTCP   CAInitializeEDR   CAInitializeIP ---+--> CAConnectionChangedCallback      | startDiscoveryServer     |
                                                              |                                     | sendData      (unicast)  |
                                                          non +--> CAAdapterErrorHandleCallback     | sendDataToAll (muticast) |
-    h-7                                                      |                                     | getNetInfo               |
+    h-7                                                      |                                     | getNetInfo        ((8))  |
     CASelectNetwork                                          +--> CARegisterCallback  -----------> | readData                 |
                                                                                          handler   | terminate                |
                                                                                                    | transportType            |
@@ -120,10 +120,10 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |             |                                          |               |                          |                         |
 |       OCHandleRequests                          OCHandleResponse       |      cb-2                |                         |
 |             ^                                          ^             client->callback()           |                         |
-|       cb-a  |                                   cb-b   |                                  cb-c    |                         |
+|       cb-a  |   thread2                         cb-b   |                                  cb-c    |                         |
 |       HandleCARequests                          HandleCAResponses                         HandleCAErrorResponse             |
 |             ^                                          ^                                          ^                         |
-|             |   r-7                                    |                                          |                         |
+|             |   r-7                                    |  r-7                                     |  r-7                    |
 |             +------------------------------------------.------------------------------------------+                         |
 |                                                receive | handle                                                             |
 |                                                        |                                                                    |
@@ -161,10 +161,10 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
               |                           cb-1                                                                                |
               |(uri,type,interface,attr,eHandler)    {{2}}                                                                    |
               +---------------------------------->   OCCreateResource                                                         |
-                                                      insertResource         headResource                                     |
+                                        thread2       insertResource         headResource                                     |
                                                                                  |                                            |
                                                     +----------------+           |                                            |
-                                                    |   OCResource   | <---------+                                            |
+                                                    |   OCResource   | <---------+ (resourceHandler)                          |
                                 OCResourceType      |----------------|                                                        |
                                +-------------+      |  uri           |      OCResourceInterface                               |
                                | next | name | <----|  resType       |       +-------------+                                  |
@@ -183,7 +183,7 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
                +-------------------------+      |                                                                             |
                | name | timesteps | type |      v ResourceObserver                                                            |
                |-------------------------|    +-------------------------------------------------+                             |
-               |     head   |   next     |    | id | uri | query | token | devAddr | qoc | next |                             |
+               |     head   |   next     |    | id | uri | query | token | devAddr | qos | next |                             |
                +-------------------------+    +-------------------------------------------------+                             |
                                                                                                                               |
 =========================================================sdk======================================client============          |
@@ -196,14 +196,14 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
                        /---------------------------- OCDoRequest       (host, uri, conntype, callback)                        |
                       /                                                                          | cb-2                       |
                ((3)) /                                                                           |                            |
-               AddClientCB                                                                  FindCallback                      |
+               AddClientCB                                                          [Find|Get|Put|Post]Callback               |
                                                        +--------------------+                                                 |
                 g_cbList ----------------------------> |    ClientCB        |                                                 |
                                                        |--------------------|      +--> con                                   |
                                     text <---+         |    callback(cb-2)  |      |                                          |
-                                             |         |    handle (random) |      +--> non                                   |
-                                    xml  <---+         |    type            |------|                                          |
-                                             |         |    token  (random) |      +--> ack                                   |
+  GetClientCBUsingUri                        |         |    handle (random) |      +--> non                                   |
+  GetClientCBUsingToken             xml  <---+         |    type            |------|                                          |
+  GetClientCBUsingHandle                     |         |    token  (random) |      +--> ack                                   |
                                     json <---+         |    options         |      |                                          |
                                              |         |    payload         |      +--> reset            discover             |
                                     cbor <---+---------|    payloadFormat   |                               ^                 |
@@ -229,25 +229,28 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
                 |                                                                                                             |
                 |  (response)                        [[2]]                                                                    |
                 +--------------------------------->  OCDoResponse   -----------\ call                                         |
-                                                                                \                                             |
-                   +-------------------+ c++     c +------------------------+    -----> requestHandle->ehResponseHandler      |
-                   |OCResourceResponse |           | OCEntityHandlerRequest |                            cb-3                 |
-                   |-------------------|           |------------------------|                                                 |
-                   |  newResourceUri   |           |    method, messageID   |                                                 |
-                   |  interface        |           |    devAddr, query      |                                                 |
-                   |  headerOptions    |<----------|    options             |                                                 |
-                   |  representation   |           |    payload             |     requestHandle                               |
-                   |  requestHandle    |           |    requestHandle       |-------------------------------------------------+
-                   |  resourceHandle   |           |    resourceHandle      |                                                 |
-                   +-------------------+           +------------------------+                                                 |
-                            |                                                                                                 |
-                            |                    c +------------------------+                                                 |
-                            |                      |OCEntityHandlerResponse |                                                 |
-                            +--------------------> |------------------------|     requestHandle                               |
-                                                   |     requestHandle      |-------------------------------------------------+
-                                                   |     ehResult           |
-                                                   |     resourceUri        |
-                                                   |     resourceHandle(x)  |
-                                                   |     payload            |
-                                                   +------------------------+
- ```
+  Wrapper:                                                                      \                                             |
+                                                                                 -----> requestHandle->ehResponseHandler      |
+    +---------------------------+ c++              c +------------------------+                        cb-3                   |
+    |    OCResourceRequest      |                    | OCEntityHandlerRequest |                                               |
+    |---------------------------|                    |------------------------|                                               |
+    |  messageID,representation |                    |    method, messageID   |                                               |
+    |  devAddr, query, options  | formResourceRequest|    devAddr, query      |                                               |
+    |  payload                  |<-------------------|    options             |                                               |
+    |  requestHandle            |                    |    payload             |     requestHandle                             |
+    |  resourceHandle           |                    |    requestHandle       |-----------------------------------------------+
+    +---------------------------+                    |    resourceHandle      |                                               |
+                |                                    +------------------------+                                               |
+                |  get/put/post                                                                                               |
+                v                                  c +------------------------+                                               |
+             +-------------------+ c++               |OCEntityHandlerResponse |                                               |
+             |OCResourceResponse |                   |------------------------|     requestHandle                             |
+             |-------------------| form              |     requestHandle      |-----------------------------------------------+
+             |  newResourceUri   |------------------>|     ehResult           |
+             |  interface        |                   |     resourceUri        |
+             |  headerOptions    |                   |     resourceHandle(x)  |
+             |  representation   |                   |     payload            |
+             |  requestHandle    |                   +------------------------+
+             |  resourceHandle   |
+             +-------------------+
+```
