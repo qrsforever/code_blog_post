@@ -2,7 +2,7 @@
 
 title: Iotivity之请求响应流程图
 date: 2018-04-24 16:40:06
-tags: [ IOT, C ]
+tags: [ IOT, DrawIt ]
 categories: [ Note ]
 
 ---
@@ -30,16 +30,16 @@ categories: [ Note ]
                       +---------+---------+             +-----------+----------+           |          +----------------+          |
                                 |                                   |                      |                   ^                  |
                                 |                                   |                      |                   |                  |
-                                | +---------------------------------|-------------+        |                   +------+           |
-                                | | (x)                    |                      |        |                          |           |
-                                | | CAReceiveThreadProcess | CASendThreadProcess  | <---+  |    CAQueueingThread      |           |
-                                | |                        |     thread3          |     |  |    +---------------------|-------+   |
-                                | +-----------------------------------------------+     |  |    |            |                |   |
-                                |                                   ^                   +-------- threadTask |   dataQueue    |   |
-                                |    thread4           r-3          |                      |    |            |                |   |
-                                |    CAReceivedPacketCallback ------+-------\              |    +-----------------------------+   |
-                                |     |                             |        \             |                                      |
-                                |     |                             |         \            +---------- queue_add_element <--------+
+  get  put post delete          | +---------------------------------|-------------+        |                   +------+           |
+   |    |    |    |             | | (x)                    |                      |        |                          |           |
+   ----------------             | | CAReceiveThreadProcess | CASendThreadProcess  | <---+  |    CAQueueingThread      |           |
+           ^                    | |                        |     thread3          |     |  |    +---------------------|-------+   |
+           |                    | +-----------------------------------------------+     |  |    |            |                |   |
+    CA_REQUEST_DATA   <--|      |                                   ^                   +-------- threadTask |   dataQueue    |   |
+                         | code |    thread4           r-3          |                      |    |            |                |   |
+    CA_SIGNALING_DATA <--|------+--- CAReceivedPacketCallback ------+-------\              |    +-----------------------------+   |
+                         |      |     |  get code/token from PDU    |        \             |                                      |
+    CA_RESPONSE_DATA  <--|      |     |                             |         \            +---------- queue_add_element <--------+
                                 |     |  g_receiveThread       g_sendThread    \                              |
                                 |     |         ^                   ^           \       r-4        ((5))      |      [[3]]
                                 |     +-----+   | CAQueueingThread  |            ----------------> CAQueueingThreadAddData
@@ -57,9 +57,9 @@ categories: [ Note ]
          |                      |           |             |                          |                        |
     h-1  |                      |           |  h-2        |                          |             h-4        |
     CAInitialize                |           |  CAInitializeMessageHandler            |             CAQueueingThreadInitialize
-                                |           |                                        |             CAQueueingThreadStart
-                                |           |                                        |                 (thread create)
-                      h-3       |      r-1  v                                        |
+                                |           |      /                                 |             CAQueueingThreadStart
+                                |           |     /CAReceivedPacketCallback          |                 (thread create)
+                      h-3       |      r-1  v    /                                   |
                       CASetPacketReceivedCallback                                    |
                       CASetErrorHandleCallback                                       |
                                                                          h-5         |
@@ -92,15 +92,14 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 
 =====================================================================================================================
 
-
                                                h-11                                    r-6
 +--------------------------------------------> CAHandleRequestResponseCallbacks (queue_get_element)
 |                                                       thread2
-| +---------------------------------+
-| | HandleVirtualResource           |   call               cb-1
-| | HandleResourceWithEntityHandler |  -----> resource->entityHandler()
-| | HandleDefaultDeviceEntityHandler|
-| +---------------------------------+  /----> resouce = FindResourceByUri(request->resourceUrl)
+| +---------------------------------+                                                     g_serverRequestTree
+| | HandleVirtualResource           |   call               cb-1                                   |
+| | HandleResourceWithEntityHandler |  -----> resource->entityHandler()                           |GetServerRequestUsingToken
+| | HandleDefaultDeviceEntityHandler|                                                             |
+| +---------------------------------+  /----> resouce = FindResourceByUri(request->resourceUrl)   v
 |       ^                             /    +---------------------------------------------------------------+
 |  h-12 |                            / +-->|                       OCServerRequest                         |<-----------------+
 |  ProcessRequest     +-------------/  |   |---------------------------------------------------------------|                  |
@@ -121,7 +120,7 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |       OCHandleRequests                          OCHandleResponse       |      cb-2                |                         |
 |             ^                                          ^             client->callback()           |                         |
 |       cb-a  |   thread2                         cb-b   |                                  cb-c    |                         |
-|       HandleCARequests                          HandleCAResponses                         HandleCAErrorResponse             |
+|       HandleCARequests [get|put|post|delete]    HandleCAResponses                         HandleCAErrorResponse             |
 |             ^                                          ^                                          ^                         |
 |             |   r-7                                    |  r-7                                     |  r-7                    |
 |             +------------------------------------------.------------------------------------------+                         |
@@ -153,6 +152,34 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |                         /                                                                                                   |
 |   h-10                 v                                                                                                    |
 +-- CAHandleRequestResponse                                                                                                   |
+                                                                                                                              |
+                                                                                                                              |
+====================================================================================================================          |
+                                                   |                                                                          |
+                                                   |                                                                          |
+                               RPC      <--------- | --------->      RPC                                                      |
+                                                   |                                                                          |
+                                         a         |          1                                                               |
+                                OCDoResponse       |         OCDoRequest                                                      |
+                                        \                      /                                                              |
+                            +------------\--------------------/------------+                                                  |
+                            |             \  b          2    /             |                                                  |
+                   SERVER   |      CASendResponse     CASendRequest        |   CLIENT                                         |
+                            |              \                /              |                                                  |
+                     ^      |               \ c         3  /               |     ^                                            |
+                     |      |             CADetachSendMessage              |     |                                            |
+                     |      |                      ^                       |     |                                            |
+                 ---------  |                      |                       | ---------                                        |
+                     |      |            d         v         4             |     |                                            |
+                     |      |           CAHandleRequestResponse            |     |                                            |
+                     v      |                /            \                |     v                                            |
+                            |         e     /              \     5         |                                                  |
+                   CLIENT   |   HandleCAResponses     HandleCARequests     |   SERVER                                         |
+                            |             /                  \             |                                                  |
+                            +------------/--------------------\------------+                                                  |
+                                   f    /                      \     6                                                        |
+                                OCHandleResponse         OCHandleRequests                                                     |
+                                                                                                                              |
                                                                                                                               |
 =================server==================================sdk========================================================          |
                                                                                                                               |
