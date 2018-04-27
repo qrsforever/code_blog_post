@@ -33,42 +33,42 @@ categories: [ Note ]
               +-------------------+               ChangeResouceProperty  ---------------------+ (active)
               | ResourceObserver  |    TTL=0
               |-------------------| <------------ AddObserver
-              | observeId         |
-              | resUri            |                   OCPresenceTrigger
- see    ? <---+-TTL               |                           |
- ocobserve.h  | acceptFormat      |                  +--------+--------+
-              | query,token       |                  |        |        |
-              | devAddr           |                  v        v        v
-              | lowQosCount  (NON)|                CREATE   CHANGE   DELETE
-              | forceHighQos (CON)|                  |        |        |
-              |-------------------|        OCCreateResource   |   OCDeleteResource
-              |      next         |         +-----------------------------------+
-              +-------------------+         | OCBindResource (collection)       |
- +------------+                             | OCBindResourceTypeToResource      |
- | OCPresence |                             | OCBindResourceInterfaceToResource |
- |------------|                             +-----------------------------------+
- |    TTL     |                                                                            CLIENT
- | timeout[l] |
- |   level    |        g_cbList                                                          [[1]]
- +------------+           |                                                thread2       Platform::start
-      ^                   v                 OCInit2                        listeningFunc
-      |   +-------------------+                                                   |
-      |   |     ClientCB      |                                   "/oic/ad"       |      [[2]]
-      |   |-------------------|\                          /-----------------------+----- subscribePresence
-      |   |  requestUri       | \            [[3]]       /   SubscribeCallback    |       (Unicast)
-      |   |  sequenceNumber   |  \          OCDoResource              |           |
-      +---|  presence, TTL    |   \           /                       +-----------+--------\     thread2
-          |  payload, method  |    \         /                                    |         ---> presenceHandler
-          |  callback (cb-1)  |      AddClientCB                                  |                   cb-1
-          +-------------------+    ( Don't Call OCSendRequest )                   |                    |
-                                                                                  | loop:              |
-     ((5))                                                                        |        thread2     |
-     createResource                                                               | --> OCProcess      |
-                                             ((6))                                |          |         |
-                                            OCCreateResource                                 |         |
-                            Trigger: CREATE          |                                       |         |
-                        +----------------------------+                                       |         |
-                        v                                                                    |         |
+              | observeId         |                                           OCPresenceTrigger
+              | resUri            |               SendPresenceNotification            |
+ see    ? <---+-TTL               |                     |                    +--------+--------+
+ ocobserve.h  | acceptFormat      |                     |                    |        |        |
+              | query,token       |                     |                    v        v        v
+              | devAddr           |                     |                  CREATE   CHANGE   DELETE
+              | lowQosCount  (NON)|                     |                    |        |        |
+              | forceHighQos (CON)|                     |          OCCreateResource   |   OCDeleteResource
+              |-------------------|                     |           +-----------------------------------+
+              |      next         |                     |           | OCBindResource (collection)       |
+              +-------------------+   Trigger: CREATE   |           | OCBindResourceTypeToResource      |
+ +------------------------------------------------------+           | OCBindResourceInterfaceToResource |
+ | +------------+                                                   +-----------------------------------+
+ | | OCPresence |
+ | |------------|                                                                          CLIENT
+ | |    TTL     |
+ | | timeout[l] |      g_cbList                                                          [[1]]
+ | |   level    |         |                                                thread2       Platform::start
+ | +------------+         v                 OCInit2                        listeningFunc
+ |    ^   +-------------------+                                                   |
+ |    |   |     ClientCB      |                                   "/oic/ad"       |      [[2]]
+ |    |   |-------------------|\                          /-----------------------+----- subscribePresence
+ |    |   |  requestUri       | \            [[3]]       /   SubscribeCallback    |
+ |    |   |  sequenceNumber   |  \          OCDoResource              |           |
+ |    +---|  presence, TTL    |   \           /                       +-----------+--------\     thread2
+ |        |  payload, method  |    \         /                                    |         ---> presenceHandler
+ |        |  callback (cb-1)  |      AddClientCB                                  |                   cb-1
+ |        +-------------------+    ( Don't Call OCSendRequest )                   |                    |
+ |                                                                                | loop:              |
+ |   ((5))                                                                        |        thread2     |
+ |   createResource                                                               | --> OCProcess      |
+ |                                           ((6))                                |          |         |
+ |                                          OCCreateResource                                 |         |
+ |                                                   |                                       |         |
+ |                      +----------------------------+                                       |         |
+ |                      v                                                                    |         |
  +--------> SendPresenceNotification                                                         |         |
  |          SendAllObserverNotification                                                      |         |
  |            |         |                                                                    |         |
@@ -93,7 +93,7 @@ categories: [ Note ]
  |             |                                                                 OCProcessPresence     |
  |             | loop:                                                                  |              |
  |             |                                                                        | check ttl    |
- |             | --> OCProcess                                                          |              |
+ |             | --> OCProcess              ( only unicast make sense )                 |              |
  |             |        |                                                               |              |
  |             |        |     "/oic/ad"     [[7.1]]             check timeout[l]        |              |
  |             |        | <---------------- OCSendRequest <---------------------------- | (Unicast)    |

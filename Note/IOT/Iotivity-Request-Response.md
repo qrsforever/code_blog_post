@@ -191,82 +191,82 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
                                         thread2       insertResource         headResource                                     |
                                                                                  |                                            |
                                                     +----------------+           |                                            |
-                                                    |   OCResource   | <---------+ (resourceHandler)                          |
-                                OCResourceType      |----------------|                                                        |
-                               +-------------+      |  uri           |      OCResourceInterface                               |
-                               | next | name | <----|  resType       |       +-------------+                                  |
-                               +-------------+      |  resInterface  |-----> | name | next |                                  |
-                           OCResourceProperty       |  resAttributes |-- --+ +-------------+                                  |
-                    +------+--------+-----+---------|  resProperties |     |                                                  |
-                    |      |        |     |         |  actionsetHead |     |       OCAttribute                                |
-                    |      v        |     v   +-----|  childresHead  |---+ |   +---------------------+                        |
-                    |  discoverable |  active | +---|  observerHead  |   | +-> | name | value | next |                        |
-                    |               |         | |   |  entityHandler |   |     +---------------------+                        |
-                    v               v         | |   |  uuid  (cb-1)  |   |                                                    |
-                  slow         observable    /  |   |----------------|   |       OCChildResource                              |
-                                            /   |   |       next     |   |     +-----------------+                            |
-                                     +------    |   +----------------+   +---> | resource | next |                            |
-                    OCActionSet      v          |                              +-----------------+                            |
-               +-------------------------+      |                                                                             |
-               | name | timesteps | type |      v ResourceObserver                                                            |
-               |-------------------------|    +-------------------------------------------------+                             |
-               |     head   |   next     |    | id | uri | query | token | devAddr | qos | next |                             |
-               +-------------------------+    +-------------------------------------------------+                             |
-                                                                                                                              |
-=========================================================sdk======================================client============          |
-                                                                                                                              |
-                                                                                           ((1))                              |
-                                                                                           Platform::findResource             |
-                                                                                                        |                     |
-                                                     ((2))                                              |                     |
-                         gen: resHandle & token      OCDoResource    <----------------------------------+                     |
-                       /---------------------------- OCDoRequest       (host, uri, conntype, callback)                        |
-                      /                                                                          | cb-2                       |
-               ((3)) /                                                                           |                            |
-               AddClientCB                                                          [Find|Get|Put|Post]Callback               |
-                                                       +--------------------+                                                 |
-                g_cbList ----------------------------> |    ClientCB        |                                                 |
-                                                       |--------------------|      +--> con                                   |
-                                    text <---+         |    callback(cb-2)  |      |                                          |
-  GetClientCBUsingUri                        |         |    handle (random) |      +--> non                                   |
-  GetClientCBUsingToken             xml  <---+         |    type            |------|                                          |
-  GetClientCBUsingHandle                     |         |    token  (random) |      +--> ack                                   |
-                                    json <---+         |    options         |      |                                          |
-                                             |         |    payload         |      +--> reset            discover             |
-                                    cbor <---+---------|    payloadFormat   |                               ^                 |
-                 ip <---+                              |    context         |                               |                 |
-                        |   +---------------+          |    method          +---+-----+-----+-----+-----+---+                 |
-          bluetooth <---+   |   OCDevAddr   |          |    sequenceNumber  |   |     |     |     |     |                     |
-                        |   |---------------|          |    requestUri      |   v     v     v     v     v                     |
-                nfc <---+---|    adapter    |<---------|    devAddr         |  get   put  post  delete observe                |
-                        |   |    flags      |          |--------------------|                                                 |
-                nfc <---+   |    port       |          |    next            |                                                 |
-                        |   |    addr       |          +--------------------+                                                 |
-               xmpp <---+   |---------------|                                                                                 |
-                            |   routeData   |                                                                                 |
-                            |   remoteId    |        ((4))                                                                    |
-                            +---------------+        OCSendRequest  --->  CASendRequest  --->  CAQueueingThreadAddData        |
-                                                                                                                              |
-                                                                                                                              |
-=================server==================================sdk========================================================          |
-                         entityHandler (request)                                                                              |
-                            / [[0]]                                                                                           |
-     [[1]]                 /                                                       Request  ---->  Response                   |
-     Platform::sendResponse                                                                                                   |
-                |                                                                                                             |
-                |  (response)                        [[2]]                                                                    |
-                +--------------------------------->  OCDoResponse   -----------\ call                                         |
-  Wrapper:                                                                      \                                             |
-                                                                                 -----> requestHandle->ehResponseHandler      |
-    +---------------------------+ c++              c +------------------------+                        cb-3                   |
-    |    OCResourceRequest      |                    | OCEntityHandlerRequest |                                               |
-    |---------------------------|                    |------------------------|                                               |
-    |  messageID,representation |                    |    method, messageID   |                                               |
+                                                    |   OCResource   | <---------+ (resourceHandler)  <-------------------+   |
+                                OCResourceType      |----------------|                                                    |   |
+                               +-------------+      |  uri           |      OCResourceInterface                           |   |
+                               | next | name | <----|  resType       |       +-------------+                              |   |
+                               +-------------+      |  resInterface  |-----> | name | next |                              |   |
+                           OCResourceProperty       |  resAttributes |-- --+ +-------------+                              |   |
+                    +------+--------+-----+---------|  resProperties |     |                                              |   |
+                    |      |        |     |         |  actionsetHead |     |       OCAttribute                            |   |
+                    |      v        |     v   +-----|  childresHead  |---+ |   +---------------------+                    |   |
+                    |  discoverable |  active | +---|  observerHead  |   | +-> | name | value | next |                    |   |
+                    |               |         | |   |  entityHandler |   |     +---------------------+                    |   |
+                    v               v         | |   |  uuid  (cb-1)  |   |                                                |   |
+                  slow         observable    /  |   |----------------|   |       OCChildResource                          |   |
+                                            /   |   |       next     |   |     +-----------------+                        |   |
+                                     +------    |   +----------------+   +---> | resource | next |                        |   |
+                    OCActionSet      v          |                              +-----------------+                        |   |
+               +-------------------------+      |                                                                         |   |
+               | name | timesteps | type |      v ResourceObserver                                                        |   |
+               |-------------------------|    +-------------------------------------------------+                         |   |
+               |     head   |   next     |    | id | uri | query | token | devAddr | qos | next |                         |   |
+               +-------------------------+    +-------------------------------------------------+                         |   |
+                                                                                                                          |   |
+=========================================================sdk======================================client============      |   |
+                                                                                                                          |   |
+                                                                                           ((1))                          |   |
+                                                                                           Platform::findResource         |   |
+                                                                                                        |                 |   |
+                                                     ((2))                                              |                 |   |
+                         gen: resHandle & token      OCDoResource    <----------------------------------+                 |   |
+                       /---------------------------- OCDoRequest       (host, uri, conntype, callback)                    |   |
+                      /                                                                          | cb-2                   |   |
+               ((3)) /                                                                           |                        |   |
+               AddClientCB                                                          [Find|Get|Put|Post]Callback           |   |
+                                                       +--------------------+                                             |   |
+                g_cbList ----------------------------> |    ClientCB        |                                             |   |
+                                                       |--------------------|      +--> con                               |   |
+                                    text <---+         |    callback(cb-2)  |      |                                      |   |
+  GetClientCBUsingUri                        |         |    handle (random) |      +--> non                               |   |
+  GetClientCBUsingToken             xml  <---+         |    type            |------|                                      |   |
+  GetClientCBUsingHandle                     |         |    token  (random) |      +--> ack                               |   |
+                                    json <---+         |    options         |      |                                      |   |
+                                             |         |    payload         |      +--> reset            discover         |   |
+                                    cbor <---+---------|    payloadFormat   |                               ^             |   |
+                 ip <---+                              |    context         |                               |             |   |
+                        |   +---------------+          |    method          +---+-----+-----+-----+-----+---+             |   |
+          bluetooth <---+   |   OCDevAddr   |          |    sequenceNumber  |   |     |     |     |     |                 |   |
+                        |   |---------------|          |    requestUri      |   v     v     v     v     v                 |   |
+                nfc <---+---|    adapter    |<---------|    devAddr         |  get   put  post  delete observe            |   |
+                        |   |    flags      |          |--------------------|                                             |   |
+                nfc <---+   |    port       |          |    next            |                                             |   |
+                        |   |    addr       |          +--------------------+                                             |   |
+               xmpp <---+   |---------------|                                                                             |   |
+                            |   routeData   |                                                                             |   |
+                            |   remoteId    |        ((4))                                                                |   |
+                            +---------------+        OCSendRequest  --->  CASendRequest  --->  CAQueueingThreadAddData    |   |
+                                                                                                                          |   |
+                                                                                                                          |   |
+=================server==================================sdk========================================================      |   |
+                         entityHandler (request)                                                                          |   |
+                            / [[0]]                                                                                       |   |
+     [[1]]                 /                                                       Request  ---->  Response               |   |
+     Platform::sendResponse                                                                                               |   |
+                |                                                                                                         |   |
+                |  (response)                        [[2]]                                                                |   |
+                +--------------------------------->  OCDoResponse   -----------\ call                                     |   |
+  Wrapper:                                                                      \                                         |   |
+                                                                                 -----> requestHandle->ehResponseHandler  |   |
+    +---------------------------+ c++              c +------------------------+                        cb-3               |   |
+    |    OCResourceRequest      |                    | OCEntityHandlerRequest |                                           |   |
+    |---------------------------|                    |------------------------|    resource                               |   |
+    |  messageID,representation |                    |    method, resource    |-------------------------------------------+   |
     |  devAddr, query, options  | formResourceRequest|    devAddr, query      |                                               |
     |  payload                  |<-------------------|    options             |                                               |
     |  requestHandle            |                    |    payload             |     requestHandle                             |
     |  resourceHandle           |                    |    requestHandle       |-----------------------------------------------+
-    +---------------------------+                    |    resourceHandle      |                                               |
+    +---------------------------+                    |    messageID           |                                               |
                 |                                    +------------------------+                                               |
                 |  get/put/post                                                                                               |
                 v                                  c +------------------------+                                               |
