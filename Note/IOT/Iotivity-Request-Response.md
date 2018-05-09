@@ -134,10 +134,10 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |     +-----------------------+            |             |               |             +----------------------+               |
 |     |                       |            |             |               |             |                      |               |
 |     |Platform::start()   ----------------+--------> OCInit2 <----------+-----------------  Platform::start()|               |
-|     |                       |            |                             |             |                      |               |
-|     |                       |            |                             |             |                      |               |
-|     |     +--------------+  |            |                             |             |   +--------------+   |               |
-|     |     |     start    |  |            |                             |             |   |     start    |   |               |
+|     |                       |            |             |               |             |                      |               |
+|     |                       |            |             |               |             |                      |               |
+|     |     +--------------+  |            |             v               |             |   +--------------+   |               |
+|     |     |     start    |  |            |      init core resources    |             |   |     start    |   |               |
 |     |     |              |  |            |                             |             |   |              |   |               |
 |     |     |              |  |thread2     |           r-5               |      thread2|   |              |   |               |
 |     |     |  processFunc  ---------------+-------> OCProcess <---------+-----------------  listeningFunc|   |               |

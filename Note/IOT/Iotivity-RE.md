@@ -9,217 +9,297 @@ categories: [ Note ]
                                                                               
                                                                               
 ```                                                                             
-                                                                              
-                                                                                                               
-                                                                                                               
-                                                                                                               
-                                                                                                               
-                                                                                                               
                                                                                                                
                                        +---------------------------+ +--------------------------+              
                                        | ResourceAttributesBuilder | |  OCRepresentationBuilder |      
           +----------------------+     |---------------------------| |--------------------------|     +--------------------+
           | RCSResourceAttributes|<----|      m_target             | |      m_target            |---->|OC::OCRepresentation| 
           +----------------------+     |---------------------------| |--------------------------|     +--------------------+
-                                       |       extract()           | |       extract()          |               ^
-                                       +---------------------------+ +--------------------------+               |
-                                                       \                       /                                |
-                                                        \                     /                                 |
-                                                         \                   /                                  c1           
-                                                    +-------------------------------+                +--------------------+ 
-                                                    |  ResourceAttributesConverter  |                |   RequestHandler   | 
-                                                    |-------------------------------|                |--------------------| 
-                                                    |      fromOCRepresentation     |                |    m_errorCode     | 
-                                                    |      toOCRepresentation       |            --> |    m_customRep     | 
-                                                    +-------------------------------+           /    |    m_ocRep         | 
-                                                                                               /     |--------------------| 
-                                                                                              /      |  getRepresentation |                              
-                                                                                             /       +--------------------+                              
-                                                                m_handler                    |                  e1                                        
-                                                               +-----------------------------+                  |                                        
-                                                               |                                                |                                        
-   +------------------+                +-----------------+     |        +-----------------+         +-----------------------+                            
-   |  RCSRequest      |                |  RCSGetResponse |     |        |  RCSSetResponse |         |   SetRequestHandler   |                                                                                                                        
-   |------------------|                |-----------------|     |        |-----------------|         |-----------------------|                                                                                                                        
-   | m_resourceObject |                |    m_handler    |c1---+        |    m_handler    |c1------>|                       |                                                                                                                        
-   | m_ocRequest      |                |-----------------|              |-----------------|         | applyAcceptanceMethod |                                                                                                                        
-   +------------------+                |  defaultAction  |              |  defaultAction  |         +-----------------------+                                                                                                                        
-           |                           |    create       |              |     create      |                                                                                                                                                          
-           | m_ocRequest               +-----------------+              +-----------------+                                                                                                                                                          
-           v                                                                                                                                                                                                                                         
-   OCResourceRequest                                                                                                                                                                                                                                 
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                     
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
-                                                                                                                                                         
+          |      m_values        |     |       extract()           | |       extract()          |               ^
+          +----------------------+     +---------------------------+ +--------------------------+               |
+          |      visit()         |                     \                       /                                |
+          +----------------------+                      \                     /                                 |m_ocRep
+             ^                                           \                   /                                  c1           
+             |                                      +-------------------------------+                +--------------------+ 
+             |                                      |  ResourceAttributesConverter  |                |   RequestHandle    | 
+             |                                      |-------------------------------|                |--------------------| 
+             |                                      |      fromOCRepresentation     |                |    m_errorCode     | false
+             |                                      |      toOCRepresentation       |            --> |    m_customRep     |----+
+             |                                      +-------------------------------+           /    |    m_ocRep         |    |
+             |                                                                                 /     |--------------------|    |
+             |                             +-----------------+                                /      |  getRepresentation |    |                         
+             |                             |  RCSGetResponse |                               /       +--------------------+    |                         
+             |                             |-----------------|  m_handler                    |                  e1             |                          
+             |                             |    m_handler    |c1-----------------------------+                  |              |                         
+             |                             |-----------------|                                                  |              |                         
+             |                             |  defaultAction  |----+     +-----------------+         +-----------------------+  |                         
+             |                    +------- |    create       |    |     |  RCSSetResponse |         |   SetRequestHandler   |  |                                                                                                                     
+             |                    |        +-----------------+    |     |-----------------|         |-----------------------|  |                                                                                                                     
+             |                    |                               |     |    m_handler    |c1------>|                       |  |                                                                                                                     
+             |                    v                               |     |-----------------|         | applyAcceptanceMethod |  |                                                                                                                     
+             |              create(attrs) ---> m_customRep = true |     |  defaultAction  |-----+   +-----------------------+  |                                                                                                                     
+             |                                                    |     |     create      |     |                              |                                                                                                                     
+             |                                                    |     +-----------------+     |                              |                                                                                                                     
+             +--------------------------\                         |                             |                              |                                                                                                                     
+                                         \                        +-----------------------------+------------------------------+                                                                                                                                                                                      
+                                          \                                                    +------------------+            |                 
+                                           \                                                   |  RCSRequest      |            |                
+     +------------------------+             \          +----------------------------+          |------------------|            |                 
+     |       Builder          |              \         |    RCSResourceObject       | <------c1| m_resourceObject |            |                 
+     |------------------------|               \        |----------------------------|          | m_ocRequest      |            |               
+     |  m_uri                 |                \       |                            |          +------------------+            |                                                 
+     |  m_types               |                 \      |    m_resourceHandle        |                  c1                      |                                                 
+     |  m_interfaces          |                  ----c1|    m_resourceAttributes    |                  | m_ocRequest           |                                                             
+     |  m_defaultInterface    |    OC_SECURE           |    m_interfaceHandlers     |                  v                       |                                                             
+     |  m_properties          |--> OC_OBSERVABLE       |    m_getRequestHandler     |       +---------------------------+      |                                                             
+     |  m_resourceAttributes  |    OC_DISCOVERABLE     |    m_setRequestHandler     |       |   OC::OCResourceRequest   |      |                                                             
+     |------------------------|                        |----------------------------|       |---------------------------|      |                                                                                           
+     |  build()               |                        | set[Get/Set]RequestHandler |       |  messageID,representation |      |                                                                                           
+     +------------------------+                        |     [get/set]Attribute     |       |  devAddr, query, options  |      |                                                                                           
+         |                                  server     |         notify             |       |  payload                  |      |                                                                                               
+         +-> server = RCSResourceObject()----------->  |      sendResponse          |       |  resourceHandle           |      |                                                                                               
+         |                                             |      entityHandler         |       |  requestHandle            |      |                                                                                               
+         +-> registerResource()                        |      handleRequest         |       +---------------------------+      |                                                                                                         
+         |                                             |      handleObserve         |       |   getRequestHandlerFlag   |---+  |                                                                                               
+         +-> bindInterfaceToResource()                 +----------------------------+       |   getRequestHandle        |   |  |                                                                                               
+         |                                                                                  +---------------------------+   |  |                                                                                               
+         +-> bindTypeToResource()                                                                                           |  |                                                                                               
+         |                                                                           +--------------------------------+-----+  |                                                                                               
+         +-> server->init()                                                          | RequestFlag       ObserverFlag |        |                                                                                               
+                                                                                     |                                |        |                                                                                               
+                                                                                     v                                v        |                                                                                               
+                    1:n     +--------------------------+                        handleRequest                   handleObserve  |                                                                                                                                                                                                                                                                           
+  g_defaultHandlers ------->|    InterfaceHandler      |                             |                                         |                                                                                                                      
+          |                 |--------------------------|                  "get"      |      "post"                             |                                                                                                                  
+          |                 |       m_getBuilder       |                  -----------+-------------                            |                                                                                                                  
+          |                 |       m_setBuilder       |                  |                       |                            |                                                                                                                  
+          |                 |--------------------------|                  v                       v                            |                                                                                                                  
+          |                 |  getGetResponseBuilder   |           handleRequestGet        handleRequestSet                    |                                                                                                                  
+          | defaultAction   |  getSetResponseBuilder   |                  |                       |                            |                                                                                                             
+          |                 +--------------------------+                  v                       v                            |                                                                                                             
+          | m_customRep=false                                     m_getRequestHandler     m_setRequestHandler                  |                                                                                                             
++---------+----------------------------------------------------\          |                       |                            |                                                                                                             
+|   "oic.if.baseline"   "oic.if.a"   "oic.if.s"     "oic.if.b"  \         v                       v                            |                                                                                                          
+|          |                |            |              |        \   RCSGetResponse          RCSSetResponse                    |                                                                                               
+|          v                |            v              |         \       |                       |                            |  
+|buildGetBaselineResponse   |  buildGetRequestResponse  |          \      +----------+------------+                            |  
+|buildSetBaselineResponse   |  NullPtr                  |           \                |                                         |        
+|                           v                           v            \               v                                         |  
+|        (attrs) buildGetRequestResponse      buildGetBatchResponse   \         sendResponse                                   |  
+|                buildSetRequestResponse      buildSetBaselineResponse \                                                       |  
++------------------------------------------------------------------------------------------------------------------------------+  
                                                                                                                                   
-                                                                                                              
-                                                                                RCSResourceAttributes         
-                                                                                                              
-       OCResourceHandle                                                               m_values                
-                                                                                                              
-                                                                                      visit                   
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                                                              
-                                                                              
-                                                                              
-                                                                              
-                                                                              
-                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                               RCSResourceObject                                                                              
-                                                                                                                                              
-                                              m_resourceAttributes                                                                            
-                                              m_interfaceHandlers                                                                                            
-                                              m_getRequestHandler                                                                            
-                                              m_setRequestHandler                                                                             
-                                                                                                                                              
-                                           set[Get/Set]RequestHandler                                                                
-                                               [get/set]Attribute                                                                             
-                                                   notify                                                                                     
-                                                 sendResponse                                                                                 
-                                                 entityHandler                                                                                
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                                                                                                              
-                                                      |                                   handleRequest                                       
-                                                      |                                        |                                             
-                                                      | RequestFlag                 "get"      |      "post"                                
-                                                      |                             -----------+-------------                                       
-                                                      |                             |                       |                                        
-          handleObserve                               |                             v                       v                                        
-                                                      | ObserverFlag         handleRequestGet        handleRequestSet                           
-                                                                                                                                                             
-                                                                                                                                                             
-                                                                                                                                                             
-                                                                                                                                                             
-
-                                                                                                                                                                   
-                                                                                                                                                                   
+===================================================================================================================================                                
+                                                                                                                                                                                                                               
+                                                                                "Caching data [attributes] of remote resource"                                                                                                                                                                                 
+                                                                                       +-----------------------+                                                                                                                                                                                               
+                                                      +------------------------------> |  ResourceCacheManager |                                                                                                                                                                                               
+                                                      |                         1:n    |-----------------------|                                                                                                                                                                                               
+                                                      |                      +-------c1|  s_cacheDataList      |   1:n                                                                                                                                                                                            
+"Monitor the state of remote resource"                |                      |         |  m_observeCacheList   |c1------+                                                                                                                             
+  +----------------------+                            |                      |         |-----------------------|        |                                                         
+  |   ResourceBroker     |--------------+             |                      |         |  requestResourceCache |        |                                                         
+  |----------------------|              |             |                      |         |  updateResourceCache  |        |                                                         
+  |   s_presenceList     |c1--+         |             |                      |         |  getCachedData        |        |                                                         
+  |   s_brokerIDMap      |    |         |             |                      |         |  findDataCache        |        |                                                         
+  |----------------------|    |1:n      |             |                      |         +-----------------------+        |                                                         
+  |   hostResource [[2]] |    |         |             |                      |                                          |                                                                 
+  | findResourcePresence |    |         |  (cb-2)     |                      |                                          |                                                         
+  +----------------------+    |         | +--------+  |                      |                                          |                                                         
+                              |         | |brokerId|  |                      v                                          v                                                                           
+                   +----------+         | |brokerCB|  |          +--------------------------+               +--------------------+                                                
+                   |                    | +--------+  |          |       DataCache          |               |    ObserveCache    |                                                
+      +------------v---------------+    |     ^       |          |--------------------------|               |--------------------|                                                
+      |     ResourcePresence       |    |     |       |          |       sResource          |c1---+   +---c1|    m_wpResource    |                                                
+      |----------------------------|    |     |1:n    |          |       attributes         |     |   |     |    m_attributes    |                                                
+      |     requesterList          |c1--------+       |          |     subscriberList       |     |   |     |    m_reportCB      |                                                
+      |     primitiveResource      |c1----------------------\    |--------------------------|     |   |     |--------------------|                                                
+      |       expiryTimer (5s)     |    |             |      \   |  [add/delete]Subscriber  |     |   |     |  [start/stop]Cache |                                                
+      |----------------------------|    |             |       |  |      getCachedData       |     |   |     |     getCachedData  |                                                
+ +----|   registerDevicePresence   |    |             |       |  |   on[Observe/Get]        |     |   |     |     onObserve      |                                                
+ |    |[add/remove]BrokerRequester |    |             |       |  |   notifyObservers        |     |   |     +--------------------+                                                
+ |    |  [get/timeOut/polling]CB   |    |             |       |  +--------------------------+     |   |                                                                           
+ |    | executeAllBrokerCB (cb-2)  |    |             |       |                                   |   |                                                                                                                                              
+ |    +----------------------------+    |             |       |                                   |   |                                                                                                                                              
+ |        |                             |             |       |                                   |   |                                                                                                                                              
+ |        |            +-----------------------------------+  +-----------------------------------+---+---+                                                                                                                                          
+ |        |            |      RCSRemoteResourceObject      |                                      |   |   |                                                                                                                                          
+ |        |            |-----------------------------------|                                      |   |   |                                                                                                                                          
+ |        |            |        m_primitiveResource        |c1--------------------------------+   |   |   |                                                                                                                                          
+ |        |            |        m_cacheId                  |                                  |   |   |   |                                                                                                                                          
+ |        |            |        m_brokerId                 |                                  |   |   |   |                                                                       
+ |        |            |-----------------------------------|                                  |   |   |   |                                                                       
+ |        |            |  [from/to]OCResource              |-----------+                      v   v   v   v                                                                       
+ |        |      [[1]] |  start[Monitoring/Caching]        |           |                  +--------------------------------+                                                      
+ |        |            |  [get/set]RemoteAttributes        |           |                  |      PrimitiveResource         |                                                      
+ |        |            |  get[Address/Uri/Types/Interfaces]|           |                  |--------------------------------|                                                            
+ |        |            +-----------------------------------+           |                  |            create              |---+                                                        
+ \        |                         ^                                  |             [[3]]|   request[Get/Set/Put][With]   |   |                                                        
+  \       |1:n  ? one to one ?      |cb-1                          from|remote            | get[Uri/Host/Types/Interfaces] |   |                                                        
+   \      |resourcePresenceList     |                       +----------------------+      |       requestObserve           |   |                                                                                                                                        
+    \     c1                        |                       |   OC::OCResource     |      +--------------------------------+   |                                                                                                                                                          
++------------------------------+    |                       |----------------------|                      e1                   |                                                                                                                                                                                                                                             
+|       DevicePresence         |    |                       |   m_clientWrapper ---+                      |                    |                                                                                                                                                                                                                                                   
+|------------------------------|    |                       |  +---------------+   |                      |                    |                                                                                                                                                                                                                                                          
+|     resourcePresenceList     |    |                       |  |  OCResource   |   |           +-----------------------+       |                                                                                                                                                                                                                                                          
+|         address              |    |                       |  |---------------|   |           | PrimitiveResourceImpl |  <----+                                                                                                                                                                                                                                                                                                                             
+|     presenceSubscriber       |c1----------                |  | uri ...       |   |           |-----------------------|                                                                                                                                                                                                                                                                                             +--------------------------------+      
+|     presenceTimer (15s)      |    |       \               |  | actionsetHead |   | <-------c1|     m_baseResource    |                                                                                                                                                                                                                      -------------------------------+                                       |      PrimitiveResource         |      
+|------------------------------|    |        \              |  | childresHead  |   |           +-----------------------+                                                                                                                                                                                                                           PrimitiveResource         |                                       |--------------------------------|      
+|     addPresenceResource      |    |         \             |  | observerHead  |   |                                                                                                                                                                                                                                                          -------------------------------|                                       |            create              |---+  
+|    [subscribe/timeOut]CB     |    |          \            |  | entityHandler |   |                                                                                                                                                                                                                                                                     create              |---+                                   |   request[Get/Set/Put][With]   |   |  
+| [add/remove]PresenceResource |    |           \           |  +---------------+   |                                                                                                                                                                                                                                                            request[Get/Set/Put][With]   |   |                                   | get[Uri/Host/Types/Interfaces] |   |  
++------------------------------+    |            \          |----------------------|                                                                                                                                                                                                                                                          get[Uri/Host/Types/Interfaces] |   |                                   |       requestObserve           |   |  
+                                    |   "/oic/ad" |         | get/put/post/observe |                                                                                                                                                                                                                                                               requestObserve           |   |                                   +--------------------------------+   |  
+                                    |             |         |  subscribe/publish   |                                                                                                                                                                                                                                                         -------------------------------+   |                                                   e1                   |  
+                                    |             |         +----------------------+                                                                                                                                                                                                                                                                                e1                   |                                                   |                    |  
+                                    |             v                                                                                                                                                                                                                                                                                                      |                    |                                                   |                    |  
+                                    |     +------------------------+                                                                                                                                                                                                                                                                                                                                                     +-----------------------+       |  
+                                    |     |  PresenceSubscriber    |                                                                                                                                                                                                                                                                                +-----------------------+       |                                        | PrimitiveResourceImpl |  <----+  
+                                    |     |------------------------|                                                                                                                                                                                                                                                                            | PrimitiveResourceImpl |  <----+                                        |-----------------------|          
+                                    |     |        m_handle        |                                                                                                                                                                                                                                                                             |-----------------------|                                        ------c1|     m_baseResource    |          
+                                    |     |------------------------|                                                                                                                                                                                                                                                                                    -c1|     m_baseResource    |                                                +-----------------------+          
+                                    |     |  [un]subscribePresence |                                                                                                                                                                                                                                                                             +-----------------------+                                                                                   
+                                    |     +------------------------+                                                                                                                                                                                                                                                                                                                                                                                         
+                      +-------------+                                                                                                                                                                                                                                                                                                                                                                                                                        
+                      |                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                      |                                                                             +------------------+                                                                                                                                                                                                                                                                                                                                     
+                      |     +---------------------------+         +--------------+              --> | RCSAddressDetail |                                                                                                                                                                                                                                                                                                                                     
+                      |     |   RCSDiscoveryManager     |         |  RCSAddress  |             /    |------------------|                                                                                                                                                                                                                                                                                                                                     
+                      |     | ------------------------- |         |--------------|            /     |     m_addr       |                                                                                                                                                                                                                                                                                                                                     
+                      |     |                           |         |   m_detail   |c1---------/      |------------------|                                                                                                                                                                                                                                                                                                                                     
+                      |     |    discoverResource ((1)) |         |--------------|                  |    getAddress    |                                                                                                                                                                                                                                                                                                                                     
+                      |     |  discoverResourceByType   |         |   multicast  |                  +------------------+                                                                                                                                                                                                                                                                                                                                     
+                      |     |  discoverResourceByTypes  |         |   unicast    |                                                                                                                                                                                                                                                                                                                                                                           
+                      |     +---------------------------+         +--------------+                                                                                                                                                                                                                                                                                                                                                                           
+                      |                  |                              ^                    +-------------------------+                                                                                                                                                                                                                                                                                                                                     
+                      |                  |                              |                    |  DiscoveryRequestInfo   |                                                                                                                                                                                                                                                                                                                                     
+                      |                  |                              |      m_address     |-------------------------|                                                                                                                                                                                                                                                                                                                                     
+                      |   +--------------------------------+            +------------------c1|     m_address           |                                                                                                                                                                                                                                                                                                                                     
+                      |   |     RCSDiscoveryManagerImpl    |                                 |     m_relativeUri       |                                                                                                                                                                                                                                                                                                                                     
+                      |   |--------------------------------|     1:n                         |     m_resourceTypes     |                                                                                                                                                                                                                                                                                                                                     
+                      |   |        m_discoveryMap          |c1------------------------------>|     m_discoverCb ((4))  | <---+                                                                                                                                                                                                                                                                                                                               
+                      |   |        m_timer                 |     m_discoveryMap              |     m_knownResourceIds  |     |                                                                                                                                                                                                                                                                                                                               
+                      |   |--------------------------------|             |                   |-------------------------|     |                                                                                                                                                                                                                                                                                                                               
+                      |   |        startDiscovery ((2))    |<---+        |               +---|     discover            |     |                                                                                                                                                                                                                                                                                                                               
+                ((4)) +---|  onResourceFound (call cb-1)   |    |loop    |               |   |     addKnownResource    |     |                                                                                                                                                                                                                                                                                                                               
+                      |   |        onPolling(60s)          |----+        |               |   +-------------------------+     |                                                                                                                                                                                                                                                                                                                               
+                      |   |        onPresence              |             | (erase)       |                                   |                                                                                                                                                                                                                                                                                                                               
+                      |   |        cancel                  |-------------+               v  ((3))                            |                                                                                                                                                                                                                                                                                                                               
+                      |   | subscribePresenceWithMulticast |      (id)          OC::OCPlatform::findResource                 |                                                                                                                                                                                                                                                                                                                               
+                      |   +--------------------------------+                                                                 |                                                                                                                                                                                                                                                                                                                               
+                      |                                                                        OC::OCResource                |                                                                                                                                                                                                                                                                                                                               
+                      +------------------------------------------------------------------------------------------------------+                                                                                                                                                                                                                                                                                                                               
+                                                      std::function  DiscoverCallback                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+                                                                                                                                                                                                                                                                                                                                                                                                                                                             
                                                                                                                                                                          
-                SampleResourceServer                                                                                  SampleResourceClient                                   
-                      |                                                                                                                                            
-                      |--> startPresence                                                                                                                           
-                      |                  
-                      |--> initServer 
-                      |                            
-                      |     g_resource (RCSResourceObject)
-                      |         |                                                                                                                                            
-                      |         |--> setAutoNotifyPolicy                                                                                                                      
-                      |         |--> setSetRequestHandlerPolicy                                                                                                                       
-                      |         |                                                                                                                                            
-                      |         |--> setAttribute("Brightness")                                                                                                                      
-                      |         |--> setGetRequestHandler ------------+                                                                                                         
-                      |         |--> setSetRequestHandler ------------+                                                                                                         
-                      |         |                                     |                                                                                    
-                      |                                               |                                                                                   
-                 loop |--> updateAttribute                            |                                                                                                      
-                      |                                               |                                                                                            
-                      |     g_resource (RCSResourceObject)            |
-                      |         |                                     |                                                                                             
-                      |         |--> getAttributes                    |                                                                                                           
-                      |         |                                     |                                                                                             
-                      |         |--> getAttributeValue                |                                                                                                                    
-                      |         |                                     |                                                                                            
-                                                                      |                                                                                            
-             +----------------------------------------+---------------+                                                                                            
-             |                                        |
-             v                                        v                                                                                                            
-   requestHandlerForGet                     requestHandlerForSet                                                                                              
-     |                                                                                                                                                             
-     |--> printAttributes(req->attrs)                                                                                                                                          
-     |
-     |--> printAttributes(res->attrs)                                                                                                                                          
-     |                                                                                                                                                             
-     |                                                                                                                                                             
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                                                                                                                                                                   
-                 +--------------------+                                                                                                                           
-                 |   RequestHandler   |                                        
-                 |--------------------|                                                                                                                            
-                 |    m_errorCode     |            +-----------------------+                                                                                       
-                 |    m_customRep     |            |   SetRequestHandler   |                                                                                      
-                 |    m_ocRep         | e3-------- |-----------------------|                                                                                       
-                 |--------------------|            |                       |                                                                                       
-                 |  getRepresentation |            | applyAcceptanceMethod |                                                                                       
-                 +--------------------+            +-----------------------+                                                                                        
-                           |                                   |                                                                                                    
-                           |  m_handler             m_handler  |                                                                                                   
-                           c1                                  c1                                                                                                  
-                  +-----------------+                +-----------------+                           +------------------+                                      
-                  |  RCSGetResponse |                |  RCSSetResponse |                           |  RCSRequest      |                                      
-                  |-----------------|                |-----------------|                           |------------------|                                      
-                  |    m_handler    |                |    m_handler    |                           | m_resourceObject |                                      
-                  |-----------------|                |-----------------|                           | m_ocRequest      |                                      
-                  |  defaultAction  |                |  defaultAction  |                           +------------------+                                      
-                  |    create       |                |     create      |                                   |                                                 
-                  +-----------------+                +-----------------+                                   | m_ocRequest                                                
-                                                                                                           v                                                 
-                                                                                                   OCResourceRequest                                         
+====================SEVER===========================================================================================CLIENT=========                                
+                                                                                                                                                                         
+                SampleResourceServer                                      RCSRemoteResourceObject           SampleResourceClient                                             
+                      |                                                            |                   ((1))               |                                       
+                      |--> startPresence                                           |(param:rro)        discoverResource <--| 1                                     
+                      |                                                            |                                       |              
+                      |--> initServer                                              |         discoverResourceByType        |              
+                      |                   (server use)                 cb-1        v                        |              |              
+                      |     g_resource (RCSResourceObject)            onResourceDiscovered                  |              |              
+                      |         |                                     ((4)) |             ((2))             |              |                                                 
+                      |         |--> setAutoNotifyPolicy                    |             startDiscovery <--|              |                                                  
+                      |         |--> setSetRequestHandlerPolicy             |                        |      |              |                                                          
+                      |         |                                           |  m_discoveryMap.insert |      |              |                                                 
+                      |         |--> setAttribute("Brightness")             |                        |                     |                                                         
+                      |         |--> setGetRequestHandler ---------+        |           discovery <--|                     |                                                    
+                      |         |--> setSetRequestHandler ---------+        |  ((3))           |     |                     |                                                 
+                      |         |                                  |        |  findResource <--|                           |                         
+                      |                                            |        |                  |"/oic/res?rt=oic.r.light"  |                           
+                 loop |--> updateAttribute                         |        |                                              |                                              
+                      |                                            |        |--> rro->getUri                               |                                        
+                      |     g_resource (RCSResourceObject)         |        |                                              |          
+                      |         |                                  |        |--> rro->getAddress                           |                                                                  
+                      |         |--> getAttributes                 |        |                                              |                                                   
+                      |         |                                  |        |--> g_discoveredResources.push_back(rro)      |                                                                          
+                      |         |--> getAttributeValue             |        |                                              |                                                            
+                      |         |                                  |                                (client use)           |                                    
+                                                                   |          g_selectedResource (RCSRemoteResourceObject) |                                    
+             +----------------------------------------+------------+                                                       |                                    
+             |                                        |                                                 [[1]]              |
+             v                                        v                cb-2                             startMonitoring <--| 2                                     
+   requestHandlerForGet                     requestHandlerForSet      onResourceStateChanged                      |        |                                  
+     |                                                      |         [[4]] |                     [[2]]           |        |                                       
+     |                                                      |               |                     hostResource <--|        |                                                   
+     |    RCSGetResponse                 RCSSetResponse     |               |                              |               |
+     |        |                                |            |               |   initializeResourcePresence |               |                                                   
+     |        |         defaultAction          |                            |        addBrokerRequester <--|               |                                       
+     |        +--------------------------------+                            |                 |            |               |                                       
+     |                        |                                             |   [[3]]         |            |               |                                       
+     |                        |                                             |   requestGet <--|                            |                                       
+     |                        +-------------------------------\             |                                              |                                       
+     |                                                         \            |                      (polling)               |                                       
+     |                                                          \           |--> do nothing                                |                                       
+     |                                                           \          |                                              |                                       
+     |                                                            \                                                        |                                       
+     |                                                             \                                                       |                                                          
+     |                                                              v  cb-3                   [get/set]RemoteAttributes <--| 3                                     
+     |                                                                onRemoteAttributesReceived                  |        |                                       
+     |                                                                            |                               |        |
+     |                                                                            |           request[Get/Set] <--|        |                                       
+     |                                                                            |                               |        |                                       
+     |                                                                            |                                        |      
+     |                                                                            |                                        |      
+     |                                                                            |                                        |      
+     |                                                                            |                                        |      
+     |                                                                                                                     |      
+     |                                                                                                                     |      
+     |                                                                                                                     |      
+     |                                                                                           [get/set]WithInterface <--| 4    
+     |                                                                 cb-4                                       |        |      
+     |                                                                onRemote[Get/Set]Received                   |        |      
+  if |  "interface == test.custom"                                                |             "?if=test.custom" |        |      
+     |         |                                                                  |                               |        |      
+     |         |--> attr["blob"] = bin  (new attr)                                |       request[Get/Set]With <--|        |      
+     |         |                                                                  |                               |        |      
+     |         |--> RCSGetResponse::create(attr)      interfaces is empty         |                               |        |      
+     |         |                                      resourceTypes is empty      |                                        |      
+     |         |       m_customRep = true        ----------------------------->   |                                        |      
+     |         |                                      key : blob                  |                                        |      
+     |                                                                            |                                        |      
+ else| "interface != test.custom"                                                 |                                        |      
+     |         |                                                                  |                                        |                                                             
+     |         |                                                                  |                                        |
+     |         |--> RCSGetResponse::defaultAction()                               |                                        |
+     |         |                                      g_defaultHandlers           |                                        |                                       
+     |         |       m_customRep = false       ----------------------------->   |                                        |                                       
+     |                                                                            |                                        |                                       
+     |     "oic.if.baseline"   "oic.if.a"   "oic.if.s"     "oic.if.b"                                                      |                                       
+     |                                                                                                                     |                                                                                
+     |                                                                                                                     |     
+     |                                                                                         startCachingWithCallback <--|5                                      
+     |                                                                 cb-5                                       |        |                                       
+     |                                                                onCacheUpdated                              |        |                                       
+     |                                                                                                            |        |                                       
+                                                                                          requestResourceCache <--|        |                                       
+                                                                                                                  |        |                                       
+                                                                                                                  |        |                                       
+                                                                                                                           |                                      
+                                                                                                                           |    
+                                                                                                                           |                                       
+                                                                                                                           |                                       
+                                                                                                                           |                                      
+                                                                                                                           |                                       
+                                                                                                                           |                                       
+                                                                                                                           |                                       
+                                                                                                                           |                                        
+                                                                                                                           |                                        
+                                                                                                                           |                                       
+                                                                                                                           |                                       
+                                                                                                                           |                                 
+                                                                                                                                                             
+                                                                                                                                                             
+                                                                                                                                                             
+                                                                                                                                                             
+                                                                                                                                                             
+                                                                                                                                                             
+                                                                                                                                                                        
                                                                                                                                                              
                                                                                                                                                              
                                                                                                                                                              
@@ -257,30 +337,32 @@ categories: [ Note ]
                                                                                                                                                              
                                                                                                                                                              
                                                                                                                                                              
-      +------------------------+                                                                                                                             
-      |       Builder          |                                                                                                                             
-      |------------------------|                                                                                                                             
-      |  m_uri                 |                                                                                                                             
-      |  m_types               |                                                                                                                             
-      |  m_interfaces          |                                                                                                  
-      |  m_defaultInterface    |      OC_DISCOVERABLE                                                                             
-      |  m_properties          |----> OC_OBSERVABLE                                                                               
-      |  m_resourceAttributes  |      OC_SECURE                                                                                   
-      |------------------------|                                                                                                  
-      |  build()               |                                                                                                  
-      +------------------------+                                                                                                  
-          |                                                                                                                       
-          +-> server = RCSResourceObject()                                                                                        
-          |                                                                                                                       
-          +-> registerResource()                                                                                                  
-          |                                                                                                                       
-          +-> bindInterfaceToResource()                                                                                           
-          |                                                                                                                       
-          +-> bindTypeToResource()                                                                                                
-          |                                                                                                                       
-          +-> server->init()                                                                                                      
                                                                                                                                                              
                                                                                                                                                              
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                         
+                                                                                                    
+                                                                                                    
                                                                                                                                                              
                                                                                                                                                              
                                                                                                                                                              
@@ -337,6 +419,46 @@ categories: [ Note ]
                                                         
                                                         
                                                         
+                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                     
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                              
+                                                                                                                                              
+                                                                                                                                              
+                                                                                                                                              
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                                         
+                                                                                                                                  
                                                         
                                                         
                                                         
