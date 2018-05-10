@@ -7,6 +7,8 @@ categories: [ Note ]
 
 ---
 
+CA连接抽象层
+============
 ```
                                                                                                    CAQueueingThreadBaseRoutine
                                                                                                               | thread3 (send)
@@ -89,9 +91,12 @@ categories: [ Note ]
 Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHandler
  cb-a     cb-b     cb-c             cb-a                cb-b               cb-c
 
+```
 
-=====================================================================================================================
+Handle层
+========
 
+```
                                                h-11                                    r-6
 +--------------------------------------------> CAHandleRequestResponseCallbacks (queue_get_element)
 |                                                       thread2
@@ -107,7 +112,7 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |       | (by uri)    |                |   |   numResponses, qos, options, observeResult, delayedResNeeded |                  |
 |DetermineResourceHandling             |   |   ehResponseHandler, requestId, requestToken, coapID, query   |                  |
 |       ^                              |   +---------------------------------------------------------------+                  |
-|       |          AddServerRequest----+              |                                                                       |
+|       |          AddServerRequest----+              | ehResponseHandler                                                     |
 |       | +3        +2 ^                      [[2]]   v       cb-3                                                            |
 |       |              |                      HandleSingleResponse                                                            |
 |      HandleStackRequests                                   |                                                                |
@@ -126,6 +131,12 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |             +------------------------------------------.------------------------------------------+                         |
 |                                                receive | handle                                                             |
 |                                                        |                                                                    |
+```
+
+启动架构
+========
+
+```
 |                                                       CSDK                                                                  |
 |                                          +-----------------------------+                                                    |
 |                                          |                             |                                                    |
@@ -153,8 +164,11 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
 |   h-10                 v                                                                                                    |
 +-- CAHandleRequestResponse                                                                                                   |
                                                                                                                               |
-                                                                                                                              |
-====================================================================================================================          |
+```
+
+CS交互API框图
+=============
+```
                                                    |                                                                          |
                                                    |                                                                          |
                                RPC      <--------- | --------->      RPC                                                      |
@@ -179,7 +193,13 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
                             +------------/--------------------\------------+                                                  |
                                    f    /                      \     6                                                        |
                                 OCHandleResponse         OCHandleRequests                                                     |
-                                                                                                                              |
+
+```
+
+Sample流程
+==========
+
+```
                                                                                                                               |
 =================server==================================sdk========================================================          |
                                                                                                                               |
@@ -249,35 +269,37 @@ Request  Response  Error  <--- g_requestHandler   g_responseHandler   g_errorHan
                                                                                                                           |   |
                                                                                                                           |   |
 =================server==================================sdk========================================================      |   |
-                         entityHandler (request)                                                                          |   |
-                            / [[0]]                                                                                       |   |
-     [[1]]                 /                                                       Request  ---->  Response               |   |
-     Platform::sendResponse                                                                                               |   |
-                |                                                                                                         |   |
-                |  (response)                        [[2]]                                                                |   |
-                +--------------------------------->  OCDoResponse   -----------\ call                                     |   |
-  Wrapper:                                                                      \                                         |   |
-                                                                                 -----> requestHandle->ehResponseHandler  |   |
-    +---------------------------+ c++              c +------------------------+                        cb-3               |   |
-    |    OCResourceRequest      |                    | OCEntityHandlerRequest |                                           |   |
-    |---------------------------|                    |------------------------|    resource                               |   |
-    |  messageID,representation |                    |    method, resource    |-------------------------------------------+   |
-    |  devAddr, query, options  | formResourceRequest|    devAddr, query      |                                               |
-    |  payload                  |<-------------------|    options             |                                               |
-    |  requestHandle            |                    |    payload             |     requestHandle                             |
-    |  resourceHandle           |                    |    requestHandle       |-----------------------------------------------+
-    +---------------------------+                    |    messageID           |                                               |
-                |                                    +------------------------+                                               |
-                |  get/put/post                                                                                               |
-                v                                  c +------------------------+                                               |
-             +-------------------+ c++               |OCEntityHandlerResponse |                                               |
-             |OCResourceResponse |                   |------------------------|     requestHandle                             |
-             |-------------------| form              |     requestHandle      |-----------------------------------------------+
-             |  newResourceUri   |------------------>|     ehResult           |
-             |  interface        |                   |     resourceUri        |
-             |  headerOptions    |                   |     resourceHandle(x)  |
-             |  representation   |                   |     payload            |
-             |  requestHandle    |                   +------------------------+
+                                                                                                                          |   |
+                            entityHandler (request)                                                                       |   |
+                                [[0]] |       |                                                                           |   |
+                                      |       |                                                                           |   |
+ [[1]]                                |       | (param)                            Request  ---->  Response               |   |
+ Platform::sendResponse (response) <--|       |                                                                           |   |
+                |               \     |       |                                                                           |   |
+                |  (response)    \            |      [[2]]                                                                |   |
+                +-----------------\-----------+--->  OCDoResponse   -----------\ call                                     |   |
+  Wrapper:                         \          |                                 \                                         |   |
+                                    ------+   |           csdk                   -----> requestHandle->ehResponseHandler  |   |
+c++ +---------------------------+         |   |           +------------------------+                   cb-3               |   |
+    |    OCResourceRequest      |<------------+           | OCEntityHandlerRequest |                                      |   |
+    |---------------------------|         |               |------------------------|    resource (resourceHandle)         |   |
+    |  messageID,representation |         |               |    method, resource    |--------------------------------------+   |
+    |  devAddr, query, options  |         |     form      |    devAddr, query      |                                          |
+    |  payload                  |<------------------------|    options             |                                          |
+    |  requestHandle            |         |               |    payload             |     requestHandle                        |
+    |  resourceHandle           |         |               |    requestHandle       |------------------------------------------+
+    +---------------------------+         |               |    messageID           |                                          |
+                 |                        | (param)       +------------------------+                                          |
+          handle | get/put/post           |               csdk                                                                |
+                 v                        |               +------------------------+                                          |
+         c++ +-------------------+        |               |OCEntityHandlerResponse |                                          |
+             |OCResourceResponse | <------+               |------------------------|     requestHandle                        |
+             |-------------------|              form      |     requestHandle      |------------------------------------------+
+             |  newResourceUri   |----------------------->|     ehResult           |
+             |  interface        |                        |     resourceUri        |
+             |  headerOptions    |                        |     resourceHandle(x)  |
+             |  representation   |                        |     payload            |
+             |  requestHandle    |                        +------------------------+
              |  resourceHandle   |
              +-------------------+
 ```

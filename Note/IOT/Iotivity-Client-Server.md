@@ -7,29 +7,74 @@ categories: [ Note ]
 
 ---
 
-```
-=================Server====================================================================Client===================
+C++层类图
+=========
 
-  +---------------------------+                                      +----------------------+
-  |    OCResourceRequest      |                                      |   OC::OCResource     |
-  |---------------------------|      +----------------------+        |----------------------|      +----------------------+
-  |  messageID,representation |      | InProcServerWrapper  |        |   m_clientWrapper ---+----->| InProcClientWrapper  |
-  |  devAddr, query, options  |      |----------------------|        |  +---------------+   |      |----------------------+
-  |  payload                  |      |    start/stop        |        |  |  OCResource   |   |      | start/stop           |
-  |  resourceHandle           |      |    registerResource  |        |  |---------------|   |      | ListenForResource    |
-  |  requestHandle            |      |                      |        |  | uri ...       |   |      |                      |
-  +------|--------------------+      |    bindxxxToResource |        |  | actionsetHead |   |      | xxxRepresentation    |
-         |                           |    [type/interface]  |        |  | childresHead  |   |      |   [Get/Put/Post]     |
-         v                           |                      |        |  | observerHead  |   |      |                      |
-  +---------------------+            |    startPresence     |        |  | entityHandler |   |      | ObserveResource      |
-  |  OCServerRequest    |            |    sendResponse      |        |  +---------------+   |      | SubscribePresence    |
-  |---------------------|            |----------------------|        |----------------------|      |----------------------|
-  |  ehResponseHandler  |            |    processFunc       |        | get/put/post/observe |      | listeningFunc        |
-  +--------+------------+            +----------------------+        |  subscribe/publish   |      +----------------------+
-           |                                                         +----------------------+
-           +--> HandleSingleResponse (for OCDoResponse)
+```
+Client ---> OC::OCResource ---> InProcClientWrapper ---> CSDK
+                            |
+                            |
+                     OC::OCRepresentation
+                                   |
+                                   |
+Server ---> OC::OCResourceRequest ---> OC::OCResourceResponse ---> InProcServerWrapper ---> CSDK
+
+       +-------------------+
+  +--->|OCResourceResponse |
+  |    |-------------------|                            +-------------------+
+  |    |  newResourceUri   |                            |                   |
+  |    |  interface        |                            v                   |
+  |    |  headerOptions    |  representation   +--------------------+       |
+  |    |  representation   |◇ -------------->  | OCRepresentation   |       |
+  |    |  requestHandle    |     (report)      |--------------------|       |
+  |    |  resourceHandle   |                   | host/uri/types/ifs |   1:n |
+  |    |-------------------|                   |    m_children      |◇ -----+
+  |    |    getX/setX      |                   |--------------------|
+  |    +-------------------+                   |  [get/set]Value (*)|
+  |                                            |                    |
+  |                                            |    setter/getter   |
+  |                                            +--------------------+
+  |                                                   |      |
+  |                                                   |      |  get/put/post
+  |           +---------------------------------------+      +--------------------+
+  |           | representation                                                    |
+  |           |          (update)                                                 |
+  |           ◇                                                                   |
+  |  +---------------------------+                                      +----------------------+
+  |  |   OC::OCResourceRequest   |                                      |   OC::OCResource     |
+  |  |---------------------------|      +----------------------+        |----------------------|      +----------------------+
+  |  |  messageID,representation |      | InProcServerWrapper  |        |   m_clientWrapper    |◇ --->| InProcClientWrapper  |
+  |  |  devAddr, query, options  |      |----------------------|        |----------------------|      |----------------------+
+  |  |  payload                  |      |    start/stop        |        | uri/types/Interfaces |      |   start/stop         |
+  |  |  resourceHandle           |      |    registerResource  |        |devAddr/useHostString |      |   ListenForResource  |
+  |  |  requestHandle            |      |                      |        |                      |      |                      |
+  |  |---------------------------|      |    bindxxxToResource |        | serverHeaderOptions  |      | xxxRepresentation    |
+  |  |       getX/setX           |      |    [type/interface]  |        | observeHandle        |      |   [Get/Put/Post]     |
+  |  +---------------------------+      |                      |        | children/endpoints   |      |                      |
+  |            ◇                        |    startPresence     |        | headerOptions        |      | ObserveResource      |
+  |            | requestHandle          |    sendResponse      |        |                      |      | SubscribePresence    |
+  |            |                        |----------------------|        |----------------------|      |----------------------|
+  |            v                        |    processFunc       |        | get/put/post/observe |      | listeningFunc        |
+  |   +---------------------+           +----------------------+        |  subscribe/publish   |      +----------------------+
+  |   |  OCServerRequest    |                                           +----------------------+
+  |   |---------------------|
+  |   |  ehResponseHandler  |
+  |   +--------+------------+
+  |            |
+  |            v
+  |  HandleSingleResponse
+  |            |
+  |            |
+  +------------+
+```
+
+C-S流程图
+============
+```
 
  SERVER                                                                                                        CLIENT
+                                                                 OC::OCResource
+
                            entityHandler                 stack                   FoundResource
                                 cb  uri-1                  |                          cb   call-1
         simpleserver            |                          |                           |        simpleclient
@@ -98,7 +143,4 @@ notifyListOfObservers  | ------------------|-------------> |      wrapper switch
                        |
   ChangeLightRepresentation
          thread3
-
-
-
 ```
