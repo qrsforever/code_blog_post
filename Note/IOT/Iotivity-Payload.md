@@ -2,7 +2,7 @@
 
 title: Iotivity之Payload
 date: 2018-05-10 12:41:16
-tags: [ IOT DrawIt ]
+tags: [ IOT, DrawIt ]
 categories: [ Note ]
 
 ---
