@@ -2,114 +2,53 @@
 
 title: Iotivity之Payload
 date: 2018-05-10 12:41:16
-tags: [ IOT ]
+tags: [ IOT DrawIt ]
 categories: [ Note ]
 
 ---
 
+Payload类图
+===========
+
 ```
-                            
+
         +-----------------+                                                 +-------------------+
-        |OCSecurityPayload|----------------------+                        / | OCPresencePayload |                                 
-        |-----------------|                      |                       /  |-------------------|                                 
-        |      base       |                      e2                     /   |       base        |                                 
-        |                 |               +-------------+              /    |                   |                                
-        | secureData/size |               |  OCPayload  | e3-----------     |  sequenceNumber   |                                
-        +-----------------+               |-------------|                   |  maxAge/trigger   |                                
-                                          |    type     |                   |   resourceType    |                                 
-                                          +-------------+                   +-------------------+                                
-                                             e1      e1                                                                           
-                                             |       |                                                                            
-                                    /--------+       |                                                                            
-                                   /                 |                                                                            
-          +---------------------+ /                  |           +----------------------+                                         
-          | OCDiscoveryPayload  |/                   +---------- |    OCRepPayload      |                                         
-          |---------------------|                                |----------------------|                                             
-          |       base          |                                |        base          |                                             
-          |                     |                                |                      |                                                            
-          | sid/name/type/iface |                                | uri/types/interfaces |                                              
-   +----c1|     resources       |                                |       values         |                                         
-   |      |---------------------|                                |----------------------|                                             
-   |      |       next          |                                |        next          |                                         
-   |      +---------------------+                                +----------------------+                                         
-   |                                                                                                                              
-   v                                                                                                                              
- +------------------------+                                                                                                       
- |  OCResourcePayload     |                                                                                                       
- |------------------------|                                                                                                       
- | uri/types/Interfaces   |                                                                                                       
- | anchor/port/secure/rel |                                                                                                            
- |------------------------|                                                                                                            
- |        next            |                                                                                                                          
- +------------------------+                                                                                                                         
-                                                                                                                                                        
-                                                                                                                                       
-                                                                                                                                         
-                                           
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                      
-                                                                                                                                      
-                                                                                                                                                 
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-           OCDiscoveryPayloadCreate                                                                                               
-                                                                                                                                      
-           OCDiscoveryPayloadAddNewResource                                                                                       
-                                                                                                                                                 
-                                                                                                                                                
-                                                                                                                                 
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
-                                                                                                                                  
+        |OCSecurityPayload|----------------------+                        / | OCPresencePayload |
+        |-----------------|                      |                       /  |-------------------|
+        |      base       |                      ▽                      /   |       base        |
+        |                 |               +-------------+              /    |                   |
+        | secureData/size |               |  OCPayload  | ◁ -----------     |  sequenceNumber   |
+        +-----------------+               |-------------|                   |  maxAge/trigger   |
+                                          |    type     |                   |   resourceType    |
+                                          +-------------+                   +-------------------+
+                                             △       △ 
+                                             |       |
+                                    /--------+       |
+           (inner)                 /                 |            (outter)
+          +---------------------+ /                  |           +----------------------+
+          | OCDiscoveryPayload  |/                   +---------- |    OCRepPayload      |
+          |---------------------|                                |----------------------|
+          |       base          |                                |        base          |
+          |                     |                                |                      |
+          | sid/name/type/iface |                                | uri/types/interfaces |
+   +----◇ |     resources       |                                |       values         |◇ -----+
+   |      |---------------------|                                |----------------------|       |
+   |      |       next          |                                |        next          |       |
+   |      +---------------------+                                +----------------------+       |
+   |                                                                                            |
+   v                                             OCRepPayloadCreate                             |
+ +------------------------+                      OCRepPayloadAppend                             v
+ |  OCResourcePayload     |                      OCRepPayloadSetPropXXX  +--------+    +-------------------+
+ |------------------------|                                              | NULL   |    | OCRepPayloadValue |
+ | uri/types/Interfaces   |                                              | INT    |    |-------------------|
+ | anchor/port/secure/rel |                                              | DOUBLE |    |     name          |
+ |------------------------|  OCDiscoveryPayloadCreate                    | BOOL   |<---|     propType      |
+ |        next            |  OCDiscoveryPayloadAddNewResource            | STRING |    |     value?(union) |
+ +----------|-------------+  OCDiscoveryPayloadAddResource               | OJBECT |    |-------------------|
+            |                                                            | ARRAY  |    |     next          |
+            |                                                            +--------+    +-------|-----------+
+  link all filter ok source                                                                    |
+                                                                                               |
+                                                                                       for collection using.
+
 ```

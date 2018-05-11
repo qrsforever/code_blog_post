@@ -7,6 +7,9 @@ categories: [ Note ]
 
 ---
 
+资源Collection类图
+==================
+
 ```
                                                                 ((1))
                                          +---------------+      OCBindResourceInterfaceToResource
@@ -44,6 +47,12 @@ categories: [ Note ]
                                                                  |---------------|
                                                                  |    next       |
                                                                  +---------------+
+```
+
+Sample流程图
+============
+
+```
 
                                                 HandleVirtualResource
                                                         |

@@ -7,6 +7,8 @@ categories: [ Note ]
 
 ---
 
+Presence流程图
+==============
 ```
 ========Server===============================SDK===========================================Client============
 
@@ -106,9 +108,13 @@ categories: [ Note ]
  |   Trigger: CHANGE                 |                          DeleteClientCB  <--------------------- |
  +-----------------------------------+
                                                                                STACK_DELETE_TRANSACTION / KEEP
-                                                                                                                                  
------------------------------------------------------------------------------------------------------------------------           
-                                                                                                                                  
+```
+
+Observe流程图
+=============
+
+```
+
                                            |OC_REST_OBSERVE| <---------  observeResource <--- OC::OCRecource::observe
                                            | <------------ |
                           Observers.insert |               |                             onObserve
