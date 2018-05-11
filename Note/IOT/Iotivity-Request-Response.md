@@ -10,40 +10,41 @@ categories: [ Note ]
 CA连接抽象层
 ============
 ```
-                                                                                                   CAQueueingThreadBaseRoutine
-                                                                                                              | thread3 (send)
-                                                                                                              |
-                                                                                           +---------> queue_get_element ---------+
-                                                                                           |                                      |
-                                                                                           |          +----------------+          |
-                                                                                           |          |      next      |          |
-                                                                                           |          |  +----------+  |          |
-                                                                                           |          |  | msg,size |  |          |
-                                                                                           |          |  +----------+  |          |
-                                                                                           |          +----------------+          |
-                                                                                           |                   ^                  |
-                      +--------------------------------------------------------+           |                   |                  |
-                      |     thead5        +-------------+                      |           |                   |                  |
-                      |         \         |             |                      |           |          +----------------+          |
-                 ((7))v          \        v             |                      |((6))      |          |      next      |          |
-                 sendDataToAll    ---- sendData  CASendUnicastData     CASendMulticastData |          |  +----------+  |          |
-                      ^                   ^             ^                      ^           |          |  | msg,size |  |          |
-                      | g_adapterHandler  |             |                      |           |          |  +----------+  |          |
-                      +---------+---------+             +-----------+----------+           |          +----------------+          |
-                                |                                   |                      |                   ^                  |
-                                |                                   |                      |                   |                  |
-  get  put post delete          | +---------------------------------|-------------+        |                   +------+           |
-   |    |    |    |             | | (x)                    |                      |        |                          |           |
-   ----------------             | | CAReceiveThreadProcess | CASendThreadProcess  | <---+  |    CAQueueingThread      |           |
-           ^                    | |                        |     thread3          |     |  |    +---------------------|-------+   |
-           |                    | +-----------------------------------------------+     |  |    |            |                |   |
-    CA_REQUEST_DATA   <--|      |                                   ^                   +-------- threadTask |   dataQueue    |   |
-                         | code |    thread4           r-3          |                      |    |            |                |   |
-    CA_SIGNALING_DATA <--|------+--- CAReceivedPacketCallback ------+-------\              |    +-----------------------------+   |
-                         |      |     |  get code/token from PDU    |        \             |                                      |
-    CA_RESPONSE_DATA  <--|      |     |                             |         \            +---------- queue_add_element <--------+
-                                |     |  g_receiveThread       g_sendThread    \                              |
-                                |     |         ^                   ^           \       r-4        ((5))      |      [[3]]
+                                                                                                    (thread3/4/5)
+                                                                                               CAQueueingThreadBaseRoutine
+                                                                                                                  |
+                                        CAQueueingThread                                                          |
+                                        +-----------------------------+                     queue_get_element  <--|
+                                        |            |                |                                           |
+                                        | threadTask |   dataQueue   *|----------------------                     |
+                                        |            |                |                      \                    |
+                                        +-----------------------------+                       \
+                                          (sendThread/receiveThread)                           \
+                                                                                               v
+                                                                                          +----------------+
+                                                                                          |      next      |
+                      +--------------------------------------------------------+          |  +----------+  |
+                      |     thread5       +-------------+                      |          |  | msg,size |  |
+                      |         \         |             |                      |          |  +----------+  |
+                 ((7))v          \        v             |                      |((6)      +----------------+
+                 sendDataToAll    ---- sendData  CASendUnicastData     CASendMultica               |
+                      ^                   ^             ^                      ^                   |
+                      | g_adapterHandler  |             |                      |                   v
+                      +---------+---------+             +-----------+----------+          +----------------+
+                                |                                   |                     |      next      |
+                                |                                   |                     |  +----------+  |
+  get  put post delete          | +---------------------------------|-------------+       |  | msg,size |  |
+   |    |    |    |             | | (x)                    |                      |       |  +----------+  |
+   ----------------             | | CAReceiveThreadProcess | CASendThreadProcess  |       +----------------+
+           ^                    | |                        |     thread3          |
+           |                    | +-----------------------------------------------+
+    CA_REQUEST_DATA   <--|      |                                   ^                                             |
+                         | code |    thread4           r-3          |                                             |
+    CA_SIGNALING_DATA <--|------+--- CAReceivedPacketCallback ------+-------\                                     |
+                         |      |     |  get code/token from PDU    |        \              queue_add_element  <--|
+    CA_RESPONSE_DATA  <--|      |     |                             |         \                                   |
+                                |     |  g_receiveThread       g_sendThread    \                                  |
+                                |     |         ^                   ^           \       r-4        ((5))          |  [[3]]
                                 |     +-----+   | CAQueueingThread  |            ----------------> CAQueueingThreadAddData
                                 |      set  |   +---------+---------+                                         ^
                                 |           |             |                                                   |
@@ -72,7 +73,7 @@ CA连接抽象层
                        \                  /                                          \             +--------------------------+
                         \                /                                            -----------> |   CAConnectivityHandler  |
                       h-6\  transtype   /                                 r-2                      |--------------------------|
-                      CAInitializeAdapters                   +--> CAReceivedPacketCallback  <--------startAdapter  (thread4)  |
+                      CAInitializeAdapters                   +--> CAReceivedPacketCallback  <--------startAdapter (thread4/5) |
                       /         |        \                   |                                     | stopAdapter              |
                      /          |         \                  +--> CAAdapterChangedCallback         | startListenServer        |
                     /           |          \          params |                                     | stopListenServer         |
@@ -97,7 +98,9 @@ Handle层
 ========
 
 ```
-                                               h-11                                    r-6
+```                                                         |
+                                                            |-->  g_receiveThread
+                                               h-11         |                          r-6
 +--------------------------------------------> CAHandleRequestResponseCallbacks (queue_get_element)
 |                                                       thread2
 | +---------------------------------+                                                     g_serverRequestTree
@@ -216,10 +219,10 @@ Sample流程
                                +-------------+      |  uri           |      OCResourceInterface                           |   |
                                | next | name | <----|  resType       |       +-------------+                              |   |
                                +-------------+      |  resInterface  |-----> | name | next |                              |   |
-                           OCResourceProperty       |  resAttributes |-- --+ +-------------+                              |   |
-                    +------+--------+-----+---------|  resProperties |     |                                              |   |
-                    |      |        |     |         |  actionsetHead |     |       OCAttribute                            |   |
-                    |      v        |     v   +-----|  childresHead  |---+ |   +---------------------+                    |   |
+                           OCResourceProperty       |  resAttributes |-----+ +-------------+                              |   |
+                    +------+--------+-----+---------|  resProperties |     |                               uri            |   |
+                    |      |        |     |         |  actionsetHead |     |       OCAttribute  OCF only for platform     |   |
+                    |      v        |     v   +-----|  childresHead  |---+ |   +---------------------+   and device info  |   |
                     |  discoverable |  active | +---|  observerHead  |   | +-> | name | value | next |                    |   |
                     |               |         | |   |  entityHandler |   |     +---------------------+                    |   |
                     v               v         | |   |  uuid  (cb-1)  |   |                                                |   |

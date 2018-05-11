@@ -14,7 +14,7 @@ categories: [ Note ]
                                          |---------------|
                               /a/room <--|    uri        |     (must first)
                             core.room <--|    type       |     +-----------------------+
-                                         |   interface   |---> |oic.if.baselin | next  |
+                                         |   interface   |---> |oic.if.baseline| next  |
                                          |               |     +-------------------|---+
      ((2))                     +---------| childresHead  |                         |
      OCBindResource            |         | entityHandler |----+                    v

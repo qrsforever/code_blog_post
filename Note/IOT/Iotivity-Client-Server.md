@@ -141,6 +141,6 @@ notifyListOfObservers  | ------------------|-------------> |      wrapper switch
                        |
                        |
                        |
-  ChangeLightRepresentation
+  ChangeLightRepresentation  presence/representation
          thread3
 ```

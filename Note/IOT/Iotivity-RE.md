@@ -18,7 +18,7 @@ Server端类图
                                                     |   RCSRepresentation  |
                                                     |----------------------|
                                                     |  uri/types/ifaces    |
-                        +-------------------------◇ |   m_attributes       |
+                        +-------------------------c1|   m_attributes       |
                         |                           |   m_children         |
                         |                           |----------------------|
                         |                           |                      |
@@ -50,13 +50,13 @@ Server端类图
                         |                                                                      /     |--------------------|    |
                         |                  +-----------------+                                /      |  getRepresentation |    |
                         |                  |  RCSGetResponse |                               /       +--------------------+    |
-                        |                  |-----------------|  m_handler                    |                  △              |
-                        |                  |    m_handler    |◇ -----------------------------+                  |              |
+                        |                  |-----------------|  m_handler                    |                  e1             |
+                        |                  |    m_handler    |c1-----------------------------+                  |              |
                         |                  |-----------------|                                                  |              |
                         |                  |  defaultAction  |----+     +-----------------+         +-----------------------+  |
                         |         +------- |    create       |    |     |  RCSSetResponse |         |   SetRequestHandler   |  |
                         |         |        +-----------------+    |     |-----------------|         |-----------------------|  |
-                        |         |                               |     |    m_handler    |◇ ------>|                       |  |
+                        |         |                               |     |    m_handler    |c1------>|                       |  |
                         |         v                               |     |-----------------|         | applyAcceptanceMethod |  |
                         |   create(attrs) ---> m_customRep = true |     |  defaultAction  |-----+   +-----------------------+  |
                         |                                         |     |     create      |     |                              |
@@ -66,11 +66,11 @@ Server端类图
                                           \                                                    +------------------+            |
                                            \                                                   |  RCSRequest      |            |
      +------------------------+             \          +----------------------------+          |------------------|            |
-     |       Builder          |              \         |    RCSResourceObject       | <------◇ | m_resourceObject |            |
+     |       Builder          |              \         |    RCSResourceObject       | <------c1| m_resourceObject |            |
      |------------------------|               \        |----------------------------|          | m_ocRequest      |            |
      |  m_uri                 |                \       |                            |          +------------------+            |
-     |  m_types               |                 \      |    m_resourceHandle        |                  ◇                       |
-     |  m_interfaces          |                  ----◇ |    m_resourceAttributes    |                  | m_ocRequest           |
+     |  m_types               |                 \      |    m_resourceHandle        |                  c1                      |
+     |  m_interfaces          |                  ----c1|    m_resourceAttributes    |                  | m_ocRequest           |
      |  m_defaultInterface    |    OC_SECURE           |    m_interfaceHandlers     |                  v                       |
      |  m_properties          |--> OC_OBSERVABLE       |    m_getRequestHandler     |       +---------------------------+      |
      |  m_resourceAttributes  |    OC_DISCOVERABLE     |    m_setRequestHandler     |       |   OC::OCResourceRequest   |      |
@@ -79,9 +79,9 @@ Server端类图
      +------------------------+                        |     [get/set]Attribute     |       |  devAddr, query, options  |      |
          |                                  server     |         notify             |       |  payload                  |      |
          +-> server = RCSResourceObject()----------->  |      sendResponse          |       |  resourceHandle           |      |
-         |                                             |      entityHandler (*)     |       |  requestHandle            |      |
-         +-> registerResource()                        |      handleRequest         |       |---------------------------|      |
-         |                                             |      handleObserve         |       |   getRequestHandlerFlag   |---+  |
+         |                                             |      entityHandler (*) -------+    |  requestHandle            |      |
+         +-> registerResource()                        |      handleRequest         |  |    |---------------------------|      |
+         |                                             |      handleObserve         |  +--------getRequestHandlerFlag-------+  |
          +-> bindInterfaceToResource()                 +----------------------------+       |   getRequestHandle        |   |  |
          |                                                                                  +---------------------------+   |  |
          +-> bindTypeToResource()                                                                                           |  |
@@ -117,28 +117,28 @@ Client端类图
 
 ```
                                                                                 "Caching data [attributes] of remote resource"
-                                                                                       +-----------------------+
+                                                        single instance                +-----------------------+
                                                       +------------------------------> |  ResourceCacheManager |
                                                       |                         1:n    |-----------------------|
-                                                      |                      +-------◇ |  s_cacheDataList      |   1:n
-"Monitor the state of remote resource"                |                      |         |  m_observeCacheList   |◇ ------+
-  +----------------------+                            |                      |         |-----------------------|        |
-  |   ResourceBroker     |--------------+             |                      |         |  requestResourceCache |        |
-  |----------------------|              |             |                      |         |  updateResourceCache  |        |
-  |   s_presenceList     |◇ --+         |             |                      |         |  getCachedData        |        |
-  |   s_brokerIDMap      |    |         |             |                      |         |  findDataCache        |        |
-  |----------------------|    |1:n      |             |                      |         +-----------------------+        |
-  |   hostResource [[2]] |    |         |             |                      |                                          |
-  | findResourcePresence |    |         |  (cb-2)     |                      |                                          |
+                                                      |                      +-------c1|  s_cacheDataList      |   1:n
+"Monitor the state of remote resource"                |                      |         |  m_observeCacheList   |c1------+
+  +----------------------+                            |                      +-------c1|  cacheIDmap           |        |
+  |   ResourceBroker     |--------------+             |                      |         |  observeCacheIDmap    |c1------+
+  |----------------------|              |             |                      |         |-----------------------|        |
+  |   s_presenceList     |c1--+         |             |                      |         |  requestResourceCache |        |
+  |   s_brokerIDMap      |    |         |             |                      |         |  updateResourceCache  |        |
+  |----------------------|    |1:n      |             |                      |         |  getCachedData        |        |
+  |   hostResource [[2]] |    |         |             |                      |         |  findDataCache        |        |
+  | findResourcePresence |    |         |  (cb-2)     |                      |         +-----------------------+        |
   +----------------------+    |         | +--------+  |                      |                                          |
                               |         | |brokerId|  |                      v                                          v
                    +----------+         | |brokerCB|  |          +--------------------------+               +--------------------+
                    |                    | +--------+  |          |       DataCache          |               |    ObserveCache    |
       +------------v---------------+    |     ^       |          |--------------------------|               |--------------------|
-      |     ResourcePresence       |    |     |       |          |       sResource          |◇ ---+   +---◇ |    m_wpResource    |
+      |     ResourcePresence       |    |     |       |          |       sResource          |c1---+   +---c1|    m_wpResource    |
       |----------------------------|    |     |1:n    |          |       attributes         |     |   |     |    m_attributes    |
-      |     requesterList          |◇ --------+       |          |     subscriberList       |     |   |     |    m_reportCB      |
-      |     primitiveResource      |◇ ----------------------\    |--------------------------|     |   |     |--------------------|
+      |     requesterList          |c1--------+       |          |     subscriberList       |     |   |     |    m_reportCB      |
+      |     primitiveResource      |c1----------------------\    |--------------------------|     |   |     |--------------------|
       |       expiryTimer (5s)     |    |             |      \   |  [add/delete]Subscriber  |     |   |     |  [start/stop]Cache |
       |----------------------------|    |             |       |  |      getCachedData       |     |   |     |     getCachedData  |
  +----|   registerDevicePresence   |    |             |       |  |   on[Observe/Get]        |     |   |     |     onObserve      |
@@ -150,7 +150,7 @@ Client端类图
  |        |            +-----------------------------------+  +-----------------------------------+---+---+
  |        |            |      RCSRemoteResourceObject      |                                      |   |   |
  |        |            |-----------------------------------|                                      |   |   |
- |        |            |        m_primitiveResource        |◇ --------------------------------+   |   |   |
+ |        |            |        m_primitiveResource        |c1--------------------------------+   |   |   |
  |        |            |        m_cacheId                  |                                  |   |   |   |
  |        |            |        m_brokerId                 |                                  |   |   |   |
  |        |            |-----------------------------------|                                  |   |   |   |
@@ -162,28 +162,28 @@ Client端类图
  \        |                         ^                                  |             [[3]]|   request[Get/Set/Put][With]   |   |
   \       |1:n  ? one to one ?      |cb-1                          from|remote            | get[Uri/Host/Types/Interfaces] |   |
    \      |resourcePresenceList     |                       +----------------------+      |       requestObserve           |   |
-    \     ◇                         |                       |   OC::OCResource     |      +--------------------------------+   |
-+------------------------------+    |                       |----------------------|                      △                    |
+    \     c1                        |                       |   OC::OCResource     |      +--------------------------------+   |
++------------------------------+    |                       |----------------------|                      e1                   |
 |       DevicePresence         |    |                       |   m_clientWrapper    |                      |                    |
 |------------------------------|    |                       |----------------------|                      |                    |
 |     resourcePresenceList     |    |                       | uri/types/Interfaces |           +-----------------------+       |
 |         address              |    |                       |devAddr/useHostString |           | PrimitiveResourceImpl |  <----+
-|     presenceSubscriber       |◇ ----------                |                      |           |-----------------------|                                                                                                                                                                                                                                                                                             +--------------------------------+
-|     presenceTimer (15s)      |    |       \               | serverHeaderOptions  | <-------◇ |     m_baseResource    |                                                                                                                                                                                                                      -------------------------------+                                       |      PrimitiveResource         |
+|     presenceSubscriber       |c1----------                |                      |           |-----------------------|                                                                                                                                                                                                                                                                                             +--------------------------------+
+|     presenceTimer (15s)      |    |       \               | serverHeaderOptions  | <-------c1|     m_baseResource    |                                                                                                                                                                                                                      -------------------------------+                                       |      PrimitiveResource         |
 |------------------------------|    |        \              | observeHandle        |           +-----------------------+                                                                                                                                                                                                                           PrimitiveResource         |                                       |--------------------------------|
 |     addPresenceResource      |    |         \             | children/endpoints   |                                                                                                                                                                                                                                                          -------------------------------|                                       |            create              |---+
 |    [subscribe/timeOut]CB     |    |          \            | headerOptions        |                                                                                                                                                                                                                                                                     create              |---+                                   |   request[Get/Set/Put][With]   |   |
 | [add/remove]PresenceResource |    |           \           |                      |                                                                                                                                                                                                                                                            request[Get/Set/Put][With]   |   |                                   | get[Uri/Host/Types/Interfaces] |   |
 +------------------------------+    |            \          |----------------------|                                                                                                                                                                                                                                                          get[Uri/Host/Types/Interfaces] |   |                                   |       requestObserve           |   |
                                     |   "/oic/ad" |         | get/put/post/observe |                                                                                                                                                                                                                                                               requestObserve           |   |                                   +--------------------------------+   |
-                                    |             |         |  subscribe/publish   |                                                                                                                                                                                                                                                                               -------------------------------+   |                                                   △                    |
-                                    |             |         +----------------------+                                                                                                                                                                                                                                                                                                      △                    |                                                   |                    |
+                                    |             |         |  subscribe/publish   |                                                                                                                                                                                                                                                                               -------------------------------+   |                                                   e1                   |
+                                    |             |         +----------------------+                                                                                                                                                                                                                                                                                                      e1                   |                                                   |                    |
                                     |             v                                                                                                                                                                                                                                                                                                                            |                    |                                                   |                    |
                                     |     +------------------------+                                                                                                                                                                                                                                                                                                                                                                           +-----------------------+       |
                                     |     |  PresenceSubscriber    |                                                                                                                                                                                                                                                                                                      +-----------------------+       |                                        | PrimitiveResourceImpl |  <----+
                                     |     |------------------------|                                                                                                                                                                                                                                                                                                  | PrimitiveResourceImpl |  <----+                                        |-----------------------|
-                                    |     |        m_handle        |                                                                                                                                                                                                                                                                                                   |-----------------------|                                        ------◇ |     m_baseResource    |
-                                    |     |------------------------|                                                                                                                                                                                                                                                                                    -◇ |     m_baseResource    |                                                +-----------------------+
+                                    |     |        m_handle        |                                                                                                                                                                                                                                                                                                   |-----------------------|                                        ------c1|     m_baseResource    |
+                                    |     |------------------------|                                                                                                                                                                                                                                                                                    -c1|     m_baseResource    |                                                +-----------------------+
                                     |     |  [un]subscribePresence |                                                                                                                                                                                                                                                                             +-----------------------+
                                     |     +------------------------+
                       +-------------+
@@ -192,7 +192,7 @@ Client端类图
                       |     +---------------------------+         +--------------+              --> | RCSAddressDetail |
                       |     |   RCSDiscoveryManager     |         |  RCSAddress  |             /    |------------------|
                       |     | ------------------------- |         |--------------|            /     |     m_addr       |
-                      |     |                           |         |   m_detail   |◇ ---------/      |------------------|
+                      |     |                           |         |   m_detail   |c1---------/      |------------------|
                       |     |    discoverResource ((1)) |         |--------------|                  |    getAddress    |
                       |     |  discoverResourceByType   |         |   multicast  |                  +------------------+
                       |     |  discoverResourceByTypes  |         |   unicast    |
@@ -200,10 +200,10 @@ Client端类图
                       |                  |                              ^                    +-------------------------+
                       |                  |                              |                    |  DiscoveryRequestInfo   |
                       |                  |                              |      m_address     |-------------------------|
-                      |   +--------------------------------+            +------------------◇ |     m_address           |
+                      |   +--------------------------------+            +------------------c1|     m_address           |
                       |   |     RCSDiscoveryManagerImpl    |                                 |     m_relativeUri       |
                       |   |--------------------------------|     1:n                         |     m_resourceTypes     |
-                      |   |        m_discoveryMap          |◇ ------------------------------>|     m_discoverCb ((4))  | <---+
+                      |   |        m_discoveryMap          |c1------------------------------>|     m_discoverCb ((4))  | <---+
                       |   |        m_timer                 |     m_discoveryMap              |     m_knownResourceIds  |     |
                       |   |--------------------------------|             |                   |-------------------------|     |
                       |   |        startDiscovery ((2))    |<---+        |               +---|     discover            |     |
@@ -219,7 +219,7 @@ Client端类图
 ```
 
 Sample实例流程图
-==========
+================
 ```
 
                 SampleResourceServer                                      RCSRemoteResourceObject           SampleResourceClient
@@ -268,19 +268,19 @@ Sample实例流程图
      |                                                             \                                                       |
      |                                                              v  cb-3                   [get/set]RemoteAttributes <--| 3
      |                                                                onRemoteAttributesReceived                  |        |
-     |                                                                            |                               |        |
-     |                                                                            |           request[Get/Set] <--|        |
-     |                                              RCSResourceAttributes         |                               |        |
-     |                                                                            |      request[Get/Set]With              |
-     |                                                                            |                                        |
-     |                                                                            |                                        |
-     |                                                                            |                                        |
-     |                                                                                                                     |
+     |                                                                  /         |                               |        |
+     |                                                        (param)  /          |           request[Get/Set] <--|        |
+     |                                                                /           |                               |        |
+     |                                                               /            |      request[Get/Set]With              |
+     |                                               RCSResourceAttributes        |                                        |
+     |                                                       ^                    |                                        |
+     |                                                       |                    |                                        |
+     |                                                       c1                                                            |
      |                                               RCSRepresentation                                                     |
-     |                                                                                                                     |
-     |                                                                                           [get/set]WithInterface <--| 4
-     |                                                                 cb-4                                       |        |
-     |                                                                onRemote[Get/Set]Received                   |        |
+     |                                                           \                                                         |
+     |                                                   (param)  \                              [get/set]WithInterface <--| 4
+     |                                                             \   cb-4                                       |        |
+     |                                                              \ onRemote[Get/Set]Received                   |        |
   if |--> "interface == test.custom"                                              |             "?if=test.custom" |        |
      |         |                                                                  |                               |        |
      |         |--> attr["blob"] = bin  (new attr)                                |       request[Get/Set]With <--|        |
@@ -301,24 +301,34 @@ Sample实例流程图
      |                                                                                                                     |
      |                                                                                                                     |
      |                                                                                         startCachingWithCallback <--|5
-     |                                                                 cb-5                                       |        |
-     |                                                                onCacheUpdated                              |        |
-     |                                                                                                            |        |
-                                                                                          requestResourceCache <--|        |
-                                                                                                                  |        |
-                                                                                                                  |        |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-                                                                                                                           |
-
-```
+                                                                       cb-5                                       |        |
+          OCProcess                                                   onCacheUpdated                              |        |
+                                                                          |                                       |        |
+                                                                          |               requestResourceCache <--|        |
+                                                                          |                              |        |        |
+                                                                          |    OBSERVE_WITH_POLLING      |        |        |
+                                                                          |    UPTODATE (10s)            |                 |
+                                                                          |                              |                 |
+                                                                          |           DataCache.init  <--|                 |
+                                                                          |                       |      |                 |
+                                                                          |                       |      |                 |
+                                                                          |      ObserveResource  |      |                 |
+                                                                          |                       |      |                 |
+                                                                          |      onTimeOut        |      |                 |
+                                                                          |           |           |      |                 |
+                                                                          |           | (15s)     |      |                 |
+                                                                          |           |           |      |                 |
+                                                                          |           |           |      |                 |
+                                                                          |                              |                        
+                                                                                       addSubscriber  <--|                        
+                                                                                                         |                        
+                                                                              subscriberList (cacheID)   |                        
+                                                                                                         |                        
+                                                                                                         |                        
+                                                                                                         |                        
+                                                                                                         |                        
+                                                                                                         |                        
+                                                                                                                                  
+                                                                                                                             
+                                                                                                                             
+```                                                                                                                          

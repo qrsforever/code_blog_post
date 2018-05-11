@@ -106,4 +106,22 @@ categories: [ Note ]
  |   Trigger: CHANGE                 |                          DeleteClientCB  <--------------------- |
  +-----------------------------------+
                                                                                STACK_DELETE_TRANSACTION / KEEP
+                                                                                                                                  
+-----------------------------------------------------------------------------------------------------------------------           
+                                                                                                                                  
+                                           |OC_REST_OBSERVE| <---------  observeResource <--- OC::OCRecource::observe
+                                           | <------------ |
+                          Observers.insert |               |                             onObserve
+                                           |               |                                 cb
+                                           |               |                                 |
+                       |                   |               |                                 |
+         loop   +----- |                   |               |                                 |
+                |      |                   |               |                                 |
+                |      |      OCDoResponse |               |                                 |
+notifyListOfObservers  | ------------------|-------------> |      wrapper switch             |
+                |      |                   |               | ------------------------------> |
+                |      |
+                |      |
+                +----> |
+                       |
 ```
