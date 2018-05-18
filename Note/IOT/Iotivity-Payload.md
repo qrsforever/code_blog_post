@@ -27,9 +27,9 @@ Payload类图
            (inner)                 /                 |            (outter)
           +---------------------+ /                  |           +----------------------+
           | OCDiscoveryPayload  |/                   +---------- |    OCRepPayload      |
-          |---------------------|                                |----------------------|
-          |       base          |                                |        base          |
-          |                     |                                |                      |
+   sid    |---------------------|                                |----------------------|
+    |     |       base          |                                |        base          |
+ deviceid |                     |                                |                      |
           | sid/name/type/iface |                                | uri/types/interfaces |
    +----◇ |     resources       |                                |       values         |◇ -----+
    |      |---------------------|                                |----------------------|       |
