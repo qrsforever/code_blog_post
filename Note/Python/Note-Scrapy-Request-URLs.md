@@ -95,7 +95,7 @@ crawler.Crawler.crawl():
 
 ```
 
-Scrapy中大量使用Twisted中的延迟机制 [参考前文](http://www.lanrenflower.com/2017/09/11/Note/Python/Note-Twisted-InlineCallback)
+Scrapy中大量使用Twisted中的延迟机制 [参考前文](https://qrsforever.github.io/2017/09/11/Note/Python/Note-Twisted-InlineCallback)
 self.spider: 命令行参数指定的spider,如s51job对应的类S51jobSpider
 self.engine: 调度执行spider, 驱动spider前行
 self.start\_requests(): 调用基类的的实现, 方法中使用了yield是个生成器方法, 把start\_urls封装城Request对象中
@@ -173,7 +173,7 @@ class CallLaterOnce(object):
 
 self.\_func(): \_next\_request()
 callLater(): 将self(可执行的类)封装到DelayedCall()并加入到以delay时间排序的队列中, 等待执行. [了解更多](
-    http://www.lanrenflower.com/2017/09/01/Note/Python/Note-Twisted-Deffered-Machanism/)
+   https://qrsforever.github.io/2017/09/01/Note/Python/Note-Twisted-Deffered-Machanism/)
 call: nextcall.schedule() --> reactor.callLater() --> \_next\_request()
 
 # 源码LoopingCall()

@@ -74,7 +74,7 @@ v0.0.1
             |                                                                    -->|-----------------|        |
             |                                       +----------------+          /   |      what       |        |
             |                                       |  MessageQueue  |         /    |    arg[1|2|3]   | target |
-            |                                 ----->|----------------|        /     |     target      |c1------+
+            |                                 ----->|----------------|        /     |     target      |◇ ------+
             |                                /      |    mMessages   |-------/      |-----------------|
             |                               /       |----------------| mMessage     |     obtain      |
             |                              /        | enqueueMessage |              |    recycle      |
@@ -83,13 +83,13 @@ v0.0.1
  |   MessageHandler   |                 /           +----------------+
  |--------------------| mMessageQueue  /
  |   mMessageQueue    |---------------/
- |   mMessageHandler  |c2-----------------+
+ |   mMessageHandler  |◆ -----------------+
  |--------------------|  mMessageHandler  |
  |  dispatchMessage   |                   |                +------------+
- | sendMessage[Delay] |                   |        +-----e4|   Thread   |
+ | sendMessage[Delay] |                   |        +-----▷ |   Thread   |
  |   handleMessage    |                   |        |       |------------|
  +--------------------+                   |        |       |    PID     |
-           e1                             |        |       |------------|
+           △                              |        |       |------------|
            |                              |        |       |    run     |
            |                              |        |       +------------+
            |                              v        |
@@ -100,7 +100,7 @@ v0.0.1
  +-------------------+              |----------------------|      |while(true)                           |
                                     |        run           |----->|   msg = mMessageQueue->nextMessage() |
                                     +----------------------+      |   msg->target->dispatchMessage()     |
-                                               e1                 +--------------------------------------+
+                                               △                  +--------------------------------------+
  +-------------------+                         |
  | RuleEngineThread  |                         |
  |-------------------|-------------------------+
@@ -110,6 +110,21 @@ v0.0.1
  +-------------------+
 
 ```
+说明:
+
+1. 支持延时消息, 可以间接实现Timer
+2. 所有与RuleEgineDriver交互的事件尽可能使用消息驱动, 比如: PropertyEvent, RuleEvent, TimerEvent, SystemEvent
+
+what | arg1 | arg2 | obj | comment
+:----|:----:|:----:|:---:|:----
+PropertyEvent | REPORT | undef | undef | 属性上报事件
+| ERROR  | undef | undef | 属性错误事件
+RuleEvent |  ADD | undef | undef | 规则添加事件
+|  UPDATE | undef | undef | 规则更新事件
+TimerEvent | undef | undef | undef | 目前只用来做定时器
+SystemEvent | undef | undef | undef | 系统消息
+
+3. RuleEngine需要单独的线程处理事件, 任何Dispatch出去的消息执行过程不得有阻塞
 
 ### Log
 
@@ -124,7 +139,7 @@ v0.0.1
         |-------------------|     |----------------|              |  get[Write/Read]Head  |
         |   handleMessage   |     |  onDataArrive  |              |  submit[Write/Read]   |
         +-------------------+     +----------------+              +-----------------------+
-                e1                      e1  ^
+                △                       △   ^
                 |                       |   |
                 +-----------+-----------+   +-------------------------------------------------------------------------------+
                             |                                                  +------------+                               |
@@ -132,13 +147,13 @@ v0.0.1
                    +-----------------+                                         |            |                               |
          +-------> |    LogPool      |                                         v            |                               |
          |         |-----------------|  mFilterHead                      +-----------+      |                               |
-         |         |   mFilterHead   |c1-------------------------------->| LogFilter |      |                               |
+         |         |   mFilterHead   |◇ -------------------------------->| LogFilter |      |                               |
          |         |-----------------|                                   |-----------|      |                               |
-         |         |   attachFilter  |                                   |  m_next   |c1----+                               |
+         |         |   attachFilter  |                                   |  m_next   |◇ ----+                               |
          |         |   detachFilter  |                                   |-----------|  m_next                              |
          |         |                 |                                   | pushBlock |                                      |
          |         |   onDataArrive  |                                   +-----------+                                      |
-         |         |   receiveData   |                                     e1  e1  e1                                       |
+         |         |   receiveData   |                                     △   △   △                                        |
          |         |                 |                                     |   |   |                                        |
          |         |  handleMessage  |                                     |   |   |                                        |
          |         +-----------------+              +----------------------+   |   +-----------------------+                |
@@ -154,16 +169,19 @@ v0.0.1
                          |                                                                                                  |
                          |                                                                                                  |
                          |                                                                                                  |
-                         e2                                                                                                 |
+                         ▽                                                                                                  |
               +----------------------+                   +---------------+                                                  |
               | MessageHandlerThread |                   |    Logger     |                                                  |
               |----------------------|                   |---------------|    mDataSink                                     |
-              |    mMessageQueue     |                   |   mDataSink   |c1------------------------------------------------+
+              |    mMessageQueue     |                   |   mDataSink   |◇ ------------------------------------------------+
               |----------------------|                   |---------------|
               |        run           |                   |     log       |
               +----------------------+                   +---------------+
 
 ```
+说明:
+1. 日志采用循环Buffer输入输出, 在独立的日志线程处理buffer中日志
+2. 日志可以实现多个后端输出如 Console/File/Network等
 
 ### Rule Engine Driver
 
@@ -174,26 +192,26 @@ v0.0.1
             | DeviceShadow |           |  PropertySlot |
             |--------------|     +---->|---------------|
             |   mClsName   |     |     |    mName      |
-            |   mSlots     |c1---+     |    mType      |
+            |   mSlots     |◇ ---+     |    mType      |
             |--------------| mSlots    |---------------|
             |              |           |               |
             +--------------+           +---------------+
-                   ^                                                        +--------------------+
-                   |                                                  ----->| RuleEngineHandler  |
-                   |                                                 /      |--------------------|
-                   |                                                /  /--c1|       mDriver      |
-                   |          +-----------------------+            /  /     |--------------------|
-                   |          |   RuleEngineDriver    |           /  /      |  handleMessage     |
-                   | 1:n      |-----------------------|          /  /       |                    |
-                   +--------c1|       mShadows        | mHandler/  /        |  handleRuleEvent   |
-               mShadows       |       mHandler        |c1------/  /         |  handlePropertySet |
-                              |       mClips          |<---------/          |  handleTimerEvent  |
-                              |-----------------------|         mDriver     +--------------------+
+                   ^                                                        +----------------------+
+                   |                                                  ----->|  RuleEngineHandler   |
+                   |                                                 /      |----------------------|
+                   |                                                /  /--◇ |        mDriver       |
+                   |          +-----------------------+            /  /     |----------------------|
+                   |          |   RuleEngineDriver    |           /  /      |   handleMessage      |
+                   | 1:n      |-----------------------|          /  /       |                      |
+                   +--------◇ |       mShadows        | mHandler/  /        |  handleRuleEvent     |
+               mShadows       |       mHandler        |◇ ------/  /         |  handlePropertyEvent |
+                              |       mClips          |<---------/          |  handleTimerEvent    |
+                              |-----------------------|         mDriver     +----------------------+
                               |  [setup/start]Clips   |                           |     |
                               |                       |                           |     |
-                              |     doPropertySet     |                    -------+     +------\
-                              |     doTimerEvent      |                   /                     \
-                              |     doRuleEvent       |                  /                       \
+                              |    doPropertyEvent    |                    -------+     +------\
+                              |    doTimerEvent       |                   /                     \
+                              |    doRuleEvent        |                  /                       \
                               +-----------------------+                 /                         \
                                                            +---------------------+        +----------------------+
                                                            |                     |        |                      |
@@ -203,6 +221,8 @@ v0.0.1
 
 
 ```
+说明:
+
 
 Develop
 =======
