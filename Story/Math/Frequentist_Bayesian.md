@@ -2,7 +2,7 @@
 
 title: Frequentist和Bayesian之前的故事
 date: 2018-10-30 10:51:02
-tags: [ math ]
+tags: [ Math ]
 categories: [ Story ]
 
 ---
