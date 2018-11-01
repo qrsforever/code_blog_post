@@ -2,17 +2,19 @@
 
 title: IOT之规则引擎
 date: 2018-05-27 21:04:19
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
-
 
 <!-- vim-markdown-toc GFM -->
 
 * [Design](#design)
     * [Framework](#framework)
     * [Class](#class)
+        * [Message](#message)
+        * [Log](#log)
+        * [Rule Engine Driver](#rule-engine-driver)
 * [Develop](#develop)
     * [Module Tasks](#module-tasks)
     * [Module Sample](#module-sample)
@@ -20,6 +22,8 @@ categories: [ Note ]
     * [Test Supported](#test-supported)
 
 <!-- vim-markdown-toc -->
+
+<!-- more -->
 
 Design
 ======

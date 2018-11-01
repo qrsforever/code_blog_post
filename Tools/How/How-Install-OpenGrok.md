@@ -2,16 +2,25 @@
 
 title: 如何使用Opengrok
 date: 2017-09-13 11:05:32
-tags: [ How ]
-categories: [ Tools ]
+tags: [How]
+categories: [Tools]
 
 ---
+
+
+<!-- vim-markdown-toc GFM -->
+
+* [环境配置](#环境配置)
+* [工程配置](#工程配置)
+* [建立或更新](#建立或更新)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 # 环境配置
 
 **1. 下载Opengrok和Tomcat**
-
-<!-- more -->
 
 >  
 建立软链接
@@ -224,7 +233,9 @@ cat /opt/tomcat/webapps/source/index.html
 >  http://localhost:8080/source
 
 ![Opengrok-首页](http://ovhyz7ak1.bkt.clouddn.com/17-9-13/50598917.jpg)
-<br/>
+
+
 ---------------------------------------------------------------------
-<br/>
+
+
 ![Opengrok-Hadoop](http://ovhyz7ak1.bkt.clouddn.com/17-9-13/63523799.jpg)

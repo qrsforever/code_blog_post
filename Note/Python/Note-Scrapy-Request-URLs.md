@@ -2,10 +2,23 @@
 
 title: Scrapy之Requst URLs处理流程
 date: 2017-09-20 20:49:41
-tags: [Python, Scrapy, Crawler]
-categories: [ Note ]
+tags: [Python]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [源码crawl()](#源码crawl)
+* [源码open_spider()](#源码open_spider)
+* [源码CallLaterOnce()](#源码calllateronce)
+* [源码LoopingCall()](#源码loopingcall)
+* [源码maybeDeferred()](#源码maybedeferred)
+* [疑问:](#疑问)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 <span id="global-uml"></span>
 ```
@@ -70,8 +83,6 @@ Crawl51JobSpiderMiddleware.process_start_requests()                      +------
                                       |   +-------------------------------------------------------------------------------------+
 
 ```
-
-<!-- more -->
 
 > 命令启动crawl
 scrapy crawl --nolog  s51job -o /tmp/file.csv

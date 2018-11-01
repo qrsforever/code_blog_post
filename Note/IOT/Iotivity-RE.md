@@ -2,11 +2,20 @@
 
 title: Iotivity之Resource-Encapsulation
 date: 2018-05-08 12:58:38
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
 
+<!-- vim-markdown-toc GFM -->
+
+* [Server端类图](#server端类图)
+* [Client端类图](#client端类图)
+* [Sample实例流程图](#sample实例流程图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 Server端类图
 ============

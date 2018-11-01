@@ -2,10 +2,31 @@
 
 title: 笔记-Twisted的Deffered机制
 date: 2017-09-01 16:41:00
-tags: [Python, Twisted]
+tags: [Python]
 categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Twisted介绍](#twisted介绍)
+    * [Deffereds](#deffereds)
+    * [Callback](#callback)
+    * [Timeouts](#timeouts)
+* [源码实例](#源码实例)
+    * [代码-1 (单回调)](#代码-1-单回调)
+    * [代码-2 (多回调)](#代码-2-多回调)
+    * [代码-3 (线程)](#代码-3-线程)
+* [源码剖析](#源码剖析)
+    * [Deffered类](#deffered类)
+    * [reactor方法](#reactor方法)
+        * [1. reactor.callLater()](#1-reactorcalllater)
+        * [2. reactor.run()](#2-reactorrun)
+        * [3. reactor.callInThread()](#3-reactorcallinthread)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 ```
 
@@ -50,7 +71,6 @@ class _SignalReactorMixin(object):              class ReactorBase(object):    / 
 
 ```
 mainLoop()是由几层while嵌套实现以poll机制驱动整个程序运作.
-<!-- more -->
 
 ----
 

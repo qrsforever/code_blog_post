@@ -2,10 +2,19 @@
 
 title: Iotivity之Client&Server回调流程图
 date: 2018-04-25 18:32:50
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [C++层类图](#c层类图)
+* [C-S流程图](#c-s流程图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 C++层类图
 =========

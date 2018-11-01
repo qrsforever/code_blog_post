@@ -2,10 +2,20 @@
 
 title: Iotivity之SmartHome
 date: 2018-05-16 14:09:38
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Discovery Payload](#discovery-payload)
+* [Discovery UML](#discovery-uml)
+* [RemoteResource UML](#remoteresource-uml)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 Discovery Payload
 =================

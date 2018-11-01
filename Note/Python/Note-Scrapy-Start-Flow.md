@@ -2,10 +2,21 @@
 
 title: Scrapy之命令行启动流程
 date: 2017-08-31 16:01:00
-tags: [Python, Scrapy, Crawler]
+tags: [Python]
 categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Scrapy 命令启动](#scrapy-命令启动)
+    * [scrapy crawl 执行流程](#scrapy-crawl-执行流程)
+    * [Crawler, Spider和Engine](#crawler-spider和engine)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
+
 
 ```
 
@@ -84,9 +95,6 @@ categories: [Note]
                 +--------------------+              =
 
 ```
-
-<!-- more -->
-
 
 ## Scrapy 命令启动
 ### scrapy crawl 执行流程

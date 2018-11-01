@@ -2,10 +2,20 @@
 
 title: Hadoop之Namenode的Delete命令代码流程
 date: 2017-11-10 21:01:00
-tags: [ Hadoop, Java ]
-categories: [ Note ]
+tags: [Hadoop]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [框架图](#框架图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
+
+## 框架图
 
 ```
                                                            nn

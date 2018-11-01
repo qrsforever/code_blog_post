@@ -2,10 +2,19 @@
 
 title: Iotivity之Presence&Observe流程图
 date: 2018-04-26 11:00:21
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Presence流程图](#presence流程图)
+* [Observe流程图](#observe流程图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 Presence流程图
 ==============

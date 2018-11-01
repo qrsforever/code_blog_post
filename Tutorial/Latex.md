@@ -2,10 +2,23 @@
 
 title: Tutorial for Latex
 date: 2018-10-31 17:16:20
-tags: [  ]
-categories: [  ]
+tags: [Markdown]
+categories: [Tutorial]
 
 ---
+
+
+<!-- vim-markdown-toc GFM -->
+
+* [显示](#显示)
+* [常用希腊字母](#常用希腊字母)
+* [常用求和符号和积分号](#常用求和符号和积分号)
+* [其他常用符号](#其他常用符号)
+* [声调](#声调)
+* [根号](#根号)
+* [上标下标](#上标下标)
+
+<!-- vim-markdown-toc -->
 
 [参考1](https://blog.csdn.net/qq_17528659/article/details/82152530)
 

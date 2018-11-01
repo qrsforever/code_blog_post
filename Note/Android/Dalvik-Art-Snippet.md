@@ -2,10 +2,22 @@
 
 title: Dalvik与Art虚拟机-笔记片段
 date: 2017-09-05 10:07:00
-tags: [ Android, VM ]
-categories: [ Note ]
+tags: [Android]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [What are Dalvik and ART?](#what-are-dalvik-and-art)
+* [What's actually different between ART and Dalvik?](#whats-actually-different-between-art-and-dalvik)
+    * [Just-in-time compilation (JIT)](#just-in-time-compilation-jit)
+    * [Ahead-of-time compilation (AOT)](#ahead-of-time-compilation-aot)
+* [虚拟机启动](#虚拟机启动)
+
+<!-- more -->
+
+<!-- vim-markdown-toc -->
 
 ```
                                                                                                                |

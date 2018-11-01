@@ -2,10 +2,20 @@
 
 title: Message-Handler
 date: 2018-05-31 13:30:25
-tags: [ C++, Message ]
-categories: [ Design ]
+tags: [C++]
+categories: [Design]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [框架图](#框架图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
+
+## 框架图
 
 ```
 

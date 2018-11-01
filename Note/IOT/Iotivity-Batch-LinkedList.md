@@ -2,10 +2,19 @@
 
 title: Iotivity之Colloction流程
 date: 2018-04-27 15:02:43
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [资源Collection类图](#资源collection类图)
+* [Sample流程图](#sample流程图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 资源Collection类图
 ==================

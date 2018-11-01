@@ -2,10 +2,24 @@
 
 title: 万物互联之腾讯Shadow
 date: 2018-02-06 10:01:00
-tags: [ IOT ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Shadow学习](#shadow学习)
+    * [1.框架API接口](#1框架api接口)
+    * [2.静态类图](#2静态类图)
+    * [3.时序图](#3时序图)
+    * [4.设备影子接口](#4设备影子接口)
+    * [5.Sample回调函数](#5sample回调函数)
+    * [6.调试运行Sample](#6调试运行sample)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 # Shadow学习
 

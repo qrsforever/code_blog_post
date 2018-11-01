@@ -9,6 +9,8 @@ categories: [ Story ]
 
 [原文](http://blog.sina.com.cn/s/blog_a8fead9b01014kj7.html)
 
+<!-- more -->
+
 在统计学中，很多工程师会惊讶于在统计学居然存在两个本质上截然对立的学派，他们是如此的对立以至于他们对于概率的定义都是截然不同的，这
 就是Frequentist和Bayesian统计学派之间的故事。
 

@@ -2,10 +2,18 @@
 
 title: Iotivity之Payload
 date: 2018-05-10 12:41:16
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Payload类图](#payload类图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 Payload类图
 ===========

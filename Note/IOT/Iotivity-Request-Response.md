@@ -2,10 +2,19 @@
 
 title: Iotivity之请求响应流程图
 date: 2018-04-24 16:40:06
-tags: [ IOT, DrawIt ]
-categories: [ Note ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [CA连接抽象层](#ca连接抽象层)
+* [Handle层](#handle层)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 CA连接抽象层
 ============

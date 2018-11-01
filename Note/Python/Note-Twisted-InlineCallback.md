@@ -2,10 +2,29 @@
 
 title: Twisted InlineCallback 机制
 date: 2017-09-11 15:06:16
-tags: [ Twisted, Python ]
-categories: [ Note ]
+tags: [Python]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Deferred的callback和addCallbacks方法](#deferred的callback和addcallbacks方法)
+    * [addCallbacks()](#addcallbacks)
+    * [callback()](#callback)
+    * [runCallbacks()](#runcallbacks)
+* [InlineCallbacks 实例](#inlinecallbacks-实例)
+    * [实例源码](#实例源码)
+    * [三个Deffered对象](#三个deffered对象)
+    * [getRemoteData()生成器](#getremotedata生成器)
+* [InlineCallbacks 源码分析](#inlinecallbacks-源码分析)
+    * [源码](#源码)
+    * [@defer.inlineCallbacks 展开](#deferinlinecallbacks-展开)
+    * [揭开谜底](#揭开谜底)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 <span id="code-flow"></span>
 ```
@@ -70,7 +89,6 @@ categories: [ Note ]
        =
 
 ```
-<!-- more -->
 [此图对应源码](#demo-code)
 
 ----

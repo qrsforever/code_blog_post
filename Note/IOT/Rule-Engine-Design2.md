@@ -2,10 +2,31 @@
 
 title: Rule Engine Intro
 date: 2018-06-14 15:48:14
-tags: [ IOT, DrawIt ]
-categories: [ Local ]
+tags: [IOT, DrawIt]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [Elink](#elink)
+    * [Rule Schema](#rule-schema)
+    * [Device Schema](#device-schema)
+* [Rule Model Design](#rule-model-design)
+    * [LHS Tree](#lhs-tree)
+    * [Clp Struct](#clp-struct)
+    * [Rule Class UML](#rule-class-uml)
+    * [Clp Script Design](#clp-script-design)
+    * [Act Auto Gen Rule](#act-auto-gen-rule)
+* [Others](#others)
+    * [Local Build](#local-build)
+    * [Sync Elink Script](#sync-elink-script)
+    * [Rule Categories](#rule-categories)
+* [TODO](#todo)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
 
 Elink
 =====

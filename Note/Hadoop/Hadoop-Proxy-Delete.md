@@ -2,10 +2,20 @@
 
 title: Hadoop之Delete实例代理流程
 date: 2017-11-13 18:57:00
-tags: [ Hadoop, Java ]
-categories: [ Note ]
+tags: [Hadoop]
+categories: [Note]
 
 ---
+
+<!-- vim-markdown-toc GFM -->
+
+* [框架图](#框架图)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
+
+## 框架图
 
 ```
               ClientNamenodeProtocol
