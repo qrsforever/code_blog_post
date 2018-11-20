@@ -29,9 +29,9 @@ categories: [Tutorial]
 * [字体](#字体)
 * [括号](#括号)
 * [颜色](#颜色)
-* [在线使用](#在线使用)
 * [特殊例子](#特殊例子)
     * [分子分母](#分子分母)
+    * [在线使用](#在线使用)
 
 <!-- vim-markdown-toc -->
 
@@ -46,8 +46,8 @@ categories: [Tutorial]
 ## 行内行间应用方式 
 
 ```
-$...$  (正文)
-$$..$$ (单独)
+$ equation $  (正文)
+$$ eqauation $$ (单独)
 ```
 
 ## 常用希腊字母
@@ -151,11 +151,24 @@ $$..$$ (单独)
 |  功能 | 语法 |  效果 |
 | :---: | :---: | :---: |
 | 上标 | a^2     | $a^2$
-| 下标 | a_2     | $a_2$
+| 下标 | a\_2    | $a_2$
 | 组合 | a^{2+2} | $a^{2+2}$
 | 组合 | a_{i,j} | $a_{i,j}$
-| 结合 | x_2^3   | $x_2^3$
+| 结合 | x\_2^3  | $x_2^3$
 | 前置 | {}_1\^2\!X_3\^4 | ${}_1^2\!X_3^4$
+| 向量 | \\vec{c} | $\vec{c}$
+| 向量 | \\overleftarrow{a b} | $\overleftarrow{a b}$
+| 向量 | \\overrightarrow{c d} | $\overrightarrow{c d}$
+| 导数 | x' | $x'$
+| 导数 | x^\\prime | $x^\prime$
+| 导数 | \\dot{x} | $\dot{x}$
+| 导数 | \\ddot{y} | $\ddot{y}$
+| 上划线 | \\overline{h i j} | $\overline{h i j}$
+| 下划线 | \\underline{k l m} | $\underline{k l m}$
+| 上面 | \\overset{P}{\\longrightarrow} | $\overset{P}{\longrightarrow}$
+| 下面 | \\underset{P}{\\Longrightarrow} | $\underset{P}{\Longrightarrow}$
+
+
 
 - 默认行内公式`$\sum_{k=1}^n{x_k}$`上下标: $\sum_{k=1}^n{x_k}$ 
 - 默认行间公式`$$\sum_{k=1}^n{x_k}$$`上下标: $$\sum_{k=1}^n{x_k}$$
@@ -325,22 +338,70 @@ $$
 \end{cases}
 $$
 
+    $$ 
+    \begin{align*} 
+    　　&a_1 x + b_1 y + c_1 z = d_1\tag{$3.11$}  \\ 
+    　　&aa_2 x + b_2 y + c_2 z = d_2\tag{$3.12$}  \\
+    　　&aaa_3 x + b_3 y + c_3 z = d_3\tag{$3.13$}
+    \end{align*}
+    $$
+
+$$ 
+\begin{align*} 
+　　&a_1 x + b_1 y + c_1 z = d_1\tag{$3.11$}  \\ 
+　　&aa_2 x + b_2 y + c_2 z = d_2\tag{$3.12$}  \\
+　　&aaa_3 x + b_3 y + c_3 z = d_3\tag{$3.13$}
+\end{align*}
+$$
 
 ### 多行公式等号对齐
 
+eqnarray(built-in) is similar to align(amsmath package) below
+
     $$
-    \begin{eqnarray}f(x,y)
-            &=&2xy+(x-y)^2\\
-            &=&x^2+y^2
+    \begin{eqnarray}
+        f(x,y) &=& 2xy+(x-y)^2\\
+               &=& x^2+y^2
     \end{eqnarray}
     $$
 
 $$
-\begin{eqnarray}f(x,y)
-        &=&2xy+(x-y)^2\\
-        &=&x^2+y^2
+\begin{eqnarray}
+    f(x,y) &=& 2xy+(x-y)^2\\
+           &=& x^2+y^2
 \end{eqnarray}
 $$
+
+    $$
+    \begin{align*}
+        f(x,y) &= 2xy+(x-y)^2 \\
+               &= x^2+y^2
+    \end{align*}
+    $$
+
+$$
+\begin{align*}
+    f(x,y) &= 2xy+(x-y)^2 \\
+           &= x^2+y^2
+\end{align*}
+$$
+
+指定第几列对齐
+
+    $$
+    \begin{alignat}{2} 
+        \sigma_1 &= x + y &\qquad \sigma_2 &= \frac{x}{y} \\
+        \sigma_1' &= \frac{\partial x + y}{\partial x} & \sigma_2' &= \frac{\partial \frac{x}{y}}{\partial x}
+    \end{alignat}
+    $$
+
+$$
+\begin{alignat}{2} 
+    \sigma_1 &= x + y &\quad \sigma_2 &= \frac{x}{y} \\
+    \sigma_1' &= \frac{\partial x + y}{\partial x} & \sigma_2' &= \frac{\partial \frac{x}{y}}{\partial x}
+\end{alignat}
+$$
+
 
 ### 大括号右多行赋值
 
@@ -358,11 +419,40 @@ $$
 \end{array}\right.
 $$
 
+    $$
+    P(x|Pa_x)=\begin{cases} 
+            1, & x=f(Pa_{x})\\ 
+            0, & other\ values 
+    \end{cases}
+    $$
+
 $$
 P(x|Pa_x)=\begin{cases} 
 		1, & x=f(Pa_{x})\\ 
 		0, & other\ values 
 \end{cases}
+$$
+
+    $$
+    \begin{equation}
+        \left.\begin{aligned}
+                B'&=-\partial \times E,\\
+                E'&=\partial \times B - 4\pi j,
+               \end{aligned}
+        \right\}
+        \qquad \text{Maxwell's equations}
+    \end{equation}
+    $$
+
+$$
+\begin{equation}
+    \left.\begin{aligned}
+            B'&=-\partial \times E,\\
+            E'&=\partial \times B - 4\pi j,
+           \end{aligned}
+    \right\}
+    \qquad \text{Maxwell's equations}
+\end{equation}
 $$
 
 
@@ -407,17 +497,6 @@ $$
 | $\color{Turquoise}Turquoise$	           | $\color{Violet}Violet$	                 | $\color{VioletRed}VioletRed$      | $\color{White}White$
 | $\color{WildStrawberry}WildStrawberry$   | $\color{Yellow}Yellow$                  | $\color{YellowGreen}YellowGreen$  | $\color{YellowOrange}YellowOrange$
 
-## 在线使用
-
-只能行间
-
-`![](http://latex.codecogs.com/gif.latex?F%28x%29%20%3D%20%5Cint_%7Ba%7D%5E%7Bb%7Df%28x%29dx "latextest")`
-
-输出:
-
-![](http://latex.codecogs.com/gif.latex?F%28x%29%20%3D%20%5Cint_%7Ba%7D%5E%7Bb%7Df%28x%29dx "latextest")
-
-
 ## 特殊例子
 
 ### 分子分母
@@ -429,3 +508,18 @@ $$
 $$
 x_1^*=\dfrac{a_{22}r_1-a_{12}r_2}{a_{11}a_{22}-a_{12}a_{21}}
 $$
+
+
+|语法|效果|语法|效果|语法|效果|
+|:------:|:---:|:------:|:---:|:---:|:---:|
+| \\frac{a}{b} | $\frac{a}{b}$ | \\dfrac{c}{d} | $\dfrac{c}{d}$ | e/f | $e/f$ |
+
+### 在线使用
+
+只能行间
+
+`![](http://latex.codecogs.com/gif.latex?F%28x%29%20%3D%20%5Cint_%7Ba%7D%5E%7Bb%7Df%28x%29dx "latextest")`
+
+输出:
+
+![](http://latex.codecogs.com/gif.latex?F%28x%29%20%3D%20%5Cint_%7Ba%7D%5E%7Bb%7Df%28x%29dx "latextest")
