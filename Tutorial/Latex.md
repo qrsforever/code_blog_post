@@ -72,6 +72,10 @@ $$ eqauation $$ (单独)
 | \\tau     | $\tau$     | \\varPhi    | $\varPhi$    |
 | \\phi     | $\phi$     | \\Phi       | $\Phi$       |
 | \\omega   | $\omega$   | \\Omega     | $\Omega$     |
+| \\tau     | $\tau$     | \\Tau       | $\Tau$       |
+| \\chi     | $\chi$     | | |
+| \\upsilon | $\upsilon$ | | |
+| \\iota    | $\iota$    | | |
 
 
 ## 常用求和符号和积分号
@@ -462,6 +466,7 @@ $$
 - 正粗体`$\mathbf{012abcABC}$`: $\mathbf{012abcABC}$
 - 罗马体`$\mathrm{012abcABC}$`: $\mathrm{012abcABC}$
 - 斜体数字`$\mathit{0123456789}$`: $\mathit{0123456789}$
+- 手写体 `$\mathcal{012abcABC}$`: $\mathcal{012abcABC}$
 
 ## 括号
 
@@ -513,6 +518,15 @@ $$
 |语法|效果|语法|效果|语法|效果|
 |:------:|:---:|:------:|:---:|:---:|:---:|
 | \\frac{a}{b} | $\frac{a}{b}$ | \\dfrac{c}{d} | $\dfrac{c}{d}$ | e/f | $e/f$ |
+
+
+### 分布
+
+|分布名|语法|效果|例子|
+|:---:|:---:|:---:|:------|
+|二项分布| `\binom{n}{k}` | $\binom{n}{k}$ | $f(k) = \binom{n}{k} p^k (1-p)^{n-k}$ |
+
+
 
 ### 在线使用
 

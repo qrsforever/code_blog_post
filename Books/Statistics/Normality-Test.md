@@ -50,9 +50,9 @@ $$
 
 峰度(4阶): 随机变量在均值附近的相对平坦程度或峰值程度 (中国和国际的定义有些差别) 和数字3有关
 
-## 代码
+## 代码演示
 
-{% asset_jupyter python3 asset/Normality-Test-1.1.ipynb %}
+`{% asset_jupyter python3 asset/Normality-Test-1.1.ipynb %}`
 
 
 ## 估计量
@@ -78,6 +78,7 @@ W = \frac{\left( \sum_{i=1}^n a_i x_{(i)} \right)^2}
 $$
 
 样本量小于50 ?? (N < 2000) ?? 有个3-50的表查系数值
+
 
 # KS检验
 

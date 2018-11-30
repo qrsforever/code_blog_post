@@ -33,29 +33,40 @@ categories: [Tutorial]
 ## Markdown 基本语法
 
 ### 块注释
->块注释0
-> 块注释1
->  块注释2
->   块注释3
->    块注释4
->     块注释5
 
-<!-- more -->
+> 块注释0  
+>
+> > 块注释1  
+>  
+> > > 块注释2  
+
+> ## This is a header.
+> 
+> 1.   This is the first list item.
+> 2.   This is the second list item.
+> 
+> Here's some example code:
+> 
+>     return shell_exec("echo $input | $markdown_script");
 
 ### 斜体
-*斜体0*
-_斜体1_
+
+*斜体0*  
+_斜体1_  
 
 ### 粗体
-**粗体0**
-__粗体1__
+
+**粗体0**  
+__粗体1__  
 
 ### 无序列表
+
 * 无序0
 - 无序1
 + 无序2
 
 ### 有序列表
+
 1. 有序0
 2. 有序1
 3. 有序2
@@ -69,24 +80,26 @@ __粗体1__
 
 ### 锚点
 <span id="m1">锚点1：</span>
-anchor1
-anchor1
-anchor1
-anchor1
-anchor1
-anchor1
-anchor1
+anchor1  
+anchor1  
+anchor1  
+anchor1  
+anchor1  
+anchor1  
+anchor1  
 <span id="m2">锚点2：</span>
-anchor2
-anchor2
-anchor2
-anchor2
-anchor2
-anchor2
-anchor2
+anchor2  
+anchor2  
+anchor2  
+anchor2  
+anchor2  
+anchor2  
+anchor2  
+
 [锚点1](#m1 "anchor alt text")
 
-[锚点2][anchor2]
+[锚点2][anchor2]  
+
 [anchor2]:#m2 "anchor alt text"
 
 ### 图片
@@ -169,14 +182,21 @@ ______
 ```
 
 ### 块注释
->块注释0
-> 块注释1
->  块注释2
->   块注释3
->    块注释4
->     块注释5
 
-<!-- more -->
+> 块注释0  
+>
+> > 块注释1  
+>  
+> > > 块注释2  
+
+> ## This is a header.
+> 
+> 1.   This is the first list item.
+> 2.   This is the second list item.
+> 
+> Here's some example code:
+> 
+>     return shell_exec("echo $input | $markdown_script");
 
 ### 斜体
 *斜体0*
@@ -205,24 +225,26 @@ __粗体1__
 
 ### 锚点
 <span id="m1">锚点1：</span>
-anchor1
-anchor1
-anchor1
-anchor1
-anchor1
-anchor1
-anchor1
+anchor1  
+anchor1  
+anchor1  
+anchor1  
+anchor1  
+anchor1  
+anchor1  
 <span id="m2">锚点2：</span>
-anchor2
-anchor2
-anchor2
-anchor2
-anchor2
-anchor2
-anchor2
+anchor2  
+anchor2  
+anchor2  
+anchor2   
+anchor2  
+anchor2  
+anchor2  
+
 [锚点1](#m1 "anchor alt text")
 
-[锚点2][anchor2]
+[锚点2][anchor2]  
+
 [anchor2]:#m2 "anchor alt text"
 
 ### 图片
