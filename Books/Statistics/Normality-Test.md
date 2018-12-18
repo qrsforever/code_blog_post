@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之正态性检验
+title: 正态性检验
 date: 2018-11-27 13:56:02
 tags: [Statistics]
 categories: [Books]
@@ -22,7 +22,11 @@ categories: [Books]
 
 # 书籍
 
-[正态性检验社-梁小筠](https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw) 提取码: `u4w4`
+[正态性检验社-梁小筠][B1]
+[An Introduction to Statistics with Python-Thomas Haslwanter][B2]
+
+[B1]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B2]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
 
 <!-- more -->
 
@@ -52,7 +56,7 @@ $$
 
 ## 代码演示
 
-`{% asset_jupyter python3 asset/Normality-Test-1.1.ipynb %}`
+`{% asset_jupyter python3 notebook/Normality-Test-1.1.ipynb %}`
 
 
 ## 估计量
@@ -90,3 +94,22 @@ Kolmogorov-Smirnov
 
 最直观的想法就是拿样本数据与期望的理论分布进行对比，如果差异不大，则可以认为数据服从正态分布，Kolmogorov的检验方法就是这样的。
 为了说明Kolmogorov检验的思想，我们还是要用到上一篇的经验累积概率分布曲线。
+
+
+# Probability Plot
+
+## QQ Plot
+
+[What is a Quantile?](https://www.statisticshowto.datasciencecentral.com/quantile-definition-find-easy-steps/)
+
+[What is a Q Q Plot?](https://www.statisticshowto.datasciencecentral.com/q-q-plots/)
+
+正态QQ图是一种检验正态性的一种方法.
+
+How to Make a QQ Plot?
+
+- step1: 将样本数据(n)排序, 小->大
+
+- step2: 计算理论分布(你认为样本数据来自哪个总体)的分位数的z值, 如果样本数为n, 理论分布图等面积分为n+1个段, 计算每个段的z值 
+
+- step3: 将每个z值(x轴)和已排序的样本数据(y轴)形成一个QQ图.

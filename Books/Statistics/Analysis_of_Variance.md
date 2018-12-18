@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之方差分析
+title: 方差分析
 date: 2018-11-22 15:47:25
 tags: [Statistics]
 categories: [Books]

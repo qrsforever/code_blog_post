@@ -49,6 +49,16 @@ categories: [Tutorial]
 > 
 >     return shell_exec("echo $input | $markdown_script");
 
+> This is a block quote. This
+> paragraph has two lines.
+>
+> 1. This is a list inside a block quote.
+> 2. Second item.
+
+> This is a block quote.
+>
+> > A block quote within a block quote.
+
 ### 斜体
 
 *斜体0*  
@@ -197,6 +207,16 @@ ______
 > Here's some example code:
 > 
 >     return shell_exec("echo $input | $markdown_script");
+
+> This is a block quote. This
+> paragraph has two lines.
+>
+> 1. This is a list inside a block quote.
+> 2. Second item.
+
+> This is a block quote.
+>
+> > A block quote within a block quote.
 
 ### 斜体
 *斜体0*

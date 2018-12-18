@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之赤裸裸统计学
+title: 赤裸裸统计学
 date: 2018-12-05 15:06:37
 tags: [Statistics, Draft]
 categories: [Books]
@@ -22,7 +22,9 @@ categories: [Books]
 
 # 书籍
 
-[赤裸裸的统计学-Naked Statistics-曹槟(译)](https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw) 提取码: `u4w4`
+1. [赤裸裸的统计学-Naked Statistics-曹槟(译)][B1]
+
+[B1]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
 
 ## 数据集
 

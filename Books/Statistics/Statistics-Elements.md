@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之统计学基础
+title: 统计学基础
 date: 2018-11-05 15:28:39
 tags: [Statistics]
 categories: [Books]
@@ -29,10 +29,15 @@ categories: [Books]
 
 # 参考书籍
 
-1. [概率论与数理统计(第二版)-茆诗松](https://pan.baidu.com/s/1YiHtPGpQw8rhfhJ44CbOcQ) 提取码: `b49i`
-2. [概率论与数理统计(第四版)-盛骤](https://pan.baidu.com/s/1wef9R6gBj1MLhyvR1rEtmA) 提取码: `812x`
-3. [统计学(第四版)-贾俊平](https://pan.baidu.com/s/1lhZMOzzaY7z15UWUbKZpQg) 提取码: `553s`
-4. [Probability and Statistics (4th)-Morris H. DeGroot](https://pan.baidu.com/s/1aSLWmIdLsdPAwh1Py56PyQ) 提取码: `rupp`
+1. [概率论与数理统计(第二版)-茆诗松][B1]
+2. [概率论与数理统计(第四版)-盛骤][B2]
+3. [统计学(第四版)-贾俊平][B3]
+4. [Probability and Statistics (4th)-Morris H. DeGroot][B4]
+
+[B1]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B2]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B3]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B4]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
 
 <!-- more -->
 
@@ -104,6 +109,20 @@ $$
 指数分布: 首次发生某个事件的时间
 
 变异系数: 以期望为单位度量随机变量的波动程度
+
+-----------------------------------------------------------------
+
+## 矩
+
+- 均值(mean):
+
+- 方差(variant):
+
+- 偏度(skewness): 偏态系数; 统计数据分布倾斜程度的度量
+
+- 峰度(kurtosis): 与正态比较; 大于0 说明较正态陡峭, 小于0 说明较正态平坦; 值越大差异程度越大.
+
+-----------------------------------------------------------------
 
 ## 多维
 
@@ -260,7 +279,7 @@ $$
 
 ### 代码演示
 
-`{% asset_jupyter python3 asset/Central_Limit_Theory.ipynb %}`
+`{% asset_jupyter python3 notebook/Central_Limit_Theory.ipynb %}`
 
 -----------------------------------------------------------------
 
@@ -350,7 +369,7 @@ $$
 
 ### 代码演示
 
-`{% asset_jupyter python3 asset/Sampe_Distribution.ipynb %}`
+`{% asset_jupyter python3 notebook/Sampe_Distribution.ipynb %}`
 
 -----------------------------------------------------------------
 

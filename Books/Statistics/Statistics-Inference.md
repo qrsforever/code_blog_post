@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之统计推断
+title: 统计推断
 date: 2018-11-19 10:38:12
 tags: [Statistics]
 categories: [Books]
@@ -28,10 +28,17 @@ categories: [Books]
 
 # 参考书籍
 
-1. [概率论与数理统计(第二版)-茆诗松](https://pan.baidu.com/s/1YiHtPGpQw8rhfhJ44CbOcQ) 提取码: `b49i`
-2. [概率论与数理统计(第四版)-盛骤](https://pan.baidu.com/s/1wef9R6gBj1MLhyvR1rEtmA) 提取码: `812x`
-3. [统计学(第四版)-贾俊平](https://pan.baidu.com/s/1lhZMOzzaY7z15UWUbKZpQg) 提取码: `553s`
-4. [Probability and Statistics (4th)-Morris H. DeGroot](https://pan.baidu.com/s/1aSLWmIdLsdPAwh1Py56PyQ) 提取码: `rupp`
+1. [概率论与数理统计(第二版)-茆诗松][B1]
+2. [概率论与数理统计(第四版)-盛骤][B2]
+3. [统计学(第四版)-贾俊平][B3]
+4. [计量经济学(第三版)-李子奈][B4]
+5. [Probability and Statistics (4th)-Morris H. DeGroot][B5]
+
+[B1]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B2]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B3]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B4]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
+[B5]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
 
 <!-- more -->
 
@@ -93,6 +100,14 @@ $$
 
 ## 区间估计
 
+[置信区间是一个范围值，由样本统计量所构造的对总体参数的估计区间。因为它的随机性，不可能从一个给定总体的两个样本产生相同的置信区间。但是如果你重复构造置信区间很多次，得到的置信区间中有一定比例将包含总体参数真值。置信区间中包含总体参数真值的次数所占的比率称为置信水平。](https://zhuanlan.zhihu.com/p/37847495)
+
+### 如何理解
+
+通过一次抽样样本的估计量去估计总体参数, 这个估计到底有多**接近**总体的参数, 一般我们以样本估计值为**中心**画一个区域, 那么总体参数的真值有可能在该区域内, 也可能不在, 我们称这个区域叫置信区间($1-\alpha$), **我们把通过构造一个以样本参数的估计值为中心的区间, 来考察这个区间有多大的可能性包含总体参数真值, 这个检验方法叫参数的置信区间估计**.
+
+-----------------------------------------------------------------
+
 ### 单总体均值的估计
 
 统计量: z(正态分布), t(t-分布), 对称分布
@@ -120,6 +135,8 @@ $$
 本章的参数一般指: T检验统计量
 
 ## 原理
+
+基本思想: 概率性质的反正法(根据小概率事件原理: 小概率事件在一次随机试验是几乎不可能发生的)
 
 ## 拒绝域
 
@@ -215,6 +232,13 @@ $$
 
 重温 "抽样分布"
 
+-----------------------------------------------------------------
+
+## 参数检验和非参数检验
+
+假设检验分为参数检验(parametric tests)和非参数检验(nonparametric tests).
+
+Parametric tests assume that the data can be well described by a distribution that is defined by one or more parameters, in most cases by a normal distribution. Nonparametric tests do not depend on the data following a specific distribution.
 
 ## 其他
 
@@ -225,7 +249,6 @@ $$
 - **分类**变量之间的相关性
 
 独立性检验
-
 
 ### 列联分析
 

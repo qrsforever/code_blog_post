@@ -22,76 +22,94 @@ categories: [Tools]
 
 **1. 下载Opengrok和Tomcat**
 
->  
 建立软链接
+
+```bash
 lidong@node0:/$ ls -l /opt/ | egrep "tomcat|opengrok"
 lrwxrwxrwx 1 lidong   lidong         36 Sep 13 09:57 opengrok -> /data/opt/opengrok/opengrok-1.1-rc11
 lrwxrwxrwx 1 lidong   lidong         37 Sep 13 09:57 tomcat -> /data/opt/tomcat/apache-tomcat-8.5.14
 lidong@node0:/$ 
 
+```
+
 **2. 配置环境变量**
 
->  
+```bash
 export TOMCAT\_VERSION=8.5.14
 export TOMCAT\_HOME=/data/opt/tomcat/apache-tomcat-${TOMCAT\_VERSION}
 export CATALINA\_HOME=$TOMCAT\_HOME
 export PATH=$TOMCAT\_HOME/bin:$PATH
 
+```
+
 <br/>
 
->  
+```bash
 export OPENGROK\_TOMCAT\_BASE=/opt/tomcat
 export OPENGROK\_VERSION=1.1-rc11
 export OPENGROK\_HOME=/data/opt/opengrok/opengrok-${OPENGROK\_VERSION}
 export OPENGROK\_INSTANCE\_BASE=$OPENGROK\_HOME
 export PATH=$OPENGROK\_HOME/bin:$PATH
 
+```
+
 
 # 工程配置
 
 **1. 建工程目录**
 
-> 
-\# 创建总工程目录
+```bash 
+# 创建总工程目录
 cd /project/opengrok/
-\#例如创建三个工程avro, hadoop, hbase
+#例如创建三个工程avro, hadoop, hbase
 mkdir avro hadoop hbase
-\# 分别创建各个工程的etc(工程私有配置),src(工程源码子目录)
+# 分别创建各个工程的etc(工程私有配置),src(工程源码子目录)
 mkdir avro/etc avro/src
 mkdir hadoop/etc hadoop/src
 mkdir hbase/etc hbase/src
 
+```
+
 
 **2. 设置每个项目的配置文件**
 
+```bash  
 cat avro/etc/opengrok.conf 
->  
 OPENGROK\_VERBOSE=yes
 OPENGROK\_PROGRESS=yes
 OPENGROK\_WEBAPP\_CFGADDR=localhost:9743
 OPENGROK\_WEBAPP\_CONTEXT=avro
 IGNORE\_PATTERNS="-i f:.\* -i d:target -i d:test"
 
+```
+
 <br\>
+
+```bash
 cat hadoop/etc/opengrok.conf 
->   
 OPENGROK\_VERBOSE=yes
 OPENGROK\_PROGRESS=yes
 OPENGROK\_WEBAPP\_CFGADDR=localhost:9741
 OPENGROK\_WEBAPP\_CONTEXT=hadoop
 IGNORE\_PATTERNS="-i f:.\* -i d:target -i d:test"
 
+```
+
 <br\>
+
+```bash
 cat hbase/etc/opengrok.conf 
->  
 OPENGROK\_VERBOSE=yes
 OPENGROK\_PROGRESS=yes
 OPENGROK\_WEBAPP\_CFGADDR=localhost:9742
 OPENGROK\_WEBAPP\_CONTEXT=hbase
 IGNORE\_PATTERNS="-i f:.\* -i d:target -i d:test"
 
+```
+
 
 **3. 创建每个项目源码目录软链接**
+
 ```  
 # tree avro/src/
 avro/src/
@@ -99,28 +117,33 @@ avro/src/
 ```
 
 <br\>
+
 ```  
 # tree hadoop/src/
 hadoop/src/
 |-- hadoop-common-project -> /data/opt/hadoop/hadoop-2.7.3-src/hadoop-common-project
 |-- hadoop-hdfs-project -> /data/opt/hadoop/hadoop-2.7.3-src/hadoop-hdfs-project/
 `-- hadoop-yarn-project -> /data/opt/hadoop/hadoop-2.7.3-src/hadoop-yarn-project/
+
 ```
 
 <br\>
+
 ```  
 # tree hbase/src/
 hbase/src/
 `-- hbase -> /data/opt/hbase/hbase-1.2.6-src
+
 ```
 
 # 建立或更新
 
 **1. opengrok.sh脚本**
+
 将opengrok.sh 加入到PATH环境变量中,或者拷贝到/usr/bin
 cat /usr/bin/opengrok.sh
 
-```
+```bash
 #!/bin/bash
 
 opengrok_pro_dir=`pwd`

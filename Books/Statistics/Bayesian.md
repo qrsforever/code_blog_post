@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之贝叶斯
+title: 贝叶斯
 date: 2018-11-13 21:49:01
 tags: [Statistics, Bayesian]
 categories: [Books]

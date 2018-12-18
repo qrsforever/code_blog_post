@@ -1,6 +1,6 @@
 ---
 
-title: 笔记之相关分析
+title: 相关分析
 date: 2018-12-07 17:44:17
 tags: [Statistics, Draft]
 categories: [Books]
@@ -37,7 +37,7 @@ TODO
 
 # 方法
 
-`{% asset_jupyter python3 asset/Corralation_Analysis_Methods.ipynb %}`
+`{% asset_jupyter python3 notebook/Corralation_Analysis_Methods.ipynb %}`
 
 # 其他
 
