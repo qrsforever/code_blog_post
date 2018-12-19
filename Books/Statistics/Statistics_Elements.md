@@ -116,7 +116,7 @@ $$
 
 - 均值(mean):
 
-- 方差(variant):
+- 方差(variant):  As variance is just the standard deviation squared: $var = sdev^2$
 
 - 偏度(skewness): 偏态系数; 统计数据分布倾斜程度的度量
 
