@@ -7,28 +7,29 @@ categories: [Books]
 
 ---
 
-
 <!-- vim-markdown-toc GFM -->
 
-* [书籍](#书籍)
+* [资源](#资源)
 * [正态分布](#正态分布)
     * [统计量](#统计量)
-    * [代码](#代码)
+    * [代码演示](#代码演示)
     * [估计量](#估计量)
 * [W检验](#w检验)
 * [KS检验](#ks检验)
+* [Probability Plot](#probability-plot)
+    * [QQ Plot](#qq-plot)
 
 <!-- vim-markdown-toc -->
 
-# 书籍
+<!-- more -->
+
+# 资源
 
 [正态性检验社-梁小筠][B1]
 [An Introduction to Statistics with Python-Thomas Haslwanter][B2]
 
 [B1]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
 [B2]: https://pan.baidu.com/s/16FU_ZwFqw7wxH85Ry59chw "提取码: u4w4"
-
-<!-- more -->
 
 # 正态分布
 

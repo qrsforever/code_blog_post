@@ -16,15 +16,15 @@ categories: [Books]
 
 <!-- more -->
 
------------------------------------------------------------------
-
-# 站点
+# 资源
 
 - [Statistics How To](https://www.statisticshowto.datasciencecentral.com)
 
 - [Data Science Plus](https://datascienceplus.com/)
 
 - [Python StatsModels](https://www.statsmodels.org)
+
+- [Online Courses: Stats](https://newonlinecourses.science.psu.edu/statprogram/)
 
 
 # 数据集

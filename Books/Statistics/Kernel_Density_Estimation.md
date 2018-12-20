@@ -7,7 +7,17 @@ categories: [Books]
 
 ---
 
-# 参考
+<!-- vim-markdown-toc GFM -->
+
+* [资源](#资源)
+* [概念](#概念)
+* [其他](#其他)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
+
+# 资源
 
 - [An Introduction to Statistics with Python-Thomas Haslwanter][B1]
 - [Wikipedia](https://en.wikipedia.org/wiki/Kernel_density_estimation)

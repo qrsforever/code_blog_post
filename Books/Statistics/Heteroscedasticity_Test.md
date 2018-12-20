@@ -9,23 +9,25 @@ categories: [Books]
 
 <!-- vim-markdown-toc GFM -->
 
-* [参考](#参考)
+* [资源](#资源)
 * [Homoscedasticity](#homoscedasticity)
 * [Heteroscedasticity](#heteroscedasticity)
     * [Why is it important to check for heteroscedasticity?](#why-is-it-important-to-check-for-heteroscedasticity)
     * [How to detect heteroscedasticity?](#how-to-detect-heteroscedasticity)
+    * [How to rectify?](#how-to-rectify)
+* [Draft](#draft)
 
 <!-- vim-markdown-toc -->
 
-# 参考
+<!-- more -->
+
+# 资源
 
 - [同方差](https://www.statisticshowto.datasciencecentral.com/homoscedasticity/)
 
 - [异方差](https://www.statisticshowto.datasciencecentral.com/heteroscedasticity-simple-definition-examples)
 
 - [检测异方差并校准](https://datascienceplus.com/how-to-detect-heteroscedasticity-and-rectify-it/)
-
-<!-- more -->
 
 # Homoscedasticity
 
@@ -59,5 +61,3 @@ homoscedasticity means "having the different scatter." where points are at widel
 # Draft
 
 Breush Pagan (布劳殊-培干)
-
-<div align=center></div>

@@ -9,19 +9,16 @@ categories: [Books]
 
 <!-- vim-markdown-toc GFM -->
 
-* [书籍](#书籍)
-* [数据集](#数据集)
+* [资源](#资源)
 * [定义](#定义)
 * [方法](#方法)
 * [其他](#其他)
 
 <!-- vim-markdown-toc -->
 
-# 书籍
-
 <!-- more -->
 
-# 数据集
+# 资源
 
 - [Kaggle](https://www.kaggle.com/datasets)
 
@@ -37,7 +34,7 @@ TODO
 
 # 方法
 
-`{% asset_jupyter python3 notebook/Corralation_Analysis_Methods.ipynb %}`
+{% asset_jupyter python3 notebook/Corralation_Analysis_Methods.ipynb %}
 
 # 其他
 
