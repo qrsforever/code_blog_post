@@ -26,6 +26,8 @@ categories: [Books]
 
 - [Online Courses: Stats](https://newonlinecourses.science.psu.edu/statprogram/)
 
+- [Statistics By Jim](http://statisticsbyjim.com/)
+
 
 # 数据集
 

@@ -271,6 +271,8 @@ residual analysis
 
 [八种线性回归方法对比](https://github.com/tirthajyoti/Machine-Learning-with-Python/blob/master/Linear_Regression_Methods.ipynb)
 
+[StatsModels:Regression Plots](https://www.statsmodels.org/dev/examples/notebooks/generated/regression_plots.html)
+
 # 问题
 
 1. <<计量统计学-李子奈>>: 采用OLS已经保证模型最好的拟合样本观测值, 为什么还要进行检验拟合优度呢?

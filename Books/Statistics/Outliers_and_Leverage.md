@@ -1,6 +1,6 @@
 ---
 
-title: 异常值和高杠杆率点
+title: 离群点和高杠杆率点
 date: 2018-12-20 16:00:28
 tags: [Statatistics]
 categories: [Books]
@@ -39,7 +39,7 @@ A data point is influential if it unduly influences any part of a regression ana
 
 是不是Influence Point, 要看包含及排除这个观测点是否对预测Y值和回归模型系数以及统计检验结果有影响.
 
-## 1. 异常值(Outlier)
+## 1. 离群点(Outlier)
 
 An outlier is a data point whose response y does not follow the general trend of the rest of the data.
 
