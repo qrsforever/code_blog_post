@@ -1,6 +1,6 @@
 ---
 
-title: 一元线性回归分析Python
+title: 一元线性回归(SLR)
 date: 2018-12-20 10:37:00
 tags: [Statatistics, Python]
 categories: [Books]
@@ -17,7 +17,7 @@ categories: [Books]
 
 <!-- more -->
 
-# 资源 
+# 资源
 
 - [Using python statsmodels for OLS linear regression][B1]
 

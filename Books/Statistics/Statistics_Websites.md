@@ -28,6 +28,8 @@ categories: [Books]
 
 - [Statistics By Jim](http://statisticsbyjim.com/)
 
+- [Data Robot](https://www.datarobot.com)
+
 
 # 数据集
 
