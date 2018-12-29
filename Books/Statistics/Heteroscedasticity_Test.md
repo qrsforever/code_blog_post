@@ -92,4 +92,4 @@ Breush Pagan (布劳殊-培干)
 
 # 实践
 
-{% asset_jupyter python3 notebook/Residuals_Analysis_1.ipynb %}
+{% asset_jupyter python3 notebook/Residuals_Analysis.ipynb %}

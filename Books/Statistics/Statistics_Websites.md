@@ -30,6 +30,8 @@ categories: [Books]
 
 - [Data Robot](https://www.datarobot.com)
 
+- [Towards Data Science](https://towardsdatascience.com/)
+
 
 # 数据集
 

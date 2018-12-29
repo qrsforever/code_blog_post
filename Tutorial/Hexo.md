@@ -82,6 +82,39 @@ NEW: DevDocs now comes with syntax highlighting. http://devdocs.io
 Every interaction is both precious and an opportunity to delight.
 {% endblockquote %}
 
+## Code Block
+
+语法:
+
+```
+    {% codeblock [title] [lang:language] [url] [link text] %}
+    code snippet
+    {% endcodeblock %}
+```
+
+- Case1:
+
+```  
+    {% codeblock %}
+    alert('Hello World!');
+    {% endcodeblock %}
+```
+
+{% codeblock %}
+alert('Hello World!');
+{% endcodeblock %}
+
+- Case2:
+
+```
+    {% codeblock lang:objc %}
+    [rectangle setX: 10 y: 10 width: 20 height: 20];
+    {% endcodeblock %}
+```
+
+{% codeblock lang:objc %}
+[rectangle setX: 10 y: 10 width: 20 height: 20];
+{% endcodeblock %}
 
 ## Include Posts
 
