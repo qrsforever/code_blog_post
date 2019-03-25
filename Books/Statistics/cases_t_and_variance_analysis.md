@@ -1,6 +1,6 @@
 ---
 
-title: 例题: 地区消费水平
+title: 例题之地区消费水平
 date: 2019-02-27 21:48:03
 tags: [Statistics, Cases]
 categories: [Books]

@@ -16,6 +16,5 @@ categories: [Books]
 - 主观先验概率(主观经验)
 
 
-## Bata分布
 
 https://blog.csdn.net/a358463121/article/details/52562940
