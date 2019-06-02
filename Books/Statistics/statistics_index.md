@@ -3,7 +3,7 @@
 title: 统计学之指数
 date: 2019-02-21 10:30:19
 tags: [Statistics]
-categories: [Book]
+categories: [Books]
 
 ---
 
