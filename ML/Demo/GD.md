@@ -8,4 +8,8 @@ categories: [ML]
 
 ---
 
+简易实现BGB,SGB,MBGB的python实现
+
+<!-- more -->
+
 {% asset_jupyter python3 notebook/GD.ipynb %}

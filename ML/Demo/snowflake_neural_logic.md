@@ -8,6 +8,10 @@ categories: [ML]
 
 ---
 
+模拟一下如何处理线性不可分的问题, 纯属自娱自乐.
+
+<!-- more -->
+
 {% asset_jupyter python3 notebook/snowflake_neural_logic.ipynb %}
 
 
