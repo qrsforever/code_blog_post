@@ -1,6 +1,6 @@
 ---
 
-title: Iotivity之Resource-Encapsulation
+title: (原创)Iotivity之Resource-Encapsulation
 date: 2018-05-08 12:58:38
 tags: [IOT, DrawIt]
 categories: [Note]

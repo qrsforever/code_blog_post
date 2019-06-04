@@ -1,6 +1,6 @@
 ---
 
-title: Iotivity之请求响应流程图
+title: (原创)Iotivity之请求响应流程图
 date: 2018-04-24 16:40:06
 tags: [IOT, DrawIt]
 categories: [Note]
