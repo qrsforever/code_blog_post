@@ -1,6 +1,6 @@
 ---
 
-title: Hadoop之Namenode的Delete命令代码流程
+title: (原创)Hadoop之Namenode的Delete命令代码流程
 date: 2017-11-10 21:01:00
 tags: [Hadoop]
 categories: [Note]

@@ -1,6 +1,6 @@
 ---
 
-title: Hadoop之FsShell的Delete命令代码流程
+title: (原创)Hadoop之FsShell的Delete命令代码流程
 date: 2017-10-24 20:08:00
 tags: [Hadoop]
 categories: [Note]

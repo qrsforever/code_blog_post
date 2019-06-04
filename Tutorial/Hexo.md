@@ -1,6 +1,6 @@
 ---
 
-title: Tutorial for Hexo
+title: (原创)Tutorial for Hexo
 date: 2018-12-18 21:20:26
 tags: [Markdown]
 categories: [Tutorial]

@@ -1,6 +1,6 @@
 ---
 
-title: 多元线性回归(MLR)
+title: (原创)多元线性回归(MLR)
 date: 2018-12-25 21:35:04
 tags: [Statatistics, Python]
 categories: [Books]

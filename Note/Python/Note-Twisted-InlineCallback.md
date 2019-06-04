@@ -1,6 +1,6 @@
 ---
 
-title: Twisted InlineCallback 机制
+title: (原创)Twisted InlineCallback 机制
 date: 2017-09-11 15:06:16
 tags: [Python]
 categories: [Note]

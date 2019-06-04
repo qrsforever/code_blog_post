@@ -1,6 +1,6 @@
 ---
 
-title: Tutorial for Latex
+title: (原创)Tutorial for Latex
 date: 2018-10-31 17:16:20
 tags: [Markdown]
 categories: [Tutorial]

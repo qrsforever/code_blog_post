@@ -1,6 +1,6 @@
 ---
 
-title: Hadoop之Delete实例代理流程
+title: (原创)Hadoop之Delete实例代理流程
 date: 2017-11-13 18:57:00
 tags: [Hadoop]
 categories: [Note]
