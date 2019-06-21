@@ -13,3 +13,6 @@ categories: [ML]
 续探究
 
 <!-- more -->
+
+{% asset_jupyter python3 notebook/convolution_plot.ipynb %}
+
