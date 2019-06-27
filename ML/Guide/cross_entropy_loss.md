@@ -14,6 +14,7 @@ categories: [ML]
 * [百科](#百科)
     * [相关概念](#相关概念)
     * [交叉熵](#交叉熵)
+    * [与似然的关系](#与似然的关系)
 * [交叉熵损失函数](#交叉熵损失函数)
     * [定义符号](#定义符号)
     * [Logistic回归的交叉熵](#logistic回归的交叉熵)
@@ -27,6 +28,8 @@ categories: [ML]
 # 百科
 
 交叉熵(cross entropy)是信息论中的一个重要概念, 度量两个概率分布的差异性信息.
+
+cross entropy (CE) error is also called "log loss"
 
 ## 相关概念
 
@@ -46,11 +49,11 @@ categories: [ML]
 
 
 KL散度(Kullback Leibler Divergence),有时候也叫KL距离(不同点是不对称),一般被用于计算两个分布之间的不同,散度
-越离散值越大, 两个分布相同KL散度为0.
+越离散值越大, 两个分布相同KL散度为0. 从另一个角度理解就是, 一个分布用另一个分布代替额外需要的编码bit.
 数学定义(离散):
 $$
 \begin{align*}
-D_KL(A||B) &= \sum\limits_{i}P_A(x_i)log_2\bigg(dfrac{P_A(x_i)}{P_B(x_i)}\bigg) \\
+D_{KL}(A||B) &= \sum\limits_{i}P_A(x_i)log_2\bigg(\dfrac{P_A(x_i)}{P_B(x_i)}\bigg) \\
            &= \sum\limits_{i}P_A(x_i)log_2\bigg(P_A(x_i)\bigg) - \sum\limits_{i}P_A(x_i)log_2\bigg(P_B(x_i)\bigg) \\
            &= -H(A) + H(A, B)
 \end{align*}
@@ -107,6 +110,71 @@ H(P, Q2) &= -\sum\limits_{i=0}^{n}p_ilog_2q_i \\
 \end{align*}
 $$
 
+## 与似然的关系
+
+例(不考虑0下标):
+
+真实分类(one-hot encoded labels):
+
+$$
+{
+    y^{(1)} = (1, 0, 0, 0)^T \\
+    y^{(2)} = (0, 1, 0, 0)^T \\
+    y^{(3)} = (0, 0, 0, 1)^T \\
+    y^{(4)} = (1, 0, 0, 0)^T \\
+    y^{(5)} = (0, 0, 1, 0)^T
+}
+$$
+
+其中$y_1^{(1)}=1, y_2^{(2)}=1, y_4^{(3)}=1, y_1^{(4)}=1, y_3^{(5)}=1, 其余都为0$
+
+预测分类(one-hot):
+
+$$
+{
+    \hat{y}^{(1)} = (0.96, 0.02, 0.01, 0.01)^T \\
+    \hat{y}^{(2)} = (0.1, 0.8, 0.02, 0.08)^T \\
+    \hat{y}^{(3)} = (0.2, 0.1, 0.1, 0.6)^T \\
+    \hat{y}^{(4)} = (0.7, 0.1, 0.1, 0.1)^T \\
+    \hat{y}^{(5)} = (0.001, 0.009, 0.8, 0.1)^T
+}
+$$
+
+其中$\hat{y}_1^{(1)}=0.96, \hat{y}_2^{(2)}=0.8, \hat{y}_4^{(3)}=0.6, \hat{y}_1^{(4)}=0.7, \hat{y}_3^{(5)}=0.8$
+
+似然函数(联合):
+
+$$
+L(\{y^{(n)}\}, \{\hat{y}^{(n)}\}) = \prod_{n}^{N}L(y^{(n)}, \hat{y}^{(n)})
+$$
+
+问题是单个数据点对应的似然$L(y^{(n)}, \hat{y}^{(n)})$应该如何计算呢, 从上面的例子分析第1组$\hat{y}^{(1)}$
+根据对应的真实分类应该为下标1, 即$\hat{y}_1^{(1)}=0.96$, 依次得到其余组应该对应的值$\hat{y}_2^{(2)}=0.8, \hat{y}_4^{(3)}=0.6, \hat{y}_1^{(4)}=0.7, \hat{y}_3^{(5)}=0.8$.
+也就是说, 预测分类的概率(向量)值由真实分类数据(样本数据, 已知)指定(下标). 假设第n组数据真实label$y_i^{(n)}$第i分量为1, 则第n组的预测
+分类的概率值可表示为:$L(y^{(n)}, \hat{y}^{(n)}) = \sum_i^5 y_i^{(n)}\hat{y}_i^{(n)}$, 所以所有数据集的似然及对数似然表示为:
+
+$$
+L(\{y^{(n)}\}, \{\hat{y}^{(n)}\}) = \prod_{n}^{N} L(y^{(n)}, \hat{y}^{(n)}) \\
+logL(\{y^{(n)}\}, \{\hat{y}^{(n)}\}) = \sum_n^N logL(y^{(n)}, \hat{y}^{(n)}) = \sum_{n}^{N} [-\sum_i y_i^{(n)}log\hat{y}_i^{(n)}]
+$$
+
+其中i表示标签(one-hot)的下标, N表示数据集总大小, n表示某个数据实例.
+
+从上图看到交叉熵(熵之和)的公式:
+
+$$
+\begin{align*}
+{L}' &= -log L(\{y^{(n)}\}, \{\hat{y}^{(n)}\}) \\
+     &= -log \prod_{n}^{N}L(y^{(n)}, \hat{y}^{(n)}) \\
+     &= -\sum_{n}^{N} logL(y^{(n)}, \hat{y}^{(n)}) \\
+     &= -\sum_{n}^{N} log \sum_i y_i^{(n)}\hat{y}_i^{(n)} \\
+     &= \sum_{n}^{N} [-\sum_i y_i^{(n)}log\hat{y}_i^{(n)}] \\
+     &= \sum_{n}^{N} H(y^{(n)}, \hat{y}^{(n)}) \\
+     &= H(\{y^{(n)}, \hat{y}^{(n)}\})
+\end{align*}
+$$
+
+
 # 交叉熵损失函数
 
 希望理想模型和真实模型分布一致: $P(model) \cong P(trainning) \cong P(real)$, 根据模型概率分布差异计算预测
@@ -117,11 +185,11 @@ $$
 
 ## 定义符号
 
-m: 样本组数
+n: 样本组数
 
 p: 特征个数
 
-n: 分类个数 (多分类: 神经元的个数)
+m: 分类个数 (多分类: 神经元的个数)
 
 $\theta_j$: 第j个参数
 
@@ -166,26 +234,26 @@ $$
 
 其中$I\{y^{(i)}=1\}$ 和 $I\{y^{(i)}=0\}$ 是指示函数, 当{}里成立时为1, 否则为0
 
-m组样本:
+n组样本:
 $$
-\sum_{i=1}^{m}y^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)})\log(1-h_\theta(x^{(i)}))
+\sum_{i=1}^{n}y^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)})\log(1-h_\theta(x^{(i)}))
 $$
 
 计算出的值越大越好, 而我们希望损失函数越小越好, 于是:
 
 $$
-J(\theta)=-\frac{1}{m}\sum_{i=1}^{m}y^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)})\log(1-h_\theta(x^{(i)}))
+J(\theta)=-\frac{1}{n}\sum_{i=1}^{n}y^{(i)}\log(h_\theta(x^{(i)}))+(1-y^{(i)})\log(1-h_\theta(x^{(i)}))
 $$
 
 代入:
 
 $$
 \begin{align*}
-J(\theta) &=-\frac{1}{m}\sum_{i=1}^m \left[-y^{(i)}(\log ( 1+e^{-\theta^T x^{(i)}})) + (1-y^{(i)})(-\theta^T x^{(i)}-\log ( 1+e^{-\theta^T x^{(i)}} ))\right]\\
-  & =-\frac{1}{m}\sum_{i=1}^m \left[y^{(i)}\theta^T x^{(i)}-\theta^T x^{(i)}-\log(1+e^{-\theta^T x^{(i)}})\right]\\
-  & =-\frac{1}{m}\sum_{i=1}^m \left[y^{(i)}\theta^T x^{(i)}-\log e^{\theta^T x^{(i)}}-\log(1+e^{-\theta^T x^{(i)}})\right]\\
-  & =-\frac{1}{m}\sum_{i=1}^m \left[y^{(i)}\theta^T x^{(i)}-\left(\log e^{\theta^T x^{(i)}}+\log(1+e^{-\theta^T x^{(i)}})\right)\right] \\
-  & =-\frac{1}{m}\sum_{i=1}^m \left[y^{(i)}\theta^T x^{(i)}-\log(1+e^{\theta^T x^{(i)}})\right] 
+J(\theta) &=-\frac{1}{n}\sum_{i=1}^n \left[-y^{(i)}(\log ( 1+e^{-\theta^T x^{(i)}})) + (1-y^{(i)})(-\theta^T x^{(i)}-\log ( 1+e^{-\theta^T x^{(i)}} ))\right]\\
+  & =-\frac{1}{n}\sum_{i=1}^n \left[y^{(i)}\theta^T x^{(i)}-\theta^T x^{(i)}-\log(1+e^{-\theta^T x^{(i)}})\right]\\
+  & =-\frac{1}{n}\sum_{i=1}^n \left[y^{(i)}\theta^T x^{(i)}-\log e^{\theta^T x^{(i)}}-\log(1+e^{-\theta^T x^{(i)}})\right]\\
+  & =-\frac{1}{n}\sum_{i=1}^n \left[y^{(i)}\theta^T x^{(i)}-\left(\log e^{\theta^T x^{(i)}}+\log(1+e^{-\theta^T x^{(i)}})\right)\right] \\
+  & =-\frac{1}{n}\sum_{i=1}^n \left[y^{(i)}\theta^T x^{(i)}-\log(1+e^{\theta^T x^{(i)}})\right] 
 \end{align*}
 $$
 
@@ -193,10 +261,10 @@ $$
 
 $$
 \begin{align*}
-\frac{\partial}{\partial\theta_{j}}J(\theta) &=\frac{\partial}{\partial\theta_{j}}\left(\frac{1}{m}\sum_{i=1}^m \left[\log(1+e^{\theta^T x^{(i)}})-y^{(i)}\theta^T x^{(i)}\right]\right)\\
-   & =\frac{1}{m}\sum_{i=1}^m \left[\frac{\partial}{\partial\theta_{j}}\log(1+e^{\theta^T x^{(i)}})-\frac{\partial}{\partial\theta_{j}}\left(y^{(i)}\theta^T x^{(i)}\right)\right]\\
-   & =\frac{1}{m}\sum_{i=1}^m \left(\frac{x^{(i)}_je^{\theta^T x^{(i)}}}{1+e^{\theta^T x^{(i)}}}-y^{(i)}x^{(i)}_j\right)\\
-   & =\frac{1}{m}\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}
+\frac{\partial}{\partial\theta_{j}}J(\theta) &=\frac{\partial}{\partial\theta_{j}}\left(\frac{1}{n}\sum_{i=1}^n \left[\log(1+e^{\theta^T x^{(i)}})-y^{(i)}\theta^T x^{(i)}\right]\right)\\
+   & =\frac{1}{n}\sum_{i=1}^n \left[\frac{\partial}{\partial\theta_{j}}\log(1+e^{\theta^T x^{(i)}})-\frac{\partial}{\partial\theta_{j}}\left(y^{(i)}\theta^T x^{(i)}\right)\right]\\
+   & =\frac{1}{n}\sum_{i=1}^n \left(\frac{x^{(i)}_je^{\theta^T x^{(i)}}}{1+e^{\theta^T x^{(i)}}}-y^{(i)}x^{(i)}_j\right)\\
+   & =\frac{1}{n}\sum_{i=1}^{n}(h_\theta(x^{(i)})-y^{(i)})x_j^{(i)}
 \end{align*}
 $$
 
@@ -212,20 +280,20 @@ $$
 
 **交叉熵就是用来判定实际的输出与期望的输出的接近程度**
 
-(神经网络)如果最后的输出节点数为N, 对于每一个输入样本X, 最后得到的输出为N为数组, 且数组中的每一个维度(元素
-)对应一个类别(标记), 如果一个样本属于k, 则对应输出数组的元素为1, 其他为0, 例如[0, 0, 1, ..., 0](期望输出),
-这个是理想情况下, 真实得到是[0.01, 0.12, 0.7, ...., 0.11](实际输出), 原始输出$[y_1, y_2, ..., y_n]$加上
+(神经网络)如果最后的输出节点数为M, 对于每一个输入样本X, 最后得到的输出为M数组, 且数组中的每一个维度(元素
+)对应一个类别(标记), 如果一个样本属于k, 则对应输出数组的元素为1, 其他为0, 例如$y = (0, 0, 1, ..., 0)$(真实/期望输出),
+这个是理想情况下, 真实得到是$\hat{y} = (0.01, 0.12, 0.7, ...., 0.11)$(实际/模型输出), 原始输出$(y_1, y_2, ..., y_n)$加上
 softmax之后的结果.
 
 softmax函数模型:
 $$
-a_i = softmax(y_i) = \frac{e^{y_i}}{\sum_{j=0}^{n}e^{y_j}}
+a_i = softmax(z_i) = \frac{e^{z_i}}{\sum_{j=0}^{m}e^{z_j}}
 $$
-其中$y_i = \sum_j\theta_{ij}x_{ij} + b$表示输出结果数组中第i个元素值, n表示分类个数. **注意:这是一个样本**
+其中$z_i = \sum_j\theta_{ij}x_{ij} + b$表示输出结果数组中第i个元素值, m表示分类个数. **注意:这是一个样本**
 
 假设概率分布p为期望输出(标签)，概率分布q为实际输出，H(p,q)为交叉熵. 
 
-多分类交叉熵的形式:
+多分类交叉熵的形式(一组输入数据):
 
 $$
 H(p,q)=-\sum _x p(x)log q(x)
@@ -234,12 +302,78 @@ $$
 便于求导写成(以e为底):
 
 $$
-L = -\sum_i y_i ln a_i
+L = -\sum_{i}^{m} y_i ln a_i
 $$
 
-求导:
+其中$y_i$真实样本分类结果, $a_i$第i个神经元经过softmax后的输出值
 
-(待补充)
+为了理解求导过程, 将求和函数拆开:
+
+
+$$
+\begin{align*}
+L &= -(y_1 ln a_1 + y_2 ln a_2 + \cdots + y_i ln a_i + \cdots + y_m ln a_m) \\
+  &= -(y_1 ln \frac{e^{z_1}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + 
+  y_2 ln \frac{e^{z_2}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + \cdots + 
+  y_i ln \frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + \cdots + 
+  y_m ln \frac{e^{z_m}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}})
+\end{align*}
+$$
+
+链式法则求导:
+
+$$
+\begin{align*}
+\frac{\partial L}{\partial z_i} &= \sum_j^m \big(\frac{\partial L_j}{\partial a_j} \frac{\partial a_j}{\partial z_i}\big) \\
+ &= \sum_j^m \big( -y_j\frac{1}{a_j} \frac{\partial a_j}{\partial z_i} \big)
+\end{align*}
+$$
+
+
+对第一个输出$z_1$求偏导(有没有想过为啥不对参数$\theta$):
+
+$$
+\begin{align*}
+\frac{\partial a_1}{\partial z_1} &= \frac{e^{z_1}(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}) -
+ (e^{z_1})^2}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
+ &= \frac{e^{z_1}}{e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}} - (\frac{e^{z_1}}{e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}})^2 \\
+ &= a_1(1 - a_1) \\
+\frac{\partial a_2}{\partial z_1} &= \frac{-e^{z_2} e^{z_1}}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
+ &= -a_1a_2 \\
+\frac{\partial a_3}{\partial z_1} &= \frac{-e^{z_3} e^{z_1}}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
+ &= -a_1a_3
+\end{align*}
+$$
+
+$a_j$中含有所有$z_i$的信息, 所有求导稍微麻烦, (由上面的求导例子)求导分为两种情况: 
+
+$$
+\begin{align*}
+j = i: \\
+\frac{\partial a_i}{\partial z_i} &= \frac{e^{z_i}(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}) -
+ (e^{z_i})^2}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
+ &= \frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}} - (\frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}})^2 \\
+ &= a_i(1 - a_i) \\ \\
+j \neq i: \\
+\frac{\partial a_j}{\partial z_i} &= \frac{-e^{z_j} e^{z_i}}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
+ &= -a_ia_j
+\end{align*}
+$$
+
+综合:
+
+$$
+\begin{align*}
+\frac{\partial L}{\partial z_i} &= \sum_j^m \big(\frac{\partial L_j}{\partial a_j} \frac{\partial a_j}{\partial z_i}\big) \\
+ &= \sum_{j\neq i}^m \big(\frac{\partial L_j}{\partial a_j} \frac{\partial a_j}{\partial z_i}\big) + \sum_{j=i}^m \big(\frac{\partial L_j}{\partial a_j} \frac{\partial a_j}{\partial z_i}\big) \\ 
+ &= \sum_{j\neq i}^m \big( -y_j\frac{1}{a_j} \frac{\partial a_j}{\partial z_i} \big) + \big( -y_j\frac{1}{a_j} \frac{\partial a_j}{\partial z_i} \big) \\
+ &= \sum_{j\neq i}^m \big( -y_j\frac{1}{a_j} (-a_i a_j) + \big( -y_i\frac{1}{a_i} a_i(1-a_i) \big) \\
+ &= \sum_{j\neq i}^m a_iy_j + (-y_i(1-a_i)) \\
+ &= \sum_{j\neq i}^m a_iy_j + a_iy_i -y_i \\
+ &= a_i\sum_jy_j - y_i \\
+ &= a_i - y_i
+\end{align*}
+$$
 
 
 # 参考
@@ -256,6 +390,12 @@ $$
 
 [Softmax][6]
 
+[A Friendly Introduction to Cross-Entropy Loss][7]
+
+[the softmax function and its derivative][8]
+
+[Notes on Backpropagation with Cross Entropy][9]
+
 
 [1]:https://www.jianshu.com/p/b07f4cd32ba6 "jianshu"
 [2]:https://visualstudiomagazine.com/Articles/2017/07/01/Cross-Entropy.aspx
@@ -263,3 +403,6 @@ $$
 [4]:https://www.zhihu.com/question/65288314?sort=created "zhihu"
 [5]:https://blog.csdn.net/jasonzzj/article/details/52017438 "csdn"
 [6]:https://blog.csdn.net/lilong117194/article/details/81542667 "csdn"
+[7]:https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss "github.io"
+[8]:https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/
+[9]:https://doug919.github.io/notes-on-backpropagation-with-cross-entropy/
