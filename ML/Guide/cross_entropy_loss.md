@@ -289,7 +289,7 @@ softmax函数模型:
 $$
 a_i = softmax(z_i) = \frac{e^{z_i}}{\sum_{j=0}^{m}e^{z_j}}
 $$
-其中$z_i = \sum_j\theta_{ij}x_{ij} + b$表示输出结果数组中第i个元素值, m表示分类个数. **注意:这是一个样本**
+其中$z_i = \sum_j\theta_{ij}x_{ij} + b_i$表示输出结果数组中第i个元素值, m表示分类个数. **注意:这是一个样本**
 
 假设概率分布p为期望输出(标签)，概率分布q为实际输出，H(p,q)为交叉熵. 
 
@@ -299,10 +299,10 @@ $$
 H(p,q)=-\sum _x p(x)log q(x)
 $$
 
-便于求导写成(以e为底):
+同型:
 
 $$
-L = -\sum_{i}^{m} y_i ln a_i
+L = -\sum_{i}^{m} y_i log a_i
 $$
 
 其中$y_i$真实样本分类结果, $a_i$第i个神经元经过softmax后的输出值
@@ -312,11 +312,11 @@ $$
 
 $$
 \begin{align*}
-L &= -(y_1 ln a_1 + y_2 ln a_2 + \cdots + y_i ln a_i + \cdots + y_m ln a_m) \\
-  &= -(y_1 ln \frac{e^{z_1}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + 
-  y_2 ln \frac{e^{z_2}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + \cdots + 
-  y_i ln \frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + \cdots + 
-  y_m ln \frac{e^{z_m}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}})
+L &= -(y_1 log a_1 + y_2 log a_2 + \cdots + y_i log a_i + \cdots + y_m log a_m) \\
+  &= -(y_1 log \frac{e^{z_1}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + 
+  y_2 log \frac{e^{z_2}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + \cdots + 
+  y_i log \frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}} + \cdots + 
+  y_m log \frac{e^{z_m}}{e^{z_1}+e^{z_2}+\cdots+e^{z_m}})
 \end{align*}
 $$
 
@@ -330,7 +330,7 @@ $$
 $$
 
 
-对第一个输出$z_1$求偏导(有没有想过为啥不对参数$\theta$):
+对第一个输出$z_1$求偏导:
 
 $$
 \begin{align*}
@@ -375,6 +375,14 @@ $$
 \end{align*}
 $$
 
+另外, $z_i = \sum_k\theta_{ik}x_{ik} + b_i$ 如果$x_{ik}$是上一层的激活函数, 形式变为:$z_i = \sum_k\theta_{ik}a_{k}^{L-1} + b_i$:
+
+$$
+\frac{\partial L}{\partial \theta_{ik}^{L}} = 
+\sum_j^m \frac{\partial L_j}{\partial a_j} \frac{\partial a_j}{\partial z_i} \frac{\partial z_i}{\partial \theta_{ik}} =
+(a_i - y_i) \frac{\partial z_i}{\partial \theta_{ik}} = (a_i - y_i)a_k^{L-1}
+$$
+$a_k^{L-1}$为上一层的第k个激活函数
 
 # 参考
 
@@ -396,6 +404,7 @@ $$
 
 [Notes on Backpropagation with Cross Entropy][9]
 
+[简单易懂的softmax交叉熵损失函数求导][10]
 
 [1]:https://www.jianshu.com/p/b07f4cd32ba6 "jianshu"
 [2]:https://visualstudiomagazine.com/Articles/2017/07/01/Cross-Entropy.aspx
@@ -406,3 +415,4 @@ $$
 [7]:https://rdipietro.github.io/friendly-intro-to-cross-entropy-loss "github.io"
 [8]:https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/
 [9]:https://doug919.github.io/notes-on-backpropagation-with-cross-entropy/
+[10]:https://blog.csdn.net/qian99/article/details/78046329 "csdn"
