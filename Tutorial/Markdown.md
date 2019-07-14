@@ -31,6 +31,8 @@ categories: [Tutorial]
 
 ## Markdown 基本语法
 
+Pandoc pass attributes via {}. see [锚点](#myanchor)
+
 ### 块注释
 
 ```
@@ -147,9 +149,14 @@ __粗体1__
 [1]: http://www.google.com  "谷歌"
 [2]: http://www.baidu.com   "百度"
 
-### 锚点
+### 锚点 {#myanchor}
+
+Pandoc在标题行加`{#myanchor}`, 可以实现锚点.
 
 ```
+
+[AnchorText]{#mytext}
+
 <span id="m1">锚点1：</span>
 anchor1  
 anchor1  
@@ -172,7 +179,11 @@ anchor2
 [锚点2][anchor2]  
 
 [anchor2]:#m2 "anchor alt text"
+
+[锚点3](#mytext)
 ```
+
+[AnchorText]{#mytext}
 
 <span id="m1">锚点1：</span>
 anchor1  
@@ -196,6 +207,8 @@ anchor2
 [锚点2][anchor2]  
 
 [anchor2]:#m2 "anchor alt text"
+
+[锚点3](#mytext)
 
 ### 图片
 
