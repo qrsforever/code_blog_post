@@ -170,7 +170,7 @@ $$
      &= -\sum_{n}^{N} log \sum_i y_i^{(n)}\hat{y}_i^{(n)} \\
      &= \sum_{n}^{N} [-\sum_i y_i^{(n)}log\hat{y}_i^{(n)}] \\
      &= \sum_{n}^{N} H(y^{(n)}, \hat{y}^{(n)}) \\
-     &= H(\{y^{(n)}, \hat{y}^{(n)}\})
+     &= H(\{y^{(n)}\}, \{\hat{y}^{(n)}\})
 \end{align*}
 $$
 
@@ -349,18 +349,18 @@ $a_j$中含有所有$z_i$的信息, 所有求导稍微麻烦, (由上面的求�
 
 $$
 \begin{align*}
-j = i: \\
+j = i: \label{partial_aizi} \tag{1} \\
 \frac{\partial a_i}{\partial z_i} &= \frac{e^{z_i}(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}) -
  (e^{z_i})^2}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
  &= \frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}} - (\frac{e^{z_i}}{e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m}})^2 \\
  &= a_i(1 - a_i) \\ \\
-j \neq i: \\
+j \neq i: \label{partial_aizj} \tag{2} \\
 \frac{\partial a_j}{\partial z_i} &= \frac{-e^{z_j} e^{z_i}}{(e^{z_1}+e^{z_2}+\cdots+e^{i_1}+\cdots+e^{z_m})^2} \\
  &= -a_ia_j
 \end{align*}
 $$
 
-综合:
+综合$\ref{partial_aizi}$ 和 $\ref{partial_aizj}$:
 
 $$
 \begin{align*}
@@ -371,7 +371,7 @@ $$
  &= \sum_{j\neq i}^m a_iy_j + (-y_i(1-a_i)) \\
  &= \sum_{j\neq i}^m a_iy_j + a_iy_i -y_i \\
  &= a_i\sum_jy_j - y_i \\
- &= a_i - y_i
+ &= a_i - y_i \label{partial_Jizi} \tag{3}
 \end{align*}
 $$
 
@@ -407,7 +407,7 @@ $a_k^{L-1}$为上一层的第k个激活函数
 [简单易懂的softmax交叉熵损失函数求导][10]
 
 [1]:https://www.jianshu.com/p/b07f4cd32ba6 "jianshu"
-[2]:https://visualstudiomagazine.com/Articles/2017/07/01/Cross-Entropy.aspx
+[2]:https://visualstudiomagazine.com/Articles/2017/07/01/Cross-Entropy.aspx "good codes"
 [3]:https://www.cnblogs.com/yjmyzz/p/7822990.html "cnblogs"
 [4]:https://www.zhihu.com/question/65288314?sort=created "zhihu"
 [5]:https://blog.csdn.net/jasonzzj/article/details/52017438 "csdn"
