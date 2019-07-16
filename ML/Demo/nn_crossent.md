@@ -1,6 +1,6 @@
 ---
 
-title: 神经网络之交叉熵实例
+title: [原创]神经网络之交叉熵实例
 
 date: 2019-07-01 22:47:37
 tags: [Demo, Python]
@@ -78,15 +78,18 @@ function **softmax**(归一化指数函数).
 
 The input layer: have I nodes, the ith node is $x_i$.
 
-The hiden layer: have J nodes, weight: $\theta_{ij}$, activation function: $tanh^{hiden}(z_j)$, shortening: $a^h(z_j)$.
+The hiden layer: have J nodes, weight: $\theta_{ij}$, activation function: $tanh^{hiden}(z_j)$, shortening: $a^h(z_j)$
+and $z_j = \sum_i^I \theta_{ij} x_i + b_i \label{z_j} \tag{1}$.
 
 The output layer: have K nodes, weight: $\theta_{jk}$, activation function: $softmax^{output}(z_k)$, shortening: $a^o(z_k)$.
+and $z_k = \sum_j^J \theta_{jk} x_j + b_j \label{z_k} \tag{2}$
 
 tanh(z_i) and its derivative (equation only contain $z_i$):
 
+let $tanh(z_i) = \dfrac{1-e^{-2z_i}}{1 + e^{-2z_i}}$ then:
+
 $$
 \begin{align*}
-tanh(z_i) &= \dfrac{1-e^{-2z_i}}{1 + e^{-2z_i}} \\ \\ 
 tanh'(z_i) &= 1 - tanh^2(z_i) \\
          &= (1 + tanh(z_i))(1 - tanh(z_i)) \\
 \end{align*}
@@ -94,16 +97,17 @@ $$
 
 softmax(z_i) and its partial derivative (equation not only contain $z_i$ but also contain other z-nodes in denominator):
 
+let $softmax(z_i) = \dfrac{e^z_i}{\sum_k^K e^{z_k}}$ then:
+
 $$
-\begin{align*}
-softmax(z_i) &= \dfrac{e^z_i}{\sum_k^K e^{zk}} \\ \\
-j = i: \\
-\dfrac{\partial softmax'(z_i)}{\partial z_i} &= \dfrac{e^{z_i} \sum_k^K e^{zk} - e^{z_i}e^{z_i}}{\left(\sum_k^K e^{zk}\right)^2} \\
-& = softmax(z_i)(1 - softmax(z_i)) \\ \\
-j \neq i: \\
-\dfrac{\partial softmax'(z_j)}{\partial z_i} &= \dfrac{0 - e^{z_j} e^{z_i}}{\left(\sum_k^K e^{zk}\right)^2} \\
-& = -softmax(z_i)softmax(z_j)
-\end{align*}
+\left\{\begin{align*}
+\text{ if } i = j; \ \ \dfrac{\partial softmax'(z_i)}{\partial z_i} &= \dfrac{e^{z_i} \sum_k^K e^{zk} - e^{z_i}e^{z_i}}{\left(\sum_k^K e^{z_k}\right)^2} \\
+&= softmax(z_i)(1 - softmax(z_i)) \\
+&= a_i(1-a_i) \label{i_eq_j}  \tag{3} \\ \\
+\text{ if } i \neq j; \ \  \dfrac{\partial softmax'(z_j)}{\partial z_i} &= \dfrac{0 - e^{z_j} e^{z_i}}{\left(\sum_k^K e^{z_k}\right)^2} \\
+&= -softmax(z_i)softmax(z_j) \\
+&= -a_ia_j  \label{i_neq_j} \tag{4}
+\end{align*}\right.
 $$
 
 ## SE and CE
@@ -114,15 +118,64 @@ $$
 Loss = \sum_{k=1}^{K} \dfrac{1}{2} \left(a^{o}(z_k) - y_k\right)^2
 $$
 
-the partial derivative of $z_k$ (the kth output node):
+with $\ref{i_eq_j}$ and $\ref{i_neq_j}$, so the partial derivative of $z_k$ (the kth output node):
 
 $$
 \begin{align*}
-\dfrac{\partial Loss}{\partial z_i} &= \dfrac{\partial \sum_{k=1}^{K} \dfrac{1}{2} \left(a^{o}(z_k) - y_k\right)^2}{\partial z_i} \\
-& = \dfrac {\dfrac{1}{2} \left(a^{o}(z_1) - y_1\right)^2}{\partial z_i} +
-    \dfrac {\dfrac{1}{2} \left(a^{o}(z_2) - y_2\right)^2}{\partial z_i} \cdots +
-    \dfrac {\dfrac{1}{2} \left(a^{o}(z_K) - y_K\right)^2}{\partial z_i} \\
+\dfrac{\partial Loss}{\partial z_i} &= \dfrac{\partial \sum_{k=1}^{K} \dfrac{1}{2} \left( a^{o}(z_k) - y_k\right )^2}{\partial z_i}  \\
+&= \sum_{k=1}^K \left(a^o(z_k) - y_k \right) \dfrac{\partial a^o(z_k)}{\partial z_i} \\ 
+&= \sum_{k \neq i}^K \left(a^o(z_i) - y_i \right) \dfrac{\partial a^o(z_k)}{\partial z_i}
+ + \sum_{k=i}^K \left(a^o(z_i) - y_i \right) \dfrac{\partial a^o(z_i)}{\partial z_i} \\
+&= \sum_{k \neq i}^K \left(a^o(z_k) - y_k \right) \left( -a^o(z_k)a^o(z_i) \right ) 
+ + \left(a^o(z_i) - y_i \right )a^o(z_i) \left( 1-a^o(z_i) \right ) \\
+&\approx \left(a^o(z_i) - y_i \right )a^o(z_i) \left( 1-a^o(z_i) \right ) \label{se_z_k} \tag{5}
 \end{align*}
 $$
 
+above, the last equation
+$\ref{se_z_k}$ is because the softmax is 'one-hot' encoding, $\text{ if } k \neq i, \text{ then } a^o(z_k) a^o(z_i) \approx 0$
+
+-----------------------------------------------------------------
+
+CE loss function
+
+$$
+Loss = \sum_{k=1}^K H\big(y_k, a^o(z_k)\big) = \sum_{k=1}^K y_k log a^o(z_k)
+$$
+
+so the partial derivative of $z_k$, for short: Loss to L, $a^o(z_i)$ to $a_i$:
+
+$$
+\begin{align*}
+\dfrac{\partial L}{\partial z_i} &= \sum_k^K \big(\frac{\partial L}{\partial a_k} \frac{\partial a_k}{\partial z_i}\big) \\
+ &= \sum_{k\neq i}^K \big(\frac{\partial L}{\partial a_k} \frac{\partial a_k}{\partial z_i}\big)
+  + \sum_{k=i}^K \big(\frac{\partial L}{\partial a_k} \frac{\partial a_k}{\partial z_i}\big) \\ 
+ &= \sum_{k\neq i}^K \big( -y_k\frac{1}{a_k} \frac{\partial a_k}{\partial z_i} \big)
+  + \big( -y_k\frac{1}{a_k} \frac{\partial a_k}{\partial z_i} \big) \\
+ &= \sum_{k\neq i}^K \big( -y_k\frac{1}{a_k} (-a_i a_k) + \big( -y_i\frac{1}{a_i} a_i(1-a_i) \big) \\
+ &= \sum_{k\neq i}^K a_iy_k + (-y_i(1-a_i)) \\
+ &= \sum_{k\neq i}^K a_iy_k + a_iy_i -y_i \\
+ &= a_i\sum_k^K y_k - y_i \\
+ &= a_i - y_i \label{ce_z_k} \tag{6}
+\end{align*}
+$$
+
+we call $\frac{\partial L}{\partial z_i}$ above is the middle calculate **signal**, the last output layer
+as **oSignal**, the hiden layer as **hSignal**, the signal equation is different between SE and CE.
+
+
+## Gradient
+
+look back $\ref{z_j}$ and $\ref{z_k}$.
+
+below is the weight **hoGrad** as the hiden node to output node just is the partial derivative of Loss to $\theta$,
+the $hoGrad_{jk}$ denote the partial derivative of Loss to the weight where from the jth node in hiden layer and target to the ith output node:
+
+$$
+\text{hoGrad}_{jk} = \dfrac{\partial L}{\partial \theta_{jk}} = 
+\dfrac{\partial L}{\partial z_k} \dfrac{\partial z_k}{\partial \theta_{jk}} =
+\dfrac{\partial L}{\partial z_k} a^h(z_j) = \text{oSignal}_k\ a^h(z_j)
+$$
+
+and the bias **obGrad**: $\text{obGrad}_k = \dfrac{\partial L}{\partial b_{jk}} = \text{oSignal}_k\ * 1$
 
