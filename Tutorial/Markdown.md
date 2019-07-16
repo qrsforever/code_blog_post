@@ -151,9 +151,9 @@ __粗体1__
 
 ### 锚点 {#myanchor}
 
-Pandoc在标题行加`{#myanchor}`, 可以实现锚点.
-
 ```
+
+Pandoc在标题行加`{#myanchor}`, 可以实现锚点.
 
 [AnchorText]{#mytext}
 
