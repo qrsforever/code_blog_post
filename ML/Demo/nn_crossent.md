@@ -126,6 +126,8 @@ $$
 Loss = \sum_{k=1}^{K} \dfrac{1}{2} \left(a^{o}(z_k) - y_k\right)^2
 $$
 
+MSE(mean squared error): $\dfrac{Loss}{K}$
+
 with $\ref{i_eq_j}$ and $\ref{i_neq_j}$, so the partial derivative of $z_k$ (the kth output node):
 
 $$
@@ -148,8 +150,10 @@ $\ref{se_z_k}$ is because the softmax is 'one-hot' encoding, $\text{ if } k \neq
 CE loss function
 
 $$
-Loss = \sum_{k=1}^K H\big(y_k, a^o(z_k)\big) = \sum_{k=1}^K y_k log a^o(z_k)
+Loss = -\sum_{k=1}^K H\big(y_k, a^o(z_k)\big) = -\sum_{k=1}^K y_k log a^o(z_k)
 $$
+
+MCEE(mean crossentropy error): $\dfrac{Loss}{K}$
 
 so the partial derivative of $z_k$, for short: Loss to L, $a^o(z_i)$ to $a_i$:
 
@@ -252,4 +256,5 @@ $$
 
 ## Codes
 
+{% asset_jupyter python3 notebook/nn_crossent.ipynb %}
 
