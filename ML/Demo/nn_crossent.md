@@ -1,6 +1,6 @@
 ---
 
-title: [原创]神经网络之交叉熵实例
+title: (原创)神经网络之交叉熵实例
 
 date: 2019-07-01 22:47:37
 tags: [Demo, Python]
@@ -8,6 +8,14 @@ categories: [ML]
 
 ---
 
+
+<!-- vim-markdown-toc GFM -->
+
+* [Intro](#intro)
+* [SE and CE](#se-and-ce)
+* [Gradient](#gradient)
+
+<!-- vim-markdown-toc -->
 
 ```
     ____________________________________________________
@@ -84,7 +92,7 @@ and $z_j = \sum_i^I \theta_{ij} x_i + b_i \label{z_j} \tag{1}$.
 The output layer: have K nodes, weight: $\theta_{jk}$, activation function: $softmax^{output}(z_k)$, shortening: $a^o(z_k)$.
 and $z_k = \sum_j^J \theta_{jk} x_j + b_j \label{z_k} \tag{2}$
 
-tanh(z_i) and its derivative (equation only contain $z_i$):
+$tanh(z_i)$ and its derivative (equation only contain $z_i$):
 
 let $tanh(z_i) = \dfrac{1-e^{-2z_i}}{1 + e^{-2z_i}}$ then:
 
@@ -95,7 +103,7 @@ tanh'(z_i) &= 1 - tanh^2(z_i) \\
 \end{align*}
 $$
 
-softmax(z_i) and its partial derivative (equation not only contain $z_i$ but also contain other z-nodes in denominator):
+$softmax(z_i)$ and its partial derivative (equation not only contain $z_i$ but also contain other z-nodes in denominator):
 
 let $softmax(z_i) = \dfrac{e^z_i}{\sum_k^K e^{z_k}}$ then:
 
@@ -163,7 +171,6 @@ $$
 we call $\frac{\partial L}{\partial z_i}$ above is the middle calculate **signal**, the last output layer
 as **oSignal**, the hiden layer as **hSignal**, the signal equation is different between SE and CE.
 
-
 ## Gradient
 
 look back $\ref{z_j}$ and $\ref{z_k}$.
@@ -178,4 +185,71 @@ $$
 $$
 
 and the bias **obGrad**: $\text{obGrad}_k = \dfrac{\partial L}{\partial b_{jk}} = \text{oSignal}_k\ * 1$
+
+## Hiden
+
+let $a_k$ short for $a^o(z_k)$ 
+
+let $a_j$ short for $a^h(z_j)$
+
+let **oSignal** short for list $\dfrac{\partial Loss}{\partial z_k}; k \in [1, K]$
+
+let **hSignal** short for list $\dfrac{\partial Loss}{\partial z_j}; j \in [1, J]$
+
+if $z_k = \theta_{jk} a_j + b_k;\ a_j = tanh(z_j);\ z_j = \theta_{ij} x_i + b_j$, then:
+$$
+\left\{\begin{matrix}
+\dfrac{\partial z_k}{\partial \theta_{jk}} = a_j; & \dfrac{\partial z_k}{\partial b_k} = 1 \\
+\dfrac{\partial z_j}{\partial \theta_{ij}} = x_i; & \dfrac{\partial z_j}{\partial b_j} = 1 \\
+\end{matrix}\right. \label{d_weight_bias} \tag{7}
+$$
+
+and 
+
+$$
+\begin{matrix}
+\dfrac{\partial z_k}{\partial a_j} = \theta_{jk}; & \dfrac{\partial z_j}{\partial x_i} = \theta_{ij} \\
+\end{matrix} \label{d_a_x} \tag{8}
+$$
+
+and
+
+$$
+\begin{align*}
+\dfrac{\partial a_j}{\partial z_j} &= \dfrac{\partial tanh(z_j)}{\partial z_j} \\
+&= \big(1+tanh(z_j)\big)\big(1-tanh(z_j)\big) \\
+&= (1+a_j)(1-a_j)
+\end{align*} \label{d_tanh} \tag{9}
+$$
+
+from $\ref{d_weight_bias}$, $\ref{d_a_x}$ and $\ref{d_tanh}$, we can get
+the partial derivative of the jth hide node $z_j$ by Loss is (each output node contain the weight of $z_j$):
+
+$$
+\begin{align*}
+\text{hSignal}_j = \dfrac{\partial Loss}{\partial z_j} &= \sum_{k=1}^{K} \dfrac{\partial Loss}{\partial a_k}
+    \dfrac{\partial a_k}{\partial z_k} \dfrac{\partial z_k}{\partial a_j} \dfrac{\partial a_j}{\partial z_j}  \\
+ &= \sum_{k=1}^{K} \dfrac{\partial Loss}{\partial z_k} 
+    \dfrac{\partial z_k}{\partial a_j} \dfrac{\partial a_j}{\partial z_j} \\
+ &= \sum_{k=1}^{K} \text{oSignal}_k \dfrac{\partial z_k}{\partial a_j} \dfrac{\partial a_j}{\partial z_j} \\
+ &= \sum_{k=1}^{K} \text{oSignal}_k \theta_{jk} \dfrac{\partial a_j}{\partial z_j} \\
+ &= \dfrac{\partial a_j}{\partial z_j} \sum_{k=1}^{K} \text{oSignal}_k \theta_{jk} \\
+ &= (1+a_j)(1-a_j) \sum_{k=1}^{K} \text{oSignal}_k \theta_{jk} \label{hsignal_z_j} \tag{10} \\
+\end{align*}
+$$
+
+-----------------------------------------------------------------
+
+for the partial derivative of the jth hide node's weight:
+
+$$
+\begin{align*}
+\text{ihGrad}_{ij} &= \dfrac{\partial Loss}{\partial \theta_{ij}} \\
+ &= \dfrac{\partial Loss}{\partial z_j} \dfrac{\partial z_j}{\partial \theta_{ij}} \\
+ &= \text{hSignal}_j * x_i
+\end{align*}
+$$
+
+## Codes
+
 
