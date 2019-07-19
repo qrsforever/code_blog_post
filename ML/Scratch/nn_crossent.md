@@ -1,9 +1,9 @@
 ---
 
-title: (原创)神经网络之交叉熵实例
+title: (原创)神经网络之交叉熵代码实例
 
 date: 2019-07-01 22:47:37
-tags: [Demo, Python]
+tags: [Scratch, Python]
 categories: [ML]
 
 ---
@@ -14,8 +14,12 @@ categories: [ML]
 * [Intro](#intro)
 * [SE and CE](#se-and-ce)
 * [Gradient](#gradient)
+* [Hiden](#hiden)
+* [Codes](#codes)
 
 <!-- vim-markdown-toc -->
+
+<!-- more -->
 
 ```
     ____________________________________________________
@@ -77,9 +81,7 @@ outputNode: K                     |    |   _____________________________________
 
 ```
 
-<!-- more -->
-
-## Intro
+# Intro
 
 Above drawit, only one hiden layer with activation funciton **tanh**, and the output layer with activation
 function **softmax**(归一化指数函数).
@@ -118,7 +120,7 @@ $$
 \end{align*}\right.
 $$
 
-## SE and CE
+# SE and CE
 
 SE loss function:
 
@@ -175,7 +177,7 @@ $$
 we call $\frac{\partial L}{\partial z_i}$ above is the middle calculate **signal**, the last output layer
 as **oSignal**, the hiden layer as **hSignal**, the signal equation is different between SE and CE.
 
-## Gradient
+# Gradient
 
 look back $\ref{z_j}$ and $\ref{z_k}$.
 
@@ -190,7 +192,7 @@ $$
 
 and the bias **obGrad**: $\text{obGrad}_k = \dfrac{\partial L}{\partial b_{jk}} = \text{oSignal}_k\ * 1$
 
-## Hiden
+# Hiden
 
 let $a_k$ short for $a^o(z_k)$ 
 
@@ -254,7 +256,7 @@ $$
 \end{align*}
 $$
 
-## Codes
+# Codes
 
 {% asset_jupyter python3 notebook/nn_crossent.ipynb %}
 

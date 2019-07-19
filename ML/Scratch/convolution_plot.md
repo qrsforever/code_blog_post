@@ -3,7 +3,7 @@
 title: (原创)用数据模拟卷积-初探
 
 date: 2019-06-14 16:13:39
-tags: [Demo, Python]
+tags: [Scracth, Python]
 categories: [ML]
 
 ---
