@@ -10,6 +10,8 @@ categories: [ML]
 
 <!-- vim-markdown-toc GFM -->
 
+* [Description](#description)
+* [Drawit](#drawit)
 * [Codes](#codes)
 * [References](#references)
 
@@ -19,28 +21,37 @@ categories: [ML]
 
 # Description
 
-Implement the backpropagation algorithm in python, but use third libs(numpy, pandas...)
+Implement the backpropagation algorithm in python, but not use third libs(numpy, pandas...)
+
+Demo is a standard neural network structure: one input layer, one hiden layer and one output layer.
+
+The activite function of the hiden and ouput nodes is sigmoid.
+
+The evaluation of the backpropagation algorithm use cross validation K-folds which make good use for limited dataset.
+
 
 # Drawit
 
 ```
 
 
-                                                neuron
-                                              ***********
-                                           ***           ***
-                                         **       output    **
-                                        *                     *
-                                        *   sigmoid(WX + b)   *
-                                        *                     *
-                                         **      weights    **
-                                           ***           ***
-                                              ***********   delta
+                             neuron
+                           ***********
+                        ***           ***
+                      **       output    **
+                     *                     *
+                     *   sigmoid(WX + b)   *
+                     *                     *
+                      **      weights    **
+                        ***           ***
+                           ***********   delta: the middle signal. the derivative of the final activite function
 
 
 ```
 
 # Codes
+
+[百度云盘Dataset](https://pan.baidu.com/s/1gAFZ9gSf4pHJBt5W6_PgPQ "提取码: gxk4")
 
 {% asset_jupyter python3 notebook/backpropagation_algorithm.ipynb %}
 
