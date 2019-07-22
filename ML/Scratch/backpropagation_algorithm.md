@@ -10,11 +10,35 @@ categories: [ML]
 
 <!-- vim-markdown-toc GFM -->
 
+* [Codes](#codes)
 * [References](#references)
 
 <!-- vim-markdown-toc -->
 
 <!-- more -->
+
+# Description
+
+Implement the backpropagation algorithm in python, but use third libs(numpy, pandas...)
+
+# Drawit
+
+```
+
+
+                                                neuron
+                                              ***********
+                                           ***           ***
+                                         **       output    **
+                                        *                     *
+                                        *   sigmoid(WX + b)   *
+                                        *                     *
+                                         **      weights    **
+                                           ***           ***
+                                              ***********   delta
+
+
+```
 
 # Codes
 
@@ -26,3 +50,5 @@ categories: [ML]
 1. `https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions/`
 
 2. `https://machinelearningmastery.com/implement-backpropagation-algorithm-scratch-python/`
+
+3. `https://www.jianshu.com/p/284581d9b189`
