@@ -10,26 +10,34 @@ categories: [ML]
 
 <!-- vim-markdown-toc GFM -->
 
+* [Mode](#mode)
 * [Codes](#codes)
-* [TODO](#todo)
 * [References](#references)
 
 <!-- vim-markdown-toc -->
 
 <!-- more -->
 
+# Mode
+
+
+## full
+
+![](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-full.png "full mode"){ width=300px }
+
+
+## same
+
+![](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-same.png "samemode"){ width=300px }
+
+
+## valid
+
+![](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-valid.png "valid mode"){ width=300px }
+
 # Codes
 
 {% asset_jupyter python3 notebook/conv_mode.ipynb %}
-
-# TODO
-
-![Conv Full](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-full.png)
-
-![Conv Same](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-same.png)
-
-![Conv Valid](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-valid.png)
-
 
 # References
 

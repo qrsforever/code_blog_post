@@ -219,6 +219,10 @@ anchor2
 </div>
 [id]: /img/avatar.jpg    "Title"
 
+pandoc:
+
+![link text](/img/avatar.jpg){ width=50% height=40px }
+
 ```
 
 <div align='center'>
@@ -226,6 +230,10 @@ anchor2
 引用方式：![alt text][id] 
 </div>
 [id]: /img/avatar.jpg    "Title"
+
+pandoc:
+
+![link text](/img/avatar.jpg){ width=50% height=40px }
 
 ### 代码
 
