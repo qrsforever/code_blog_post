@@ -18,6 +18,14 @@ categories: [Tutorial]
 
 [原文](https://hexo.io/docs/tag-plugins.html)
 
+# Requirements
+
+```shell
+sudo apt install pandoc
+sudo apt install nbconvert
+sudo apt install texlive
+```
+
 <!-- more -->
 
 # Tag Plugins
