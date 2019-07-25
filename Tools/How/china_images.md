@@ -24,17 +24,63 @@ categories: [Tools]
 
 modify `/etc/apt/sources.list`
 
+## 阿里
+
 ```
-deb http://mirrors.aliyun.com/ubuntu/ vivid main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ vivid-security main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ vivid-updates main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ vivid-proposed main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ vivid-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ vivid main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ vivid-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ vivid-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ vivid-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ vivid-backports main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu xenial main restricted
+deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial main restricted multiverse universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted multiverse universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse
+deb http://archive.canonical.com/ubuntu xenial partner
+deb-src http://archive.canonical.com/ubuntu xenial partner
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted multiverse universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse
+```
+
+## 清华大学
+
+```
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial universe
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates universe
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial multiverse
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates multiverse
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security universe
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security multiverse
+```
+
+## 东北大学
+
+```
+deb-src http://mirror.neu.edu.cn/ubuntu/ xenial main restricted
+deb http://mirror.neu.edu.cn/ubuntu/ xenial main restricted
+deb-src http://mirror.neu.edu.cn/ubuntu/ xenial restricted multiverse universe
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-updates main restricted
+deb-src http://mirror.neu.edu.cn/ubuntu/ xenial-updates main restricted multiverse universe
+deb http://mirror.neu.edu.cn/ubuntu/ xenial universe
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-updates universe
+deb http://mirror.neu.edu.cn/ubuntu/ xenial multiverse
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-updates multiverse
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb-src http://mirror.neu.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb http://archive.canonical.com/ubuntu xenial partner
+deb-src http://archive.canonical.com/ubuntu xenial partner
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-security main restricted
+deb-src http://mirror.neu.edu.cn/ubuntu/ xenial-security main restricted multiverse universe
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-security universe
+deb http://mirror.neu.edu.cn/ubuntu/ xenial-security multiverse
 ```
 
 # mvn
@@ -94,7 +140,7 @@ set your project's settings.xml
 
 # pip
 
-modify `~/.config/pip/pip.conf`
+modify `~/.config/pip/pip.conf`, then don't use sudo
 
 ```conf
 [global]

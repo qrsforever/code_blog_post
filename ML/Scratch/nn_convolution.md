@@ -82,20 +82,20 @@ the forward feed and back propagation.
 
 # References
 
-#. `http://www.songho.ca/dsp/convolution/convolution2d_example.html?source=post_page`
+#. http://www.songho.ca/dsp/convolution/convolution2d_example.html?source=post_page
 
-#. `https://grzegorzgwardys.wordpress.com/2016/04/22/8/`
+#. https://grzegorzgwardys.wordpress.com/2016/04/22/8/
 
-#. `https://www.analyticsvidhya.com/blog/2018/12/guide-convolutional-neural-network-cnn/`
+#. https://www.analyticsvidhya.com/blog/2018/12/guide-convolutional-neural-network-cnn/
 
-#. `https://becominghuman.ai/only-numpy-implementing-convolutional-neural-network-using-numpy-deriving-forward-feed-and-back-458a5250d6e4`
+#. https://becominghuman.ai/only-numpy-implementing-convolutional-neural-network-using-numpy-deriving-forward-feed-and-back-458a5250d6e4
 
-#. `https://www.kdnuggets.com/2018/04/building-convolutional-neural-network-numpy-scratch.html`
+#. https://www.kdnuggets.com/2018/04/building-convolutional-neural-network-numpy-scratch.html
 
-#. `https://codereview.stackexchange.com/questions/133251/a-cnn-in-python-without-frameworks`
+#. https://codereview.stackexchange.com/questions/133251/a-cnn-in-python-without-frameworks
 
-#. `https://datascience-enthusiast.com/DL/Convolution_model_Step_by_Stepv2.html`
+#. https://datascience-enthusiast.com/DL/Convolution_model_Step_by_Stepv2.html
 
-#. `https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions`
+#. https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions
 
-#. `https://qrsforever.github.io/2019/07/23/ML/Guide/conv_mode`
+#. https://qrsforever.github.io/2019/07/23/ML/Guide/conv_mode

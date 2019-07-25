@@ -8,6 +8,29 @@ categories: [Note]
 
 ---
 
+<!-- vim-markdown-toc GFM -->
+
+* [AI](#ai)
+* [Other](#other)
+    * [印度极客门户](#印度极客门户)
+
+<!-- vim-markdown-toc -->
+<!-- more -->
+
+# AI
+
+#. http://neuralnetworksanddeeplearning.com/about.html
+
+    The purpose of this book is to help you master the core concepts of neural networks, including modern
+    techniques for deep learning. After working through the book you will have written code that uses
+    neural networks and deep learning to solve complex pattern recognition problems. And you will have a
+    foundation to use neural networks and deep learning to attack problems of your own devising.
+
+#. https://datascience-enthusiast.com/DL/dlindex.html
+
+    个人博客(Fisseha Berhane), 其中Deep Learning几篇文章可以参考学习.
+
+# Other
 
 ## 印度极客门户
 

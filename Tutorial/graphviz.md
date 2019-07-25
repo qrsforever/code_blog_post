@@ -32,7 +32,7 @@ categories: [Tutorial]
 
 ```shell
 sudo apt install pandoc
-sudo apt install graphviz
+sudo apt install graphviz graphviz-dev
 sudo apt install dot2tex
 sudo pip3 install pygraphviz pandocfilters
 ```
