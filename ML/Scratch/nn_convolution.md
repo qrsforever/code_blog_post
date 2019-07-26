@@ -17,7 +17,77 @@ categories: [ML]
 
 <!-- more -->
 
-# Standard Neural Network and Convolution Nerual Network
+# Introduction
+
+## Notation
+
+symbols definitions used in full text is [here](https://qrsforever.github.io/2019/06/25/Tools/Math/symbols/#机器学习)
+
+## Full Connected Network
+
+for all errors(loss) function is:
+
+$$
+    \{E^{(n)}\} = \dfrac{1}{2} \sum^{N}_{n = 1} \sum^{c}_{k = 1} \big( t^{(n)}_k - y^{(n)}_k \big)^2
+$$
+
+for one item error of them is:
+
+$$
+    E^{(n)} = E = \dfrac{1}{2} \sum^{c}_{k = 1} \big( t^{(n)}_k - y^{(n)}_k \big)^2
+                = \dfrac{1}{2} \begin{Vmatrix} \mathbf{t}^{(n)} - \mathbf{y}^{(n)} \end{Vmatrix}^2_2
+                \label{error} \tag{1}
+$$
+
+at times, we simplify the equation by emitting the superscript ${(n)}$, just below:
+
+$$
+    E = \dfrac{1}{2} \begin{Vmatrix} \mathbf{t} - \mathbf{y} \end{Vmatrix}^2_2 \label{error_one} \tag{2}
+$$
+
+
+the last output layer $\mathbf{y}^{[L]}$ breif as:
+
+$$
+    \begin{align*}
+        \mathbf{y} &= \mathbf{a}^{[L]} \\
+            &= \mathbf{a}^{[L]}\color{Red}{\bigg(\mathbf{z}^{[L]}\bigg)} \\
+            &= \mathbf{a}^{[L]}\color{Red}{\bigg(\mathbf{W}^{[L]}
+               \mathbf{a}^{[L-1]}\color{Blue}{\big(\mathbf{z}^{[L-1]}\big)} + \mathbf{b}^{[L]}\bigg)} \\
+            &= \mathbf{a}^{[L]}\color{Red}{\bigg(\mathbf{W}^{[L]}
+               \mathbf{a}^{[L-1]}\color{Blue}{\big(\mathbf{W}^{[L-1]}
+               \mathbf{a}^{[L-2]}\color{Green}{(\mathbf{z}^{[L-2]})} + \mathbf{b}^{[L-1]}\big)} + \mathbf{b}^{[L]}\bigg)} \\
+            &= \mathbf{a}^{[L]}\color{Red}{\bigg(\mathbf{W}^{[L]}
+               \mathbf{a}^{[L-1]}\color{Blue}{\big(\mathbf{W}^{[L-1]}
+               \mathbf{a}^{[L-2]}\color{Green}{(\mathbf{W}^{[L-2]}
+               \mathbf{a}^{[L-3]}\color{Black}{(\mathbf{z}^{[L-3]})} + \mathbf{b}^{[L-2]})} + \mathbf{b}^{[L-1]}\big)} + \mathbf{b}^{[L]}\bigg)} \\
+            &= \cdots
+    \end{align*} \label{y_equ} \tag{3}
+$$
+
+let's have a look the derivative $\delta^{[L]}$ of the error with respect to the neurons $z^{[L]}$ of the last output layer:
+
+from the equation $\ref{error_one}$
+
+$$
+    \dfrac{\partial E}{\partial {z^{[L]}}}
+        = (\mathbf{y}-\mathbf{t}) \odot \dfrac{\partial \mathbf{a}^{[L]}(z^{[L]})}{\partial {z^{[L]}}}
+$$
+
+pre layer of L, using the chain rule of derivative:
+
+$$
+    \begin{align*}
+        \dfrac{\partial E}{\partial {z^{[L-1]}}} \\
+            =  \dfrac{\partial \mathbf{a}^{[L-1]}(z^{[L-1]})}{\partial {z^{[L-1]}}}
+    \end{align*}
+$$
+
+
+## Convolutional Neural Network
+
+
+## Standard Neural Network and Convolution Nerual Network
 
 The difference between them is the calculate, one is matrix multiplication and another is convolution,
 apart from this, they are nearly the same.
@@ -40,7 +110,7 @@ matrix:
   |                      |          +-------------+           +--------------+
   |  7       8       9   |
   |                      |          first rotate 180     mode = "valid"
-  +----------------------+
+ +----------------------+
           Image               Kernel or Convolution matrices or Mask
           3 X 3                           2 X 2
 
@@ -95,6 +165,8 @@ the forward feed and back propagation.
 #. https://codereview.stackexchange.com/questions/133251/a-cnn-in-python-without-frameworks
 
 #. https://datascience-enthusiast.com/DL/Convolution_model_Step_by_Stepv2.html
+
+#. [Notes on Convolutional Neural Networks](http://cogprints.org/5869/1/cnn_tutorial.pdf)
 
 #. https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions
 
