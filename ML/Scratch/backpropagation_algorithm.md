@@ -29,6 +29,16 @@ The activite function of the hiden and ouput nodes is sigmoid.
 
 The evaluation of the backpropagation algorithm use cross validation K-folds which make good use for limited dataset.
 
+# Algorithm
+
+The backpropagation equations provide us with a way of computing the gradient of the cost function. Let's explicitly write this out in the form of an algorithm:
+
+1. Input x: Set the corresponding activation $a^1$ for the input layer.
+2. Feedforward: For each $l = 2, 3, \ldots, L$ compute $z^l=w^la^{l−1}+b^l and a^l=\sigma(z^l)$.
+3. Output error $\delta^L$: Compute the vector $\nabla_a C \odot \sigma'(z^L)$.
+4. Backpropagate the error: For each $l = L-1, L-2, \ldots, 2$ compute $\delta^{l} = ((w^{l+1})^T \delta^{l+1}) \odot \sigma'(z^{l})$.
+5. Output: The gradient of the cost function is given by $\frac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j$ and $\frac{\partial C}{\partial b^l_j} = \delta^l_j$.
+
 
 # Drawit
 

@@ -166,7 +166,9 @@ the forward feed and back propagation.
 
 #. https://datascience-enthusiast.com/DL/Convolution_model_Step_by_Stepv2.html
 
-#. [Notes on Convolutional Neural Networks](http://cogprints.org/5869/1/cnn_tutorial.pdf)
+#. [Notes on Convolutional Neural Networks](http://cogprints.org/5869/1/cnn_tutorial.pdf "recommended")
+
+#. [How the backpropagation algorithm works](http://neuralnetworksanddeeplearning.com/chap2.html "recommended")
 
 #. https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions
 
