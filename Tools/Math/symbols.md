@@ -65,16 +65,30 @@ $Z(x)$ | 规范化因子
 
 符号  |  描述
 ------|-------
-$N$ | 训练总组数(training examples)
-$c$ | 分类数classes
-$x_i$ | 变量x(向量|数组)的第$i^{th}$项
-$\mathbf{W}^{[l]}, W^{[l]}_i, b^{[l]}_i$ | 第l层对象的神经元的参数, l层第$i^{th}$神经元的权重和偏袒
-$x^{(n)}$ | 则第n组的预测训练数据输入
-$y_k^{(n)}, t_k^{(n)}$ | 分别表示第n组数据计算的第$k^{th}$分量输出值(最后一层神经元), 对应的目标值(target)
-$y_i^{(n)}$ | 第n组训练数据输出的第$i^{th}$分量(神经元)
-$\{x^{(n)}\}$ | 全部训练数据输入集合或向量
-$n_H^{[l]},n_W^{[l]},n_C^{[l]}$ | 分别表示第$l^{th}$层的宽,高,通道数目
-$\{E^{(n)}\}, E^{(n)}, E$ | 总损失函数, 特定第n组训练数据的损失函数
-$\mathbf{z}^{[l]} = \mathbf{W}^{[l]} \mathbf{x}^{[l]} + b^{[l]}$ | 第$l^{th}$的响应变量向量(对前一层或输入层的信号)
-$a_j^{[l]}$ | 第$l^{th}$层第$j^{th}$神经元的激活变量 $\begin{eqnarray} a^{[l]}_j = f\left( \sum_k w^{[l]}_{jk} a^{[l-1]}_k + b^{[l]}_j \right) \end{eqnarray}$
-$f^{(l)}_a(z)$ | 第l^{th}层激活函数: sigmoid, tanh, relu...
+$N, c$ | the total number of training examples, number of classes of output
+$x^{(n)}, y^{(n)}$ | the superscript ${(n)}$ denote the variable for the $n^{th}$ individual training example
+$x^{[l]}, w^{[l]}, a^{[l]}$ | the superscript ${[l]}$ denote the $l^{th}$ layer, can drop $[]$ on single training example
+$n_H^{[l]},n_W^{[l]},n_C^{[l]}$ | the numbers of height, width, channel in the $l^{th}$ layer
+$x_i, y_i, b_i$ | the subscript $i$ denote the $i^{th}$ elem of the vector $\mathbf{x, y, b}$
+$w^l_{jk}$ | weights for connections from the $k^{th}$ neuron in the $(l-1)^{th}$ layer to the $j^{th}$ neuon in the $l^{th}$
+$b^l_j$ | the the bias of the $j^{th}$ neuron in the $l^{th}$ layer
+$a^l_j$ | the activation of the $j^{th}$ neuron in the $l^{th}$ layer
+$\sigma\left(\right)$ | the activation function(or vectorized activation function)
+$\mathbf{z}^l = \mathbf{w}^l a^{l-1}+\mathbf{b}^l$ | the intermediate quantity(vector) called weighted input
+$\begin{eqnarray} a^{l}_j = \sigma\left( \sum_k w^{l}_{jk} a^{l-1}_k + b^l_j \right)\end{eqnarray}$ | the the activation $a^{l}_j$ in the  in component form
+$\begin{eqnarray} a^{l} = \sigma(w^l a^{l-1}+b^l) = \sigma(z^l)\end{eqnarray}$ | the the activation $a^{l}$ in a matrix form
+$Cost(), C, Loss(), L, Error(), E$ | the cost function
+$\partial C / \partial w, \partial C / \partial b$ | the partical derivatives that cost function with respect to any weights w and bias b in the network
+$y = y(x), t = t(x)$ | the corresponding desired ouput over the individual input x
+$s \odot t$ | element wise product of the two vectors
+$\sigma^l_j = \dfrac{\partial C}{\partial z^l_j}$ | the error of the $j^{th}$ neuron in the $l^{th}$ layer
+$\nabla_a C$ | vector of the partial dervatives $\partial C / \partial a^L_j$, the rate of change of C with respect to the output activations
+$\begin{eqnarray} \delta^L = \nabla_a C \odot \sigma'(z^L) \end{eqnarray}$ | the error of the ouput layer in matrix-based form
+$\begin{eqnarray} \delta^L = (a^L-y) \odot \sigma'(z^L) \end{eqnarray}$ | error in the case of the quadratic cost
+$\begin{eqnarray} \delta^l = ((w^{l+1})^T \delta^{l+1}) \odot \sigma'(z^l) \end{eqnarray}$ | the error of nuerons in other layer out of the last layer
+$\begin{eqnarray} \dfrac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j \end{eqnarray}$ |  the rate of change of the cost with respect to any weight
+$\begin{eqnarray} \dfrac{\partial C}{\partial b^l_j} = \delta^l_j \end{eqnarray}$ |  the rate of change of the cost with respect to any bias in the network
+$\begin{eqnarray} \dfrac{\partial C}{\partial b} = \delta \end{eqnarray}$ | matrix-based form: the rate of change of the cost with respect to any bias in the network
+
+
+[参考](http://neuralnetworksanddeeplearning.com/chap2.html "recommend")
