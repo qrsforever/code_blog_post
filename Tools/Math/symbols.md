@@ -68,6 +68,7 @@ $Z(x)$ | 规范化因子
 $N, c$ | the total number of training examples, number of classes of output
 $x^{(n)}, y^{(n)}$ | the superscript ${(n)}$ denote the variable for the $n^{th}$ individual training example
 $x^{[l]}, w^{[l]}, a^{[l]}$ | the superscript ${[l]}$ denote the $l^{th}$ layer, can drop $[]$ on single training example
+$z^{x,l}, a^{x,l}$ | the z, activition in the $l^{th}$ on the $x^{th}$ training example
 $n_H^{[l]},n_W^{[l]},n_C^{[l]}$ | the numbers of height, width, channel in the $l^{th}$ layer
 $x_i, y_i, b_i$ | the subscript $i$ denote the $i^{th}$ elem of the vector $\mathbf{x, y, b}$
 $w^l_{jk}$ | weights for connections from the $k^{th}$ neuron in the $(l-1)^{th}$ layer to the $j^{th}$ neuon in the $l^{th}$
@@ -87,6 +88,7 @@ $\begin{eqnarray} \delta^L = \nabla_a C \odot \sigma'(z^L) \end{eqnarray}$ | the
 $\begin{eqnarray} \delta^L = (a^L-y) \odot \sigma'(z^L) \end{eqnarray}$ | error in the case of the quadratic cost
 $\begin{eqnarray} \delta^l = ((w^{l+1})^T \delta^{l+1}) \odot \sigma'(z^l) \end{eqnarray}$ | the error of nuerons in other layer out of the last layer
 $\begin{eqnarray} \dfrac{\partial C}{\partial w^l_{jk}} = a^{l-1}_k \delta^l_j \end{eqnarray}$ |  the rate of change of the cost with respect to any weight
+$\begin{eqnarray} \dfrac{\partial C}{\partial w^l} =\delta^l (a^{l-1})^T \end{eqnarray}$ |  matrix-based form: the rate of change of the cost with respect to any weight
 $\begin{eqnarray} \dfrac{\partial C}{\partial b^l_j} = \delta^l_j \end{eqnarray}$ |  the rate of change of the cost with respect to any bias in the network
 $\begin{eqnarray} \dfrac{\partial C}{\partial b} = \delta \end{eqnarray}$ | matrix-based form: the rate of change of the cost with respect to any bias in the network
 

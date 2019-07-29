@@ -63,7 +63,23 @@ The backpropagation equations provide us with a way of computing the gradient of
 
 [百度云盘Datasets](https://pan.baidu.com/s/1gAFZ9gSf4pHJBt5W6_PgPQ "提取码: gxk4")
 
+## demo 1
+
 {% asset_jupyter python3 notebook/backpropagation_algorithm.ipynb %}
+
+## demo 2
+
+use numpy implement this algorithm with SGD (stochastic gradient descent) steps:
+
+1. Input a set of training examples
+
+2. For each training example x: Set the corresponding input activation $a^{x,1}$, and perform the following steps:
+    + Feedforward: For each $l=2,3,\cdots,L$ compute $z^{x,l}=w^{l}a^{x,l−1}+b^l$ and $a^{x,l}=\sigma(z^{x,l})$
+    + Output error $\delta^{x,L}$: Compute the vector $\delta^{x,L} = \nabla_a C_x \odot \sigma'(z^{x,L})$
+    + Backpropagate the error: For each $l=L−1,L−2,\cdots,2$ compute $\delta^{x,l}=((w^{l+1})^T\delta^{x,l+1}) \odot \sigma '(z^{x,l})$
+    + Gradient descent: For each $l=L,L−1,\cdots,2$ update the weights according to the rule $w^l \rightarrow w^l-\frac{\eta}{m} \sum_x \delta^{x,l} (a^{x,l-1})^T$ and the biases according to the rule $b^l \rightarrow b^l-\frac{\eta}{m} \sum_x \delta^{x,l}$
+
+{% asset_jupyter python3 notebook/backpropagation_algorithm2.ipynb %}
 
 
 # References
