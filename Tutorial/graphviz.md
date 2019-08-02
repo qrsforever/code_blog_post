@@ -3,7 +3,7 @@
 title: Graphviz绘图
 
 date: 2019-07-24 14:00:24
-tags: [How]
+tags: [How, DrawIt]
 categories: [Tutorial]
 
 ---
@@ -15,11 +15,16 @@ categories: [Tutorial]
 * [Blog](#blog)
     * [pandoc config](#pandoc-config)
     * [filter graphviz.py](#filter-graphvizpy)
+    * [ladot](#ladot)
 * [Demo](#demo)
+    * [docs](#docs)
     * [office example](#office-example)
+    * [latex graph](#latex-graph)
     * [neural network](#neural-network)
         * [simplest](#simplest)
         * [complicated case](#complicated-case)
+    * [others](#others)
+        * [matrix](#matrix)
 * [References](#references)
 
 <!-- vim-markdown-toc -->
@@ -33,10 +38,11 @@ categories: [Tutorial]
 ```shell
 sudo apt install pandoc
 sudo apt install graphviz graphviz-dev
-sudo apt install dot2tex
+sudo apt install dot2tex latex2html dvipng
 sudo pip3 install pygraphviz pandocfilters
 ```
 
+if need show latex equation in graphviz, also install [latex](https://brighten.bigw.org/projects/ladot/).
 
 # Blog
 
@@ -63,25 +69,30 @@ pandoc:
 ```{.python .numberLines startFrom="1"}
 #!/usr/bin/python3
 
-"""
-Pandoc filter to process code blocks with class "graph" into
-graphviz-generated images.
-Requires pygraphviz, pandocfilters
-"""
-
 import os
 import sys
 import hashlib
 
 import pygraphviz
 
-from pandocfilters import toJSONFilter, Para, Image, get_filename4code
+from pandocfilters import toJSONFilter, Para, Image
 from pandocfilters import get_caption, get_extension, get_value
 
+tmp_path = '/tmp/gitblog'
 top_path = os.path.abspath(os.path.dirname(__file__))
 dir_name = 'graph-image'
 git_path = 'https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/'
 git_post = '?sanitize=true'
+
+doc_tmpl = r"""\documentclass[12pt,border=5pt,varwidth=true]{standalone}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{psfrag}
+\begin{document}
+    \input{%s}
+    \includegraphics{%s}
+\end{document} """
 
 def graphviz(key, value, format, meta):
     if key == 'CodeBlock':
@@ -90,13 +101,17 @@ def graphviz(key, value, format, meta):
             caption, typef, keyvals = get_caption(keyvals)
             prog, keyvals = get_value(keyvals, u"prog", u"dot")
             filetype = get_extension(format, "svg", html="svg", latex="pdf")
-            # dest = get_filename4code(graph, code, filetype)
             md5 = hashlib.sha1(code.encode(sys.getfilesystemencoding())).hexdigest()
-            filename, _ = get_value(keyvals, u"fileName")
-            if filename is None:
+            basename, _ = get_value(keyvals, u"fileName")
+            if basename is None:
                 sys.stderr.write('not set filename in {}\n')
                 exit(-1)
-            filename += '.' + filetype
+
+            latex, _ = get_value(keyvals, u"latex")
+            if latex is not None:
+                filetype = 'png'
+
+            filename = basename + '.' + filetype
             while True:
                 try:
                     datapath = meta['datapath']['c']
@@ -122,13 +137,34 @@ def graphviz(key, value, format, meta):
                     if not os.path.isdir(dir):
                         os.makedirs(dir)
 
-                    os.system('touch %s.%s' % (localpath, md5))
+                    if latex is None:
+                        g = pygraphviz.AGraph(string=code)
+                        g.layout()
+                        g.draw(localpath, prog=prog)
+                    else:
+                        ladot_file = os.path.join(tmp_path, '{}.ladot'.format(basename))
+                        latex_file = os.path.join(tmp_path, '{}.latex'.format(basename))
 
-                    g = pygraphviz.AGraph(string=code)
-                    g.layout()
-                    g.draw(localpath, prog=prog)
+                        with open(ladot_file, 'w') as f:
+                            f.write(code)
+
+                        with open(latex_file, 'w') as f:
+                            f.write(doc_tmpl % ('{}.tex'.format(basename), '{}.ps'.format(basename)))
+
+                        resolution, _ = get_value(keyvals, u"resolution")
+                        if resolution is None:
+                            resolution = "1200"
+                        density, _ = get_value(keyvals, u"density")
+                        if density is None:
+                            density = "200"
+
+                        os.system('{}/ladot {} {} {} {}'.format(top_path, ladot_file, tmp_path, resolution, density))
+                        if os.path.exists('%s.png' % os.path.join(tmp_path, basename)):
+                            os.system('cp %s.png %s' % (os.path.join(tmp_path, basename), localpath))
+
                     sys.stderr.write('Local Path [' + localpath + ']\n')
                     sys.stderr.write('Remote Path [' + remotepath + ']\n')
+                    os.system('touch %s.%s' % (localpath, md5))
                 except Exception as e:
                     sys.stderr.write('{}: not found datapath in meta, please patch/run.sh\n'.format(e))
                     exit(-1)
@@ -142,8 +178,118 @@ def graphviz(key, value, format, meta):
             return Para([image])
 
 if __name__ == "__main__":
-
+    if not os.path.exists(tmp_path):
+        os.mkdir(tmp_path)
     toJSONFilter(graphviz)
+```
+
+## ladot
+
+```{.perl .numberLines startFrom="1"}
+#!/usr/bin/perl
+
+%paststubs = ();
+
+if (@ARGV != 4) {
+    die "Usage: $0 [infile] [workspace dir] [resolution] [density]";
+    }
+
+# switch to workspace dir
+chdir($ARGV[1]) or die "$!";
+$resolution = $ARGV[2]
+$density = $ARGV[3]
+
+# Open input and output files
+open(INFILE, "<$ARGV[0]");
+$ARGV[0] =~ /(.*)\.ladot$/;
+$basename = $1;
+
+if ($basename eq "") {
+    $basename = $ARGV[0];
+    }
+open(DOTOUT, ">$basename.dot");
+open(TEXOUT, ">$basename.tex");
+
+while ($line = <INFILE>)
+    {
+    while ($line =~ /(\$.*?\$)(\((\d+)\))?/) {
+        # print "LINE: $line";
+        $sizehint = $3;
+        # print "SIZEHINT: $sizehint\n";
+        $tex = $1;
+        $stub = make_stub($tex, $sizehint);
+        $line =~ s/(\$.*?\$)(\((\d+)\))?/$stub/;
+        print TEXOUT "\\psfrag{$stub}[cc][cc]{$tex}\n";
+        }
+    print DOTOUT $line;
+    }
+
+close(DOTOUT);
+close(TEXOUT);
+
+# Generate postscript of the graph, with stubs
+system("dot -Tps $basename.dot > $basename.ps");
+
+# LaTeX
+if (-e "$basename.latex") {
+    system("latex $basename.latex > $basename.latex.log");
+    if (-e "$basename.dvi") {
+        system("dvips $basename.dvi -D $resolution -o $basename.dvips > $basename.dvips.log");
+        if (-e "$basename.dvips") {
+            system("pstoimg $basename.dvips -density $density -out $basename.png > $basename.pstoimg.log");
+        }
+    }
+}
+
+# Graphviz 2.2 and later outputs postscript in which psfrag won't replace tags.
+# This is psfrag's fault, but our problem.  Here's a fix.
+system("sed -ibackup \"s/xshow/pop show/g\" $basename.ps");
+# There is a way to get sed to modify in place with no backup file, but
+# it seems the syntax of this option is slightly different in different
+# versions of sed.  So we just remove the backup ourselves.
+# unlink("$basename.psbackup");
+
+# unlink("$basename.dot");
+
+sub make_stub($$)
+    {
+    # Make a placeholder (stub) for the TeX which will be substituted for the
+    # real formatted TeX later.  Arguments are TeX code and an optional
+    # "hint" about the desired width of the box.
+    
+    # This is tricky because the length of the stub
+    # that we choose affects how Dot formats the PostScript.  We use the
+    # heuristic that the length of the LaTeX code is correlated with the
+    # amount of space needed to render the LaTeX code.
+
+    if ($paststubs{$_[0]}) {
+        return $paststubs{$_[0]};
+        }
+
+    my $length = int($_[1]);
+    if ($length == 0) {
+        # no sizehint given
+        $length = length($_[0]) - 1;
+        }
+    # print "LENGTH of $_[0]: $length\n";
+    # The first character of an unquoted string in Dot has to be one of these.
+    $first_charset="_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    # Subsequent characters can be any of these.
+    $subseq_charset="1234567890$first_charset";
+    my $stub = "";
+    for (my $i = 1; $i <= $length; $i++) {
+        if ($i == 1) {
+            $charset = $first_charset;
+            }
+        else {
+            $charset = $subseq_charset;
+            }
+        $stub .= substr($charset, int(rand(length($charset))), 1);
+        }
+    #print "NEW STUB for $_[0]: $stub\n";
+    $paststubs{$_[0]} = $stub;
+    return $stub;
+    }
 ```
 
 # Demo
@@ -229,11 +375,43 @@ digraph G {
 }
 ```
 
+## latex graph
+
+```{.numberLines startFrom="1"}
+
+{.graph .center caption="Latex Graph Demo" fileName="ladotdemo" latex="true" resolution="1080" desity="100"}
+
+digraph mydot {
+    rankdir=LR
+    node [shape=plaintext, width=0]
+    $v_1$(2)
+    $v_1$ -> $v_2$(2) [label=$\sqrt{2}+\frac{1}{x+5}$(9)]
+    $v_2$ -> $v_3$(2) [label=$S \subseteq \{1,2,3\}^4$(6)]
+    $v_3$ -> $v_1$ [label=$(f \circ g)^{-1}$(7)]
+}
+```
+
+output:
+
+```{.graph .center caption="Latex_Graph_Demo" fileName="ladotdemo" latex="true" resolution="1080" desity="100"}
+digraph mydot {
+    rankdir=LR
+    node [shape=plaintext, width=0]
+    $v_1$(2)
+    $v_1$ -> $v_2$(2) [label=$\sqrt{2}+\frac{1}{x+5}$(9)]
+    $v_2$ -> $v_3$(2) [label=$S \subseteq \{1,2,3\}^4$(6)]
+    $v_3$ -> $v_1$ [label=$(f \circ g)^{-1}$(7)]
+}
+```
+
 ## neural network
 
 ### simplest
 
 ```{.numberLines startFrom="1"}
+
+{.graph .center caption="simplest" fileName="graphviz_simplest"}
+
 digraph G {
 
     rankdir=LR;   /* makes the directed graphs drawn from left to right */
@@ -347,6 +525,7 @@ digraph G {
 output:
 
 ```{.graph .center caption="simplest" fileName="graphviz_simplest"}
+
 digraph G {
 
     rankdir=LR

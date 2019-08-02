@@ -10,7 +10,14 @@ categories: [ML]
 
 <!-- vim-markdown-toc GFM -->
 
-* [Standard Neural Network and Convolution Nerual Network](#standard-neural-network-and-convolution-nerual-network)
+* [Introduction](#introduction)
+    * [Notation](#notation)
+    * [Full Connected Network](#full-connected-network)
+    * [Convolutional Neural Network](#convolutional-neural-network)
+    * [Standard Neural Network and Convolution Nerual Network](#standard-neural-network-and-convolution-nerual-network)
+* [Codes](#codes)
+    * [demo1](#demo1)
+    * [demo2](#demo2)
 * [References](#references)
 
 <!-- vim-markdown-toc -->
@@ -151,7 +158,13 @@ the forward feed and back propagation.
 
 ## demo1
 
+install skimage: `sudo pip3 install scikit-image`, this demo1 using numpy implemets the simple convolution
+neural network.
+
 {% asset_jupyter python3 notebook/nn_convolution.ipynb %}
+
+## demo2
+
 
 
 
