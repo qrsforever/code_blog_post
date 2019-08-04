@@ -59,6 +59,10 @@ The backpropagation equations provide us with a way of computing the gradient of
 
 ```
 
+below is multilayer perceptron and the delta errors:
+
+![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Scratch/backpropagation_neuron_delta_errors.png)
+
 # Codes
 
 [百度云盘Datasets](https://pan.baidu.com/s/1gAFZ9gSf4pHJBt5W6_PgPQ "提取码: gxk4")

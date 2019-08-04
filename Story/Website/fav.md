@@ -30,6 +30,12 @@ categories: [Note]
 
     个人博客(Fisseha Berhane), 其中Deep Learning几篇文章可以参考学习.
 
+#. https://github.com/rasbt/mlxtend
+      
+    Mlxtend (machine learning extensions) is a Python library of useful tools for the day-to-day data
+    science tasks.
+
+
 # Other
 
 ## 印度极客门户

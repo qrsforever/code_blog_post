@@ -40,28 +40,6 @@ categories: [Tutorial]
 | @see SomeClass::Method |  Reference to some class, method, or web site
 | @li  | Bullet point
 
-$$
-\begin{dot2tex}[styleonly,codeonly,neato]
-digraph G {
-d2ttikzedgelabels = true;
-node [style="state"];
-edge [lblstyle="auto",topath="bend left"];
-A [style="state, initial"];
-A -> B [label=2];
-A -> D [label=7];
-B -> A [label=1];
-B -> B [label=3,topath="loop above"];
-B -> C [label=4];
-C -> F [label=5];
-F -> B [label=8];
-F -> D [label=7];
-D -> E [label=2];
-E -> A [label="1,6"];
-F [style="state,accepting"];
-}
-\end{dot2tex}
-$$ 
-
 # References
 
 #. https://caiorss.github.io/C-Cpp-Notes/Doxygen-documentation.html

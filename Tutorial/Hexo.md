@@ -124,6 +124,20 @@ alert('Hello World!');
 [rectangle setX: 10 y: 10 width: 20 height: 20];
 {% endcodeblock %}
 
+- Case3:
+
+not work!!!
+
+    {% codeblock _.compact http://underscorejs.org/#compact Underscore.js %}
+    _.compact([0, 1, false, 2, '', 3]);
+    => [1, 2, 3]
+    {% endcodeblock %}
+
+{% codeblock _.compact http://underscorejs.org/#compact Underscore.js %}
+_.compact([0, 1, false, 2, '', 3]);
+=> [1, 2, 3]
+{% endcodeblock %}
+
 ## Include Posts
 
 语法:

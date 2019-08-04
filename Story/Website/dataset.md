@@ -19,3 +19,5 @@ pass
 1. [UCI](http://archive.ics.uci.edu/ml/datasets.php "UC Irvine Machine Learning Repository")
 
 2. [Kaggle](https://www.kaggle.com/datasets "Kaggle")
+
+3. [mldata](https://www.mldata.io)

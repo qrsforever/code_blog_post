@@ -11,10 +11,12 @@ categories: [Tutorial]
 
 * [Markdown 基本语法](#markdown-基本语法)
     * [块注释](#块注释)
-    * [斜体](#斜体)
-    * [粗体](#粗体)
-    * [无序列表](#无序列表)
-    * [有序列表](#有序列表)
+    * [字体](#字体)
+        * [斜体](#斜体)
+        * [粗体](#粗体)
+    * [列表](#列表)
+        * [无序列表](#无序列表)
+        * [有序列表](#有序列表)
     * [链接](#链接)
     * [锚点](#锚点)
     * [图片](#图片)
@@ -22,18 +24,24 @@ categories: [Tutorial]
     * [段落](#段落)
     * [换行](#换行)
     * [表格](#表格)
-    * [分割线](#分割线)
-    * [反斜杠](#反斜杠)
+        * [无表头](#无表头)
+        * [有表头](#有表头)
+    * [其他](#其他)
+        * [分割线](#分割线)
+        * [反斜杠](#反斜杠)
+* [非标用法](#非标用法)
+    * [hexo](#hexo)
+        * [blockquote](#blockquote)
 
 <!-- vim-markdown-toc -->
 
 <!-- more -->
 
-## Markdown 基本语法
+# Markdown 基本语法
 
 Pandoc pass attributes via {}. see [锚点](#myanchor)
 
-### 块注释
+## 块注释
 
 ```
 > 块注释0  
@@ -61,6 +69,9 @@ Pandoc pass attributes via {}. see [锚点](#myanchor)
 >
 > > A block quote within a block quote.
 
+> This is a block quote. with latex
+the sum denotes $\sum_{a=0}^{n}$
+
 ```
 
 > 块注释0  
@@ -87,6 +98,11 @@ Pandoc pass attributes via {}. see [锚点](#myanchor)
 > This is a block quote.
 >
 > > A block quote within a block quote.
+
+> This is a block quote. with latex
+the sum denotes $\sum_{a=0}^{n}$
+
+## 字体
 
 ### 斜体
 
@@ -107,6 +123,8 @@ __粗体1__
 
 **粗体0**  
 __粗体1__  
+
+## 列表
 
 ### 无序列表
 
@@ -132,7 +150,7 @@ __粗体1__
 2. 有序1
 3. 有序2
 
-### 链接
+## 链接
 
 ```
 内联方式 [百度](http://www.baidu.com)
@@ -149,11 +167,11 @@ __粗体1__
 [1]: http://www.google.com  "谷歌"
 [2]: http://www.baidu.com   "百度"
 
-### 锚点 {#myanchor}
+## 锚点
 
 ```
 
-Pandoc在标题行加`{#myanchor}`, 可以实现锚点.
+Pandoc在标题行加`{#myanchor}`, 可以实现锚点
 
 [AnchorText]{#mytext}
 
@@ -210,7 +228,7 @@ anchor2
 
 [锚点3](#mytext)
 
-### 图片
+## 图片
 
 ```
 <div align='center'>
@@ -221,7 +239,7 @@ anchor2
 
 pandoc:
 
-![link text](/img/avatar.jpg){ width=50% height=40px }
+![link text](/img/avatar.jpg){.float-right width=20px height=10%}
 
 ```
 
@@ -233,9 +251,9 @@ pandoc:
 
 pandoc:
 
-![link text](/img/avatar.jpg){ width=50% height=40px }
+![float-right](/img/avatar.jpg){.float-right width=20px height=10%}
 
-### 代码
+## 代码
 
 ```
 \`one line\`
@@ -277,7 +295,7 @@ for (int i = 0; i < 100; ++i)
     for (int i = 0; i < 100; ++i)  
         printf(i);
 
-### 段落
+## 段落
 
 ```
 > Hello World
@@ -306,7 +324,7 @@ for (int i = 0; i < 100; ++i)
 Normal
 
 
-### 换行
+## 换行
 
 ```
 longggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
@@ -324,7 +342,25 @@ gggggggggggggggggggggggggggg
 
 aaa<br/><br/>bbb<br/><br/>
 
-### 表格
+## 表格
+
+### 无表头
+
+对齐方式靠上下线与第一行第一个字母和最后一个字母有关
+
+    -------  -------------   -------   ----
+    Joan      saag paneer    medium     $11
+    Sally      vindaloo        mild     $14
+    Erin      lamb madras       HOT      $5
+    -------  -------------   -------   ----
+
+-------  -------------   -------   ----
+Joan      saag paneer    medium     $11
+Sally      vindaloo        mild     $14
+Erin      lamb madras       HOT      $5
+-------  -------------   -------   ----
+
+### 有表头
 
 ```
 Name | Lunch order | Spicy      | Owes
@@ -343,6 +379,8 @@ Sally  | vindaloo        | mild       | $14
 Erin   | lamb madras | HOT      | $5
 
 冒号**:**表示对齐方式, 没有默认居右
+
+## 其他
 
 ### 分割线
 
@@ -384,3 +422,27 @@ ______
 \- | 减号
 \. | 英文句点
 \! | 惊叹号
+
+# 非标用法
+
+## hexo
+
+### blockquote
+
+{% blockquote QRS, https://qrsforever.github.io https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" blockquote %}
+
+npm config set registry https://registry.npm.taobao.org  
+npm config get registry
+
+{% endblockquote %}
+
+### codeblock
+
+not work
+
+{% codeblock "npm taobao" lang:sh https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" %}
+
+npm config set registry https://registry.npm.taobao.org  
+npm config get registry
+
+{% endcodeblock %}

@@ -48,9 +48,7 @@ $$
 
 at times, we simplify the equation by emitting the superscript ${(n)}$, just below:
 
-$$
-    E = \dfrac{1}{2} \begin{Vmatrix} \mathbf{t} - \mathbf{y} \end{Vmatrix}^2_2 \label{error_one} \tag{2}
-$$
+$E = \dfrac{1}{2} \begin{Vmatrix} \mathbf{t} - \mathbf{y} \end{Vmatrix}^2_2 \label{error_one} \tag{2}$
 
 
 the last output layer $\mathbf{y}^{[L]}$ breif as:
@@ -74,25 +72,30 @@ $$
 
 let's have a look the derivative $\delta^{[L]}$ of the error with respect to the neurons $z^{[L]}$ of the last output layer:
 
-from the equation $\ref{error_one}$
+from the equation $\ref{error_one}$ :
 
 $$
-    \dfrac{\partial E}{\partial {z^{[L]}}}
+    \delta^{L} = \dfrac{\partial E}{\partial {z^{[L]}}}
         = (\mathbf{y}-\mathbf{t}) \odot \dfrac{\partial \mathbf{a}^{[L]}(z^{[L]})}{\partial {z^{[L]}}}
 $$
 
-pre layer of L, using the chain rule of derivative:
+pre layer, using the chain rule of derivative:
 
 $$
-    \begin{align*}
-        \dfrac{\partial E}{\partial {z^{[L-1]}}} \\
-            =  \dfrac{\partial \mathbf{a}^{[L-1]}(z^{[L-1]})}{\partial {z^{[L-1]}}}
-    \end{align*}
+    \delta^{L-1} = \dfrac{\partial E}{\partial {z^{[L-1]}}}
+        = \dfrac{\partial E}{\partial {z^{[L]}}} \dfrac{\partial {z^{[L]}}}{\partial \mathbf{a}^{[L-1]}(z^{[L-1]})}
+        \dfrac{\partial \mathbf{a}^{[L-1]}(z^{[L-1]})}{\partial {z^{[L-1]}}}
 $$
 
+let $a^l = \sigma^l(z^l)$, then(matrix multiplication):
+
+$$
+    \delta^l = (W^{l+1})^T \delta^{l+1} \sigma'(z^{l})
+$$
 
 ## Convolutional Neural Network
 
+pass
 
 ## Standard Neural Network and Convolution Nerual Network
 
@@ -126,23 +129,23 @@ matrix:
 
 vector:
 
-
+                        * 4 (w_22)
                     1 --------------\           WX + b
-                           * 4       \
+                        * 3 (w_21)   \
                     2 --------------\ \
-                           * 3       \ \   4 + 6
-                    3              +  ------------->  23
-                           * 2       / /   8 + 5
+                                     \ \   4 + 6
+                    3              +  ------------->  23:
+                        * 2 (w_12)   / /   8 + 5
                     4 --------------/ /
-                           * 1       /                33
+                        * 1 (w_11)   /                33
 weight sharing  <-- 5 --------------/
-                           * 4      \                 53
+                        * 4 (w_22)  \                 53
                     6 -------------\ \
-                           * 3      \ \   20 + 18
+                        * 3 (w_21)  \ \   20 + 18
                     7              + -------------->  63
-                           * 2      / /   16 + 9
+                        * 2 (w_12)  / /   16 + 9
                     8 -------------/ /
-                           * 1      /
+                        * 1 (w_11)  /
                     9 -------------/
 
                  inputs                              hiden
@@ -153,6 +156,11 @@ weight sharing  <-- 5 --------------/
 the forward feed and back propagation.
 
 ```
+
+Feedforward in CNN is identical with convolution operation:
+
+![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Scratch/convolution-mlp-mapping.png)
+
 
 # Codes
 
@@ -165,14 +173,26 @@ neural network.
 
 ## demo2
 
+download dataset [mldata](http://yann.lecun.com/exdb/mnist/) or
+[baidu](https://pan.baidu.com/s/1gAFZ9gSf4pHJBt5W6_PgPQ "提取码: gxk4")
 
+This demo have a variable **validation_data** which (validation set) is mostly used to look out for
+overfitting on the trainning dataset when trainning. **what is the difference between validation set and
+test set?**
 
+@neggert said
+    "The validation set is checked during training to monitor progress, and possibly for early stopping,
+    but is never used for gradient descent."
+
+{% asset_jupyter python3 notebook/nn_convolution2.ipynb %}
 
 # References
 
 #. http://www.songho.ca/dsp/convolution/convolution2d_example.html?source=post_page
 
 #. https://grzegorzgwardys.wordpress.com/2016/04/22/8/
+
+#. http://neuralnetworksanddeeplearning.com/chap6.html
 
 #. https://www.analyticsvidhya.com/blog/2018/12/guide-convolutional-neural-network-cnn/
 
@@ -187,6 +207,10 @@ neural network.
 #. [Notes on Convolutional Neural Networks](http://cogprints.org/5869/1/cnn_tutorial.pdf "recommended")
 
 #. [How the backpropagation algorithm works](http://neuralnetworksanddeeplearning.com/chap2.html "recommended")
+
+#. https://mukulrathi.com/demystifying-deep-learning/conv-net-backpropagation-maths-intuition-derivation/
+
+#. https://mukulrathi.com/demystifying-deep-learning/convolutional-neural-network-from-scratch/
 
 #. https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions
 
