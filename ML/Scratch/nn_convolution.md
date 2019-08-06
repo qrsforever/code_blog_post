@@ -155,6 +155,14 @@ weight sharing  <-- 5 --------------/
 
 the forward feed and back propagation.
 
+### zero-padding
+
+benifits:
+
+- make hight and width same with the previous layer
+
+- keep more information at the border of one image
+
 ```
 
 Feedforward in CNN is identical with convolution operation:
@@ -183,6 +191,9 @@ test set?**
 @neggert said
     "The validation set is checked during training to monitor progress, and possibly for early stopping,
     but is never used for gradient descent."
+
+I most recommend the post 
+[Convolutional Neural Networks](https://mukulrathi.com/demystifying-deep-learning/convolutional-neural-network-from-scratch/)
 
 {% asset_jupyter python3 notebook/nn_convolution2.ipynb %}
 
@@ -215,3 +226,5 @@ test set?**
 #. https://qrsforever.github.io/2019/05/30/ML/Guide/activation_functions
 
 #. https://qrsforever.github.io/2019/07/23/ML/Guide/conv_mode
+
+#. https://pdfs.semanticscholar.org/5d79/11c93ddcb34cac088d99bd0cae9124e5dcd1.pdf
