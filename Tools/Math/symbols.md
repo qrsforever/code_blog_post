@@ -61,6 +61,16 @@ $sign(x)$ | 符号函数
 $I(x)$ | 指示函数
 $Z(x)$ | 规范化因子
 
+# 数学操作符
+
+符号  |  描述  | 例子
+------|--------|------
+$A \bullet B, A \cdot B$ | operation: dot product |
+$A \ast B$ | operation: convolution |
+$A \times B$ | operation: cross product | (1,2,5) $\times$ (3,4,−1) = (−22, 16, − 2)
+$A \odot B, A \circ B$ | operation: Hadamard product, element-wise multiply |
+$A \otimes B$ | operation: Kronecker product, tensor product | {1, 2, 3, 4} $\otimes$ {1, 1, 2} = { {1, 1, 2}, {2, 2, 4}, {3, 3, 6}, {4, 4, 8} }
+
 # 机器学习
 
 符号  |  描述
@@ -93,4 +103,7 @@ $\begin{eqnarray} \dfrac{\partial C}{\partial b^l_j} = \delta^l_j \end{eqnarray}
 $\begin{eqnarray} \dfrac{\partial C}{\partial b} = \delta \end{eqnarray}$ | matrix-based form: the rate of change of the cost with respect to any bias in the network
 
 
-[参考](http://neuralnetworksanddeeplearning.com/chap2.html "recommend")
+[wikipedia](https://en.wikipedia.org/wiki/List_of_mathematical_symbols)
+[neuralnetworksanddeeplearning](http://neuralnetworksanddeeplearning.com/chap2.html "recommend")
+[1-math.stackexchange.com](https://math.stackexchange.com/questions/52578/symbol-for-elementwise-multiplication-of-vectors/52581#52581?newreg=dcf5afd2e7e042b59fe76f9fe5957510)
+[2-math.stackexchange.com](https://math.stackexchange.com/questions/20412/element-wise-or-pointwise-operations-notation/601545#601545)

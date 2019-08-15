@@ -13,6 +13,6 @@ Pass
 <!-- more -->
 
 
-## Product的表示
+## Product的latex表示
 
 {% asset_jupyter python3 notebook/product.ipynb %}
