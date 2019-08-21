@@ -1,6 +1,6 @@
 ---
 
-title: (原创)神经网络之卷积过程实例
+title: (draft)神经网络之卷积过程实例
 
 date: 2019-07-19 15:33:06
 tags: [Scratch, Python]

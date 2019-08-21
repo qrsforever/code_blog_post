@@ -11,10 +11,17 @@ categories: [Tools]
 <!-- vim-markdown-toc GFM -->
 
 * [apt](#apt)
+	* [阿里](#阿里)
+	* [清华大学](#清华大学)
+	* [东北大学](#东北大学)
 * [mvn](#mvn)
 * [pip](#pip)
 * [npm](#npm)
 * [gradle](#gradle)
+* [anaconda](#anaconda)
+	* [清华大学](#清华大学-1)
+	* [上海交通大学](#上海交通大学)
+	* [上海科技大学](#上海科技大学)
 
 <!-- vim-markdown-toc -->
 
@@ -181,4 +188,38 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+```
+
+# anaconda
+
+edit `~/.condarc`
+
+## 清华大学
+
+```
+channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
+ssl_verify: true
+```
+
+## 上海交通大学
+
+```
+channels:
+  - https://mirrors.sjtug.sjtu.edu.cn/anaconda/pkgs/main/
+  - https://mirrors.sjtug.sjtu.edu.cn/anaconda/pkgs/free/
+  - https://mirrors.sjtug.sjtu.edu.cn/anaconda/cloud/conda-forge/
+ssl_verify: true
+```
+
+## 上海科技大学
+
+```
+channels:
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/main/
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/free/
+  - https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/
+ssl_verify: true
 ```

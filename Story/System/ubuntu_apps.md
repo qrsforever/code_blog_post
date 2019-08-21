@@ -61,3 +61,9 @@ pass
 
 [参考1](https://medium.com/@george.seif94/the-4-best-command-line-tools-for-monitoring-your-cpu-ram-and-gpu-usage-692e3053000f)
 
+
+**gpustat**
+
+:  GPU info, fan, power, temperature, pid
+
+> pip install gpustat
