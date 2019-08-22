@@ -10,6 +10,7 @@ categories: [Tutorial]
 <!-- vim-markdown-toc GFM -->
 
 * [Markdown 基本语法](#markdown-基本语法)
+    * [加载custom样式](#加载custom样式)
     * [块注释](#块注释)
     * [字体](#字体)
         * [斜体](#斜体)
@@ -53,6 +54,14 @@ categories: [Tutorial]
 Pandoc pass attributes via {}. see [锚点](#myanchor)
 
 []{#blockquote}
+
+## 加载custom样式
+
+```
+<link href="/static/css/qrs.css" rel="stylesheet">
+```
+
+<link href="/static/css/qrs.css" rel="stylesheet">
 
 ## 块注释
 
@@ -198,6 +207,18 @@ Code2
 
     > 打开书本  
     > 打开电灯
+
+### Task List
+
+```
+- [x] Write the press release
+- [ ] Update the website
+- [ ] Contact the media
+```
+
+- [x] Write the press release
+- [ ] Update the website
+- [ ] Contact the media
 
 ## 链接
 
@@ -401,6 +422,35 @@ for (int i = 0; i < 100; ++i)
 >    return shell_exec("echo  $input | $markdown_script");
 > ```
 
+## 注脚
+
+
+```
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+
+[^1]: This is the first footnote.
+
+[^bignote]: Here's one with multiple paragraphs and code.
+
+    Indent paragraphs to include them in the footnote.
+
+    `{ my code }`
+
+    Add as many paragraphs as you like.
+```
+
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+
+[^1]: This is the first footnote.
+
+[^bignote]: Here's one with multiple paragraphs and code.
+
+    Indent paragraphs to include them in the footnote.
+
+    `{ my code }`
+
+    Add as many paragraphs as you like.
+
 ## 段落
 
 ### 列表缩进
@@ -552,3 +602,6 @@ npm config set registry https://registry.npm.taobao.org
 npm config get registry
 
 {% endcodeblock %}
+
+-----------------------------------------------------------------
+

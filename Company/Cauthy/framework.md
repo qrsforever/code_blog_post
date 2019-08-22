@@ -8,6 +8,7 @@ categories: [Company]
 
 ---
 
+<link href="/static/css/qrs.css" rel="stylesheet">
 
 <!-- vim-markdown-toc GFM -->
 
@@ -123,13 +124,13 @@ See more [GITHUB](https://github.com/donnyyou/torchcv)
       |           ^     ^            |    r=cauchy/action        \
       |          /       \           |                            v
       |         v         v          |                   +------------------------+
-      |      Views       Models      |                   |      | Visdom Server   |
+      |      Views       Models      |                   |      | Visdom Process  |
       +------------------------------+                   |      +-----------------+
                             |                            |      |                 |
-                            |                    8399    |Flask |                 |
-                            +------------------------->  |      |Cauchy Framework |
-                                /cauchy/train            |      |                 |
-                                                         |      |                 |
+                            |    /cauchy/train   8399    |Flask |Cauchy Framework |
+                            +------------------------->  |      |                 |
+                               /cauchy/free_port         |      +-----------------+
+                                                         |      | Task Process    |
                                                          +------+-----------------+
 ```
 
@@ -151,7 +152,85 @@ See more [GITHUB](https://github.com/donnyyou/torchcv)
 
 > `cd /path/to/test/flask_services; python cauchy_services.py --port 8339`
 
+## Dynamic Process
+
+see `test/flask_services/cauchy_services.py`
+
+1. start the **visdom process** when flask server received the *`/cauchy/free_port`* command.
+
+> `python -m visdom.server -port 8140`
+
+2. start the **task process** (train/test) when flask server received the *`/cauchy/train[test]`* command
+
+> `python run_tasks.py --hypes /path/to/hypes.json --viz_pid 21995 --viz_port 8140 --tmp_dir /tmp/tmpcyj84t5t`
+
+**页面上每启动一个训练或评估任务, 都会对应的启动这个两个进程, 所有他们可以存在多个**
+
+## Project Directory
+
+```
+├── apis                   //
+│   └── cocoapi
+│       ├── common
+│       ├── LuaAPI
+│       ├── MatlabAPI
+│       └── PythonAPI
+├── cauchy                 // 框架核心
+│   ├── datasets           // 数据集操作: \
+│   │   ├── automl                1. 数据集格式成框架可以识别的结构(独立于框架) \
+│   │   ├── cls                   2. 迭代数据集
+│   │   ├── det
+│   │   ├── ins
+│   │   ├── pose
+│   │   ├── seg
+│   │   ├── tools
+│   │   └── track
+│   ├── extensions         //
+│   │   ├── ops
+│   │   └── tools
+│   ├── methods            // 负责任务主逻辑, 如: 数据加载, 算法模型选择, 模型评估, 训练监控
+│   │   ├── automl                1. 根据参数"task"进行任务类型的选择(cls, det..), 确定真正的runner执行体. \
+│   │   ├── cls                   2. 根据参数"method"选择算法模型, 然后进行训练(forward/backword). \
+│   │   ├── det
+│   │   ├── pose
+│   │   ├── seg
+│   │   └── tools
+│   ├── metrics            // 评估算法模型(针对val/test数据集)
+│   │   ├── cls
+│   │   ├── det
+│   │   ├── pose
+│   │   └── seg
+│   ├── models             // 根据以有的papers实现好的神经网络模型以及提供了损失方法
+│   │   ├── automl
+│   │   ├── backbones
+│   │   ├── cls
+│   │   ├── det
+│   │   ├── pose
+│   │   ├── rcnn
+│   │   ├── seg
+│   │   └── tools
+│   └── utils              //
+│       ├── helpers
+│       ├── parser
+│       ├── tools
+│       └── visualizer
+├── scripts                //
+│   ├── cls
+│   │   └── cifar
+│   ├── det
+│   │   └── voc
+│   └── seg
+│       ├── ade20k
+│       └── cityscapes
+└── test
+    ├── cauchy             // 单独调试算法模型, 不依赖WEB控制及传参
+    │   ├── hypes
+    │   └── proj1
+    └── flask_services     // Flask服务启动脚本, 与框架交互的唯一入口
+        └── project
+```
+
 # References
 
-#. <https://www.cnblogs.com/jerehedu/p/7762046.html>
-#. <https://blog.csdn.net/fujian9544/article/details/79567090>
+- <https://www.cnblogs.com/jerehedu/p/7762046.html>
+- <https://blog.csdn.net/fujian9544/article/details/79567090>
