@@ -585,7 +585,16 @@ ______
 
 ### blockquote
 
-{% blockquote QRS, https://qrsforever.github.io https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" blockquote %}
+```
+{% blockquote QRS, https://qrsforever.github.io https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" %}
+
+npm config set registry https://registry.npm.taobao.org  
+npm config get registry
+
+{% endblockquote %}
+```
+
+{% blockquote QRS, https://qrsforever.github.io https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" %}
 
 npm config set registry https://registry.npm.taobao.org  
 npm config get registry
@@ -594,14 +603,23 @@ npm config get registry
 
 ### codeblock
 
-not work
-
-{% codeblock "npm taobao" lang:sh https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" %}
-
-npm config set registry https://registry.npm.taobao.org  
-npm config get registry
-
+```
+{% codeblock "codeblock test" lang:c http://www.baidu.com "link text" line_number:true highlight:true first_line:1 %}
+aa = 1
+bb = 2
+cc = 3
+for (int i = 0; i < 10; ++i) {
+    print(i);
+}
 {% endcodeblock %}
+```
 
------------------------------------------------------------------
+{% codeblock "codeblock test" lang:c http://www.baidu.com "link text" line_number:true highlight:true first_line:1 %}
+aa = 1
+bb = 2
+cc = 3
+for (int i = 0; i < 10; ++i) {
+    print(i);
+}
+{% endcodeblock %}
 
