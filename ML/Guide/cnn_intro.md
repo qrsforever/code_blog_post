@@ -24,6 +24,7 @@ categories: [ML]
 [最容易理解的对卷积(convolution)的解释][11]
 [Understanding Convolutions][12]
 [离散卷积过程举例图示详解][13]
+[必看: ConvNets][14]
 
 
 [推荐: 卷积介绍][100]  
@@ -41,6 +42,7 @@ categories: [ML]
 [11]:https://blog.csdn.net/bitcarmanlee/article/details/54729807
 [12]:https://colah.github.io/posts/2014-07-Understanding-Convolutions/
 [13]:https://blog.csdn.net/heshiip/article/details/79223442
+[14]:http://cs231n.github.io/convolutional-networks/
 
 [100]:https://lpsa.swarthmore.edu/Convolution/Convolution.html
 

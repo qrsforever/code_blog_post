@@ -3,7 +3,7 @@
 title: (draft)神经网络之卷积过程实例
 
 date: 2019-07-19 15:33:06
-tags: [Scratch, Python]
+tags: [Scratch, Python, Draft]
 categories: [ML]
 
 ---
@@ -228,3 +228,5 @@ I most recommend the post
 #. https://qrsforever.github.io/2019/07/23/ML/Guide/conv_mode
 
 #. https://pdfs.semanticscholar.org/5d79/11c93ddcb34cac088d99bd0cae9124e5dcd1.pdf
+
+#. [ConvNets](http://cs231n.github.io/convolutional-networks/ "recommended")

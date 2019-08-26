@@ -3,7 +3,7 @@
 title: (draft)Transforms
 
 date: 2019-08-19 15:14:09
-tags: [Pytorch, Python]
+tags: [Pytorch, Python, Draft]
 categories: [ML]
 
 ---
