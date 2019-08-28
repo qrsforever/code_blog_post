@@ -20,6 +20,7 @@ categories: [Tutorial]
         * [有序列表](#有序列表)
         * [定义型列表](#定义型列表)
         * [包含引用](#包含引用)
+        * [Task List](#task-list)
     * [链接](#链接)
         * [内联](#内联)
         * [引用](#引用)
@@ -31,6 +32,7 @@ categories: [Tutorial]
         * [简单](#简单)
         * [嵌套](#嵌套)
         * [引用其他要素](#引用其他要素)
+    * [注脚](#注脚)
     * [段落](#段落)
         * [列表缩进](#列表缩进)
     * [换行](#换行)
@@ -44,6 +46,7 @@ categories: [Tutorial]
     * [hexo](#hexo)
         * [blockquote](#blockquote)
         * [codeblock](#codeblock)
+        * [Emoji](#emoji)
 
 <!-- vim-markdown-toc -->
 
@@ -622,4 +625,12 @@ for (int i = 0; i < 10; ++i) {
     print(i);
 }
 {% endcodeblock %}
+
+### Emoji
+
+[官网](https://emojipedia.org/)
+
+[查找](https://www.emojicopy.com/)
+
+{% emoji_hj people/thinking-face %}
 

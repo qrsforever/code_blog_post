@@ -151,12 +151,17 @@ modify `~/.config/pip/pip.conf`, then don't use sudo
 
 ```conf
 [global]
-# index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 index-url = https://mirrors.aliyun.com/pypi/simple/
+extra-index-url = https://pypi.tuna.tsinghua.edu.cn/simple/
+             http://pypi.mirrors.ustc.edu.cn/simple/
+             http://pypi.douban.com/simple
 
 [install]
-install-option=--prefix=~/.local
+install-option = --prefix=~/.local
 trusted-host = mirrors.aliyun.com
+             pypi.tuna.tsinghua.edu.cn
+             pypi.mirrors.ustc.edu.cn
+             pypi.douban.com
 ```
 
 # npm
