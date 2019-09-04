@@ -18,6 +18,8 @@ categories: [Note]
 
 <!-- vim-markdown-toc -->
 
+<!-- more -->
+
 # Visdom
 
 Visdom aims to facilitate visualization of (remote) data with an emphasis on supporting scientific experimentation.
