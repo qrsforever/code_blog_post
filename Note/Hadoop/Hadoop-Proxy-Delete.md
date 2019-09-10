@@ -62,7 +62,7 @@ categories: [Note]
     |                          |                                  |                                     |
     |                          |                                  |                                     |
     |   RpcInvocationHandler   |                                  |                RPC.Server           |
-    |              e1          |                                  |                e1                   |
+    |              △           |                                  |                △                    |
     |               \          |                                  |               /                     |
     |                \         |                                  |              /                      |
     |                 \        |                                  |             /                       |

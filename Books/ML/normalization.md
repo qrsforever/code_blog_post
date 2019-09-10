@@ -8,6 +8,7 @@ categories: [Books]
 
 ---
 
+[RAWCODE](https://raw.githubusercontent.com/qrsforever/code_blog_post/master/Books/ML/normalization.md)
 
 <!-- vim-markdown-toc GFM -->
 

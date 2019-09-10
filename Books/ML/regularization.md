@@ -8,6 +8,8 @@ categories: [Books]
 
 ---
 
+[RAWCODE](https://raw.githubusercontent.com/qrsforever/code_blog_post/master/Books/ML/regularization.md)
+
 <!-- vim-markdown-toc GFM -->
 
 * [What](#what)
@@ -63,7 +65,7 @@ $$
 
 ## 可视化
 
-![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/Books/ML/regularization_l1_l2.png){ .center }
+![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/Books/ML/regularization_l1_l2.png){.center}
 
 {% blockquote "高扬" https://github.com/azheng333/DeepLearningAndTensorFlow "白话深度学习与TensorFlow" %}
 假设在一个模型中只有两个维度$\omega_1$和$\omega_2$作为待定系数,最终的理想解在圆心的位置,当然这里画出来的是

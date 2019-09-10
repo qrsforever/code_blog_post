@@ -28,7 +28,7 @@ Below the output of three modes:
 Filter size must be odd number, eg: 3x3, 5x5. here we consider the situation which the size of image is
 not less than the size of filter.
 
-![](https://raw.githubusercontent.com/qrsforever/assets/master/ML/Guide/conv-mode.png){ width=70% }
+![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/conv-mode.png){ width=70% }
 
 let image: m x m and filter: n x n
 
