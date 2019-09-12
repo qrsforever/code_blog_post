@@ -202,16 +202,18 @@ Code2
 ```
 *   阅读方法：
 
-    > 打开书本  
+    > 打开书本 <br/>
     > 打开电灯
 ```
 
 *   阅读方法：
 
-    > 打开书本  
+    > 打开书本 <br/>
     > 打开电灯
 
 ### Task List
+
+GFM(github flavoured markdown)支持, pandoc2.6 high
 
 ```
 - [x] Write the press release

@@ -17,9 +17,17 @@ categories: [Tutorial]
     * [Containers](#containers)
     * [Networks](#networks)
     * [Restart Policy](#restart-policy)
-* [Basic Command](#basic-command)
-* [Tips & Tricks](#tips--tricks)
-    * [Alias](#alias)
+* [Alias](#alias)
+* [Command](#command)
+    * [Search image](#search-image)
+    * [Download image](#download-image)
+    * [Rename image name](#rename-image-name)
+    * [Display image or container information](#display-image-or-container-information)
+    * [Display information using index](#display-information-using-index)
+    * [Filter label and format it](#filter-label-and-format-it)
+    * [Display container running state](#display-container-running-state)
+    * [Display container by image, tag and status](#display-container-by-image-tag-and-status)
+    * [Display the command in runtime](#display-the-command-in-runtime)
     * [Remove all containers with status=exited](#remove-all-containers-with-statusexited)
     * [Stop all containers](#stop-all-containers)
     * [Run and attach to container](#run-and-attach-to-container)
@@ -34,6 +42,10 @@ categories: [Tutorial]
     * [Named/Path Based Volumes](#namedpath-based-volumes)
         * [Named Volumn](#named-volumn)
         * [Path Volumn](#path-volumn)
+* [Expose port](#expose-port)
+* [Composer](#composer)
+    * [install](#install-1)
+    * [yaml](#yaml)
 * [TODO](#todo)
 * [References](#references)
 
@@ -170,6 +182,120 @@ unless-stopped | 手动stop后, 系统reboot不会启动, 其他和always一样
 
 -----------------------------------------------------------------
 
+# Alias
+
+```{.bash .numberLines startFrom="1"}
+alias di='docker images'
+dirm()
+{
+    if [[ x$1 == x ]]
+    then
+        docker images
+        echo -ne "\n[RM] Input ID: "
+        read image
+    else
+        image=$@
+    fi
+    docker rmi $image
+}
+
+alias dc='docker container ls -a'
+dcrm()
+{
+    if [[ x$1 == x ]]
+    then
+        docker container ls -a
+        echo -ne "\n[RM] Input ID: "
+        read container
+    else
+        container=$@
+    fi
+    docker container stop $container
+    docker container rm $container
+}
+
+alias dcrma='docker container prune'
+alias dcstart='docker container start'
+alias dcstop='docker container stop'
+
+alias dv='docker volume ls'
+alias dvrm='docker volume rm'
+
+drun()
+{
+    args=($@)
+    image=$1
+    if [[ x$image == x ]] || [[ x$image != x && "$\{\#image}" -ne "12"
+    then
+        bashcmd=$image
+        docker images
+        echo -ne "\n[RUN] Input ID: "
+        read image
+    else
+        bashcmd=${args[@]: 1:$\#\}
+    fi
+    docker run -it -d $image $bashcmd
+}
+
+dsh()
+{
+    if [[ x$1 == x ]]
+    then
+        docker container ls
+        echo -ne "\n[SH] Input ID: "
+        read container
+    else
+        container=$1
+    fi
+    docker exec -it $container bash
+}
+
+
+dlog()
+{
+    if [[ x$1 == x ]]
+    then
+        docker container ls
+        echo -ne "\n[LOG] Input ID: "
+        read container
+    else
+        container=$1
+    fi
+    docker logs --timestamps --follow $container
+}
+
+dexe()
+{
+    args=($@)
+    container=$1
+    if [ "$\{\#container}" -eq "12" ]
+    then
+        bashcmd=${args[@]: 1:$\#\}
+        docker exec $container bash -c "$bashcmd"
+    else
+        docker container ls
+        echo -ne "\n[SH] Input ID: "
+        read container
+        echo ""
+        docker exec $container bash -c "$@"
+    fi
+}
+
+dip()
+{
+    container=$1
+    if [ "$\{\#container}" -ne "12" ]
+    then
+        docker container ls
+        echo -ne "\n[IP] Input ID: "
+        read container
+    fi
+    docker inspect --format="\{\{range .NetworkSettings.Networks\}\}\{\{.IPAddress\}\}\{\{end\}\}" $container
+}
+```
+
+-----------------------------------------------------------------
+
 # Command
 
 ## Search image
@@ -259,34 +385,6 @@ cmd: `docker container ls --filter ancestor=colorai/cauchycv_visdom:0.2.6 --filt
 
 cmd: `docker container ls --format "\{\{.ID\}\}: \{\{.Command\}\}" --no-trunc`
 cmd: `docker container ls --format "table \{\{.ID\}\}\t\{\{.Labels\}\}"`
-
-## Alias command
-
-```shell
-alias di='docker images'
-alias dri='docker rmi'
-
-alias dc='docker container ls -a'
-alias drc='docker container rm'
-alias dsc='docker container stop'
-
-alias dv='docker volume ls'
-alias drv='docker volume rm'
-
-alias dip='docker inspect --format="\{\{range .NetworkSettings.Networks\}\}\{\{.IPAddress\}\}\{\{end\}\}"'
-alias dit='docker run -it'
-
-alias din='docker inspect'
-alias dlg='docker logs --follow'
-
-dsh()
-{
-    args=($@)
-    container=$1
-    bashcmd=${args[@]: 1:$# }
-    docker exec $container bash -c "$bashcmd"
-}
-```
 
 ## Remove all containers with status=exited
 
@@ -474,13 +572,58 @@ output:
 ]
 ```
 
-### Path Volumn
+### Path Volumn (Mount)
 
 cmd: `docker run -it -v /hostdata:/targetdata debian`
 
 
 [参考](https://my.oschina.net/665544/blog/1933032)
 [简书](https://www.jianshu.com/p/655c934b4e4c)
+
+
+# Expose port
+
+[非常详细的讲解](https://blog.csdn.net/qq_17639365/article/details/86655177)
+
+推荐直接使用手动映射, 清晰明了.
+
+参数:
+
+- `-P`: 自动映射
+- `-p`: 手动映射, `-p host_port:container_port`
+
+场景: (假设端口80)
+
+1. 情况一:暴露端口80,不使用映射
+
+- [ ] 主机地址:端口80
+- [x] 容器地址:端口80
+
+2. 情况二:暴露端口80,使用自动映射-P (假设随机映射的端口为8000)
+
+- [ ] 主机地址:端口80
+- [x] 主机地址:端口8000
+- [x] 容器地址:端口80
+
+3. 情况三:暴露端口80,使用手动映射-p (假设手动映射的端口为8888:80)
+
+- [x] 主机地址:端口8888
+- [x] 容器地址:端口80
+
+4. 情况四:不暴露端口,不使用映射
+
+- [ ] 主机地址:端口80
+- [x] 容器地址:端口80
+
+5. 情况五:不暴露端口,使用自动映射-P (无自动映射的端口)
+
+- [ ] 主机地址:端口80
+- [x] 容器地址:端口80
+
+6. 情况六:不暴露端口,使用手动映射-p (假设手动映射的端口为8888:80)
+
+- [x] 主机地址:端口8888
+- [x] 容器地址:端口80
 
 -----------------------------------------------------------------
 
@@ -741,3 +884,4 @@ version                         # 指定 compose 文件的版本
 - <https://www.centos.bz/2017/01/docker-ps-list-containers>
 - <https://blog.csdn.net/u010918487/article/details/89452230>
 - <https://takacsmark.com/docker-compose-tutorial-beginners-by-example-basics>
+- <https://www.cnblogs.com/hongdada/p/9488349.html>

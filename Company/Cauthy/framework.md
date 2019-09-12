@@ -20,6 +20,8 @@ categories: [Company]
 * [Cauchy](#cauchy)
     * [Architecture](#architecture)
     * [Start Servers](#start-servers)
+    * [Dynamic Process](#dynamic-process)
+    * [Project Directory](#project-directory)
 * [References](#references)
 
 <!-- vim-markdown-toc -->

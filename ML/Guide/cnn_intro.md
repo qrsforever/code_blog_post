@@ -1,6 +1,6 @@
 ---
 
-title: 卷积神经网络CNN理解
+title: 卷积神经网络CNN介绍
 
 date: 2019-06-03 18:08:15
 tags: [Guide]
