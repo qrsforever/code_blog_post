@@ -1,6 +1,6 @@
 ---
 
-title: (draft)实用公式
+title: (draft)向量矩阵乘积
 
 date: 2019-08-13 20:01:44
 tags: [Math]
@@ -8,11 +8,6 @@ categories: [Note]
 
 ---
 
-Pass
-
 <!-- more -->
-
-
-## Product的latex表示
 
 {% asset_jupyter python3 notebook/product.ipynb %}

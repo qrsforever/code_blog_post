@@ -168,6 +168,7 @@ constraint | true | 是否根据边来影响节点的排序
 decorate |   | 设置之后会用一条线来连接edge和label
 dir | forward | 设置方向:forward,back,both,none
 headclip | true | 是否到边界为止
+headport |	 	| n,ne,e,se,s,sw,w,nw
 tailclip | true | 与headclip类似
 headlabel |   | 边的头部显示的标签
 taillabel |   | 边的尾部显示的标签
@@ -265,6 +266,229 @@ digraph G {
 }
 ```
 
+## subgraph
+
+    digraph G {
+      compound=true;
+      node [ shape = "Mrecord" ];
+      subgraph cluster_0 {
+        style = rounded;
+        label = "Zero";
+        Node_0_0 -> Node_0_1;
+      };
+      subgraph cluster_1 {
+        style = rounded;
+        label = "One";
+        Node_1_0 -> Node_1_1;
+      };
+      subgraph cluster_2 {
+        style = rounded;
+        label = "Two";
+        Node_2_0 -> Node_2_1;
+      };
+      NodeA [ style = rounded ];
+      NodeA -> Node_0_0 [lhead = cluster_0];
+      NodeA -> Node_1_0 [lhead = cluster_1];
+      NodeA -> Node_2_0 [lhead = cluster_2];
+    }
+
+output:
+
+```{.graph .center caption="Subgraph Demo" fileName="graphviz_subgraph_1"}
+digraph G {
+  compound=true;
+  node [ shape = "Mrecord" ];
+  subgraph cluster_0 {
+    style = rounded;
+    label = "Zero";
+	Node_0_0 -> Node_0_1;
+  };
+  subgraph cluster_1 {
+    style = rounded;
+    label = "One";
+ 	Node_1_0 -> Node_1_1;
+  };
+  subgraph cluster_2 {
+    style = rounded;
+    label = "Two";
+    Node_2_0 -> Node_2_1;
+  };
+  NodeA [ style = rounded ];
+  NodeA -> Node_0_0 [lhead = cluster_0];
+  NodeA -> Node_1_0 [lhead = cluster_1];
+  NodeA -> Node_2_0 [lhead = cluster_2];
+}
+```
+
+
+## edge direction
+
+    digraph G{
+        A -> B[dir = both]
+        B -> C[dir = nonc]
+        C -> D[dir = back]
+        D -> A[dir = forward]
+    }
+
+output:
+
+```{.graph .center caption="Edge Direction Demo" fileName="graphviz_edge_1"}
+digraph G{
+    A -> B[dir = both]
+    B -> C[dir = nonc]
+    C -> D[dir = back]
+    D -> A[dir = forward]
+}
+```
+
+## edge position
+
+    digraph G{
+       node[shape = box]
+       c:n -> d[label = n]
+       c1:ne -> d1[label = ne]
+       c2:e -> d2[label = e]
+       c3:se -> d3[label = se]
+       c4:s -> d4[label = s]
+       c5:sw -> d5[label = sw]
+       c6:w -> d6[label = w]
+       c7:nw -> d7[label = nw]
+    }
+
+output:
+
+```{.graph .center caption="Edge Position Demo" fileName="graphviz_edge_2"}
+digraph G{
+   node[shape = box]
+   c:n -> d[label = n]
+   c1:ne -> d1[label = ne]
+   c2:e -> d2[label = e]
+   c3:se -> d3[label = se]
+   c4:s -> d4[label = s]
+   c5:sw -> d5[label = sw]
+   c6:w -> d6[label = w]
+   c7:nw -> d7[label = nw]
+}
+```
+
+## rank
+
+    digraph G{
+       rankdir = LR
+       {
+        node[shape = plaintext]
+        1995 -> 1996 -> 1997 -> 1998 -> 1999 -> 2000 -> 2001
+       }
+       {
+        node[shape = box, style = filled]
+        WAR3 -> Xhero -> Footman -> DOTA
+        WAR3 -> Battleship
+       }
+       {
+        {rank = same 1996 WAR3}
+        {rank = same 1998 Xhero Battleship}
+        {rank = same 1999 Footman}
+        {rank = same 2001 DOTA}
+       }
+    }
+
+output:
+
+```{.graph .center caption="Rank Demo" fileName="graphviz_rank_1"}
+digraph G{
+   rankdir = LR
+   {
+    node[shape = plaintext]
+    1995 -> 1996 -> 1997 -> 1998 -> 1999 -> 2000 -> 2001
+   }
+   {
+    node[shape = box, style = filled]
+    WAR3 -> Xhero -> Footman -> DOTA
+    WAR3 -> Battleship
+   }
+   {
+    {rank = same 1996 WAR3}
+    {rank = same 1998 Xhero Battleship}
+    {rank = same 1999 Footman}
+    {rank = same 2001 DOTA}
+   }
+}
+```
+
+## label
+
+    graph G{
+       label = "我爱你" /*为图设置标签*/
+       labelloc = b    /*图标签的位置在底部，也可以设置为t到顶部*/
+       labeljust = l   /*图标签的位置在左边，也可以设置为r到右边*/
+
+       edge[decorate = true]
+       C -- D[label = "s1"]
+       C -- E[label = "s2"]
+       C -- F[label = "s3"]
+       D -- E[label = "s4"]
+       D -- F[label = "s5"]
+
+       edge[decorate = false, labelfontcolor = blue, fontcolor = red]
+       C1 -- D1[headlabel = "d1", taillabel = "c1", label = "c1 - d1"]
+    }
+
+output:
+
+```{.graph .center caption="Label Demo" fileName="graphviz_label_1"}
+graph G{
+   label = "我爱你" /*为图设置标签*/
+   labelloc = b    /*图标签的位置在底部，也可以设置为t到顶部*/
+   labeljust = l   /*图标签的位置在左边，也可以设置为r到右边*/
+
+   edge[decorate = true]
+   C -- D[label = "s1"]
+   C -- E[label = "s2"]
+   C -- F[label = "s3"]
+   D -- E[label = "s4"]
+   D -- F[label = "s5"]
+
+   edge[decorate = false, labelfontcolor = blue, fontcolor = red]
+   C1 -- D1[headlabel = "d1", taillabel = "c1", label = "c1 - d1"]
+}
+```
+
+## distance
+
+    digraph A {
+      rankdir=LR;
+      center=true; margin=1;    // 居中, 空白地方的大小
+      nodesep=2.5; ranksep=1.5; // 如果 randir是LR, 左右用ranksep, 上下使用nodesep.
+      size="3,3";
+
+      node [shape=point, height=".2", width=".2"];
+
+      a [xlabel="a"];
+      b [xlabel="b"];
+      c [xlabel="c"];
+      a -> b -> c;
+      a -> c;
+    }
+
+output:
+
+```{.graph .center caption="Distance Demo" fileName="graphviz_distance_1"}
+digraph A {
+    rankdir=LR;
+    center=true; margin=1;
+    nodesep=2.5; ranksep=1.5;
+    size="3,3";
+
+    node [shape=point, height=".2", width=".2"];
+
+    a [xlabel="a"];
+    b [xlabel="b"];
+    c [xlabel="c"];
+    a -> b -> c;
+    a -> c;
+}
+```
+
 ## latex graph
 
 ```{.numberLines startFrom="1"}
@@ -307,9 +531,9 @@ digraph G {
     rankdir=LR;   /* makes the directed graphs drawn from left to right */
     splines=line; /* force edges to be straight, no curves or angles */
     nodesep=.05;  /* forces edges to become invisible */
-    
+
     node [label=""];   /* [ ] sets the default node property */
-        
+
     subgraph cluster_0 {
         color=white;
         node [style=solid,color=blue4, shape=circle];
@@ -421,9 +645,9 @@ digraph G {
     rankdir=LR
     splines=line
     nodesep=.05;
-    
+
     node [label=""];
-        
+
     subgraph cluster_0 {
         color=white;
         node [style=solid,color=blue4, shape=circle];
@@ -539,14 +763,14 @@ digraph G {
     /* {...} specifies the scope of the node property */
     {
         node [shape=circle, color=yellow, style=filled, fillcolor=yellow];
-        x0 [label=<x<sub>0</sub>>]; 
-        a02 [label=<a<sub>0</sub><sup>(2)</sup>>]; 
+        x0 [label=<x<sub>0</sub>>];
+        a02 [label=<a<sub>0</sub><sup>(2)</sup>>];
         a03 [label=<a<sub>0</sub><sup>(3)</sup>>];
     }
     {
         node [shape=circle, color=chartreuse, style=filled, fillcolor=chartreuse];
         x1 [label=<x<sub>1</sub>>];
-        x2 [label=<x<sub>2</sub>>]; 
+        x2 [label=<x<sub>2</sub>>];
         x3 [label=<x<sub>3</sub>>];
     }
     {
@@ -565,8 +789,8 @@ digraph G {
     {
         node [shape=circle, color=coral1, style=filled, fillcolor=coral1];
         O1 [label=<a<sub>1</sub><sup>(4)</sup>>];
-        O2 [label=<a<sub>2</sub><sup>(4)</sup>>]; 
-        O3 [label=<a<sub>3</sub><sup>(4)</sup>>]; 
+        O2 [label=<a<sub>2</sub><sup>(4)</sup>>];
+        O3 [label=<a<sub>3</sub><sup>(4)</sup>>];
         O4 [label=<a<sub>4</sub><sup>(4)</sup>>];
     }
     {
@@ -608,7 +832,6 @@ digraph G {
 output:
 
 ```{.graph .center caption="complicated" fileName="graphviz_complicated"}
-
 digraph G {
     rankdir = LR;
     splines=false;
@@ -616,14 +839,14 @@ digraph G {
     ranksep= 1.4;
     {
         node [shape=circle, color=yellow, style=filled, fillcolor=yellow];
-        x0 [label=<x<sub>0</sub>>]; 
-        a02 [label=<a<sub>0</sub><sup>(2)</sup>>]; 
+        x0 [label=<x<sub>0</sub>>];
+        a02 [label=<a<sub>0</sub><sup>(2)</sup>>];
         a03 [label=<a<sub>0</sub><sup>(3)</sup>>];
     }
     {
         node [shape=circle, color=chartreuse, style=filled, fillcolor=chartreuse];
         x1 [label=<x<sub>1</sub>>];
-        x2 [label=<x<sub>2</sub>>]; 
+        x2 [label=<x<sub>2</sub>>];
         x3 [label=<x<sub>3</sub>>];
     }
     {
@@ -642,8 +865,8 @@ digraph G {
     {
         node [shape=circle, color=coral1, style=filled, fillcolor=coral1];
         O1 [label=<a<sub>1</sub><sup>(4)</sup>>];
-        O2 [label=<a<sub>2</sub><sup>(4)</sup>>]; 
-        O3 [label=<a<sub>3</sub><sup>(4)</sup>>]; 
+        O2 [label=<a<sub>2</sub><sup>(4)</sup>>];
+        O3 [label=<a<sub>3</sub><sup>(4)</sup>>];
         O4 [label=<a<sub>4</sub><sup>(4)</sup>>];
     }
     {
@@ -680,7 +903,6 @@ digraph G {
     {a02;a12;a22;a32;a42;a52} -> {a13;a23;a33;a43;a53};
     {a03;a13;a23;a33;a43;a53} -> {O1,O2,O3,O4};
 }
-
 ```
 
 ## others
@@ -904,7 +1126,7 @@ digraph matrix {
 }
 ```
 
-# Blog 
+# Blog
 
 结合hexo一起High.
 
@@ -1118,7 +1340,7 @@ sub make_stub($$)
     # Make a placeholder (stub) for the TeX which will be substituted for the
     # real formatted TeX later.  Arguments are TeX code and an optional
     # "hint" about the desired width of the box.
-    
+
     # This is tricky because the length of the stub
     # that we choose affects how Dot formats the PostScript.  We use the
     # heuristic that the length of the LaTeX code is correlated with the
@@ -1167,3 +1389,5 @@ sub make_stub($$)
 #. https://blog.csdn.net/mouday/article/details/80902992
 
 #. https://blog.csdn.net/sd10086/article/details/52979462
+
+#. https://zhuanlan.zhihu.com/p/51578351

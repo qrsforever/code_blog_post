@@ -33,6 +33,48 @@ categories: [ML]
 
 神经注意力模块(Attention) = 向前预测单元 + 后向回顾单元
 
+# 符号注解
+
+符号 | 解释
+---- | ----
+$K$ | 词汇表的大小
+$T$ | 句子的长度
+$H$ | 隐藏层单元数
+$\mathbb{x}={x_1, x_2,...,x_T}$ | 句子的单词序列
+$x_t\in\mathbb{R}^{K\times 1}$ | t时刻RNN的输入,为one-hot vector,1表示一个单词的出现,0表示不出现
+$\hat{y}_t\in\mathbb{R}^{K\times 1}$ | t时刻softmax层的输出, 估计每个词出现的概率, 有时用$o_t$
+$y_t\in\mathbb{R}^{K\times 1}$ | t时刻的label, 真实每个词出现的概率, one-hot vector.
+$E_t$ | 第t个时刻(第t个word)的损失函数,定义为交叉熵误差$E_t=−y_t^Tlog(\hat{y}_t)$
+$E$ | 一个句子的损失函数,由各个时刻(即每个word)的损失函数组成,$E=\sum\limits_t^T E_t$.
+$s_t\in\mathbb{R}^{H\times 1}$ | t个时刻RNN隐藏层的输入
+$h_t\in\mathbb{R}^{H\times 1}$ | t个时刻RNN隐藏层的输出
+$z_t\in\mathbb{R}^{K\times 1}$ | 输出层的汇集输入 (空间映射:H到K)
+$r_t=\hat{y}_t−y_t$ | 残差向量
+$W\in\mathbb{R}^{H\times K}$ | 从输入层到隐藏层的权值
+$U\in\mathbb{R}^{H\times H}$ | 隐藏层上一个时刻到当前时刻的权值
+$V\in\mathbb{R}^{K\times H}$ | 隐藏层到输出层的权值
+
+函数关系:
+
+$$
+\left\{
+  \begin{align*}
+    s_t &= Uh_{t-1} + Wx_t \\ 
+    h_t &= tanh(s_t) \\ 
+    z_t &= Vh_t \\ 
+    \hat{y}_t &= softmax(z_t) \\ 
+    E_t &= -y_t^Tlog\hat{y}_t \\ 
+  \end{align*}
+\right.
+$$
+
+由于$x_t, y_t$都是one-hot vector, 可以得出以下几点:
+
+- $Wx_t$ 如果是输入的是第j个词(对应j值1, 其余为0), 计算结果简化为将$W$的第j列取出.
+
+- 当前时刻交叉熵$E_t=-y_t^Tlog(\hat{y}_t) = -log(\hat{y}_t,j$, 即如果t时出现的是第j个词, 只需要看
+  $\hat{y}_t$的第j个分量.
+
 # RNN(BPTT)
 
 ## 隐马尔可夫模型
@@ -92,7 +134,7 @@ digraph G {
 
 ## BPTT
 
-Backpropagation Through Time:
+Backpropagation Through Time(时序反向传播算法):
 
 The parameters are shared by all times in the rnn network, the gradient at each output depends not only
 the current time steps but also the previous time steps. For example, in order to calculate the gradient
@@ -108,8 +150,28 @@ $x_t$: one-hot vector, t时刻的输入. </br>
 $s_t$: hidden state, t时候的隐藏状态, 通过前一个隐藏状态和当前输入计算出来的, $s_t = f(Ux_t + Ws_{t-1})$, f可以是tanh或relu. </br>
 $o_t$: output, $o_t = softmax(Vs_t)$ </br>
 
+注意, 有的地方还加了一个非线性变换:
+
+$h_t$: hidden output, $h_t = tanh(s_t)$ </br>
+$z_t$: output, $z_t = Vh_t = V tanh(s_t)$ </br>
+$\hat{y}_t = softmax(z_t) = softmax(Vtanh(s_t))$ </br>
+
 模型里是蕴含着这样的逻辑的, 那就是前一次输入的向量$x_{t-1}$所产生的结果对于本次输出的结果是有一定的影响的,
 甚至更远期的$x_{t-2}, x_{t-3} ··· ···$都"潜移默化"地在影响本次输出的结果.
+
+
+### 思考
+
+1. 为什么隐藏层的输出需要$V$,即$\hat{y}_t = softmax(Vz_t)$, 不能直接$\hat{y}_t = softmax(h_t)$ ?
+
+> 从变量的类型分析, $\hat{y}_t \in \mathbb{R}^{K\times 1}, h_t \in \mathbb{R}^{H\times 1}, V \in \mathbb{R}^{K\times H}$,
+> $V$矩阵可以把H空间映射到K空间.
+
+2. $U$, $V$, $W$分别有什么意义?
+
+> RNN神经网络和传统的神经网络一样由`输入层`, `隐藏层`,`输出层`组成, 不同的是RNN网络中超参数是共享的,
+> $W$将输入层的词向量映射到隐藏层的空间中, $U$是自身状态的映射, 结合上下文进行记忆的取舍,
+> $W$结合$U$形成当前时刻的隐藏层的知识状态, $V$是隐藏层到输出层的映射.
 
 There are a few things to note here:
 
@@ -117,8 +179,8 @@ There are a few things to note here:
 
 - You can think of the hidden state s_t as the memory of the network. s_t captures information about what
   happened in all the previous time steps. The output at step o_t is calculated solely based on the memory
-  at time t. As briefly mentioned above, it’s a bit more complicated  in practice because s_t typically
-  can’t capture information from too many time steps ago.
+  at time t. As briefly mentioned above, it's a bit more complicated  in practice because s_t typically
+  can't capture information from too many time steps ago.
 
 - Unlike a traditional deep neural network, which uses different parameters at each layer, a RNN shares
   the same parameters (U, V, W above) across all steps. This reflects the fact that we are performing the
@@ -131,6 +193,61 @@ There are a few things to note here:
   an RNN is its hidden state, which captures some information about a sequence.
 
 {% endblockquote %}
+
+### 求导
+
+完整图:
+
+```{.graph .center caption="BPTT横向与纵向求导图" fileName="rnn_intro_full" latex="true" resolution="1080" desity="100"}
+digraph BPTT {
+
+    rankdir=BT;
+    nodesep=0.4; ranksep=0.4;
+    size="6,6"; center=true; margin=0.2
+    penwidth=0;
+
+    edge  [style=solid]
+    node  [shape=circle, fixedsize=true]
+
+    y_t0 [label=$y_{t-1}$]
+    y_t1 [label=$y_t$]
+    y_t2 [label=$y_{t+1}$]
+
+    l_t0 [label=$l_{t-1}$]
+    l_t1 [label=$l_t$]
+    l_t2 [label=$l_{t+1}$]
+
+    o_t0 [label=$\psi$]
+    o_t1 [label=$\psi$]
+    o_t2 [label=$\psi$]
+
+    h_t0 [label=$\phi$]
+    h_t1 [label=$\phi$]
+    h_t2 [label=$\phi$]
+
+    x_t0 [label=$x_{t-1}$]
+    x_t1 [label=$x_t$]
+    x_t2 [label=$x_{t+1}$]
+
+    x_t0 -> h_t0 [label="W"]
+    x_t1 -> h_t1 [label="W"]
+    x_t2 -> h_t2 [label="W"]
+
+    h_t0 -> o_t0 [label="V"]
+    h_t1 -> o_t1 [label="V"]
+    h_t2 -> o_t2 [label="V"]
+
+    o_t0 -> l_t0
+    o_t1 -> l_t1
+    o_t2 -> l_t2
+
+    l_t0 -> y_t0 [dir=back]
+    l_t1 -> y_t1 [dir=back]
+    l_t2 -> y_t2 [dir=back]
+
+    { rank=same; h_t0 -> h_t1 -> h_t2 [label="U"]; }
+}
+```
 
 # 长期依赖
 
@@ -167,4 +284,6 @@ LSTM 在某种程度上可以克服梯度消失问题.
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
 - [recurrent-neural-networks-tutorial-part-1-introduction-to-rnns](http://www.wildml.com/2015/09/recurrent-neural-networks-tutorial-part-1-introduction-to-rnns/)
 - [recurrent-neural-networks-tutorial-part-3-backpropagation-through-time-and-vanishing-gradients](http://www.wildml.com/2015/10/recurrent-neural-networks-tutorial-part-3-backpropagation-through-time-and-vanishing-gradients/)
+- [BTPP推导1](https://github.com/hschen0712/machine-learning-notes/blob/master/Deep-Learning/back-propagation-through-time.ipynb)
+- [BTPP推导2](https://www.cnblogs.com/wacc/p/5341670.html)
 - [deriving-back-propagation-on-simple-rnn-lstm](https://towardsdatascience.com/back-to-basics-deriving-back-propagation-on-simple-rnn-lstm-feat-aidan-gomez-c7f286ba973d)
