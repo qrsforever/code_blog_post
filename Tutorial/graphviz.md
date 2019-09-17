@@ -23,6 +23,14 @@ categories: [Tutorial]
 * [Demo](#demo)
     * [docsG](#docsg)
     * [office example](#office-example)
+    * [subgraph](#subgraph)
+    * [edge direction](#edge-direction)
+    * [edge position](#edge-position)
+    * [rank](#rank)
+    * [label](#label)
+        * [demo1](#demo1)
+        * [demo2](#demo2)
+    * [distance](#distance)
     * [latex graph](#latex-graph)
     * [neural network](#neural-network)
         * [simplest](#simplest)
@@ -172,6 +180,7 @@ headport |	 	| n,ne,e,se,s,sw,w,nw
 tailclip | true | 与headclip类似
 headlabel |   | 边的头部显示的标签
 taillabel |   | 边的尾部显示的标签
+tailport | -- | n,ne,e,se,s,sw,w,nw
 lhead |   | 当compound为true时,lhead用于指定边指向的cluster
 ltail |   | 与ltail类似
 labelangle | -25.0 | 边标签的旋转角度
@@ -180,8 +189,6 @@ labelfloat | false | 边标签位置的强制约束
 labelfontcolor | black | 标签字体颜色
 labelfontname | Times-Roman | 标签字体族
 labelfontsize | 14 | 标签字体大小
-taillabel | -- | 箭尾标签
-tailport | -- | n,ne,e,se,s,sw,w,nw
 weight | 1 | 边的延伸花费整数
 minlen | 1 | 头尾间最小长度
 samehead | -- | 头结点的tag,拥有相同头结点tag的边会使用统一端点
@@ -323,7 +330,7 @@ digraph G {
 
 ## edge direction
 
-    digraph G{
+    digraph G {
         A -> B[dir = both]
         B -> C[dir = nonc]
         C -> D[dir = back]
@@ -333,7 +340,7 @@ digraph G {
 output:
 
 ```{.graph .center caption="Edge Direction Demo" fileName="graphviz_edge_1"}
-digraph G{
+digraph G {
     A -> B[dir = both]
     B -> C[dir = nonc]
     C -> D[dir = back]
@@ -343,7 +350,7 @@ digraph G{
 
 ## edge position
 
-    digraph G{
+    digraph G {
        node[shape = box]
        c:n -> d[label = n]
        c1:ne -> d1[label = ne]
@@ -358,7 +365,7 @@ digraph G{
 output:
 
 ```{.graph .center caption="Edge Position Demo" fileName="graphviz_edge_2"}
-digraph G{
+digraph G {
    node[shape = box]
    c:n -> d[label = n]
    c1:ne -> d1[label = ne]
@@ -373,7 +380,7 @@ digraph G{
 
 ## rank
 
-    digraph G{
+    digraph G {
        rankdir = LR
        {
         node[shape = plaintext]
@@ -395,7 +402,7 @@ digraph G{
 output:
 
 ```{.graph .center caption="Rank Demo" fileName="graphviz_rank_1"}
-digraph G{
+digraph G {
    rankdir = LR
    {
     node[shape = plaintext]
@@ -417,7 +424,9 @@ digraph G{
 
 ## label
 
-    graph G{
+### demo1
+
+    graph G {
        label = "我爱你" /*为图设置标签*/
        labelloc = b    /*图标签的位置在底部，也可以设置为t到顶部*/
        labeljust = l   /*图标签的位置在左边，也可以设置为r到右边*/
@@ -435,8 +444,8 @@ digraph G{
 
 output:
 
-```{.graph .center caption="Label Demo" fileName="graphviz_label_1"}
-graph G{
+```{.graph .center caption="Label Demo 1" fileName="graphviz_label_1"}
+graph G1 {
    label = "我爱你" /*为图设置标签*/
    labelloc = b    /*图标签的位置在底部，也可以设置为t到顶部*/
    labeljust = l   /*图标签的位置在左边，也可以设置为r到右边*/
@@ -450,6 +459,42 @@ graph G{
 
    edge[decorate = false, labelfontcolor = blue, fontcolor = red]
    C1 -- D1[headlabel = "d1", taillabel = "c1", label = "c1 - d1"]
+}
+```
+
+### demo2
+
+    graph G2 {
+        node [shape=box]; User; Object; Tag;
+        node [shape=diamond,style=filled]; Triple;
+        {
+            User   -- Triple [headlabel = "1", labeldistance=2.5, labelangle=20]; // 逆时针20度
+            Object -- Triple [headlabel = "1", labeldistance=1.5, labelangle=-20];// 顺时针20度
+        }
+        {
+            rank=same;
+            User;
+            Object;
+        }
+        Triple -- Tag [label="n", headlabel = "2"];
+    }
+
+output:
+
+```{.graph .center caption="Label Demo 2" fileName="graphviz_label_2"}
+graph G2 {
+    node [shape=box]; User; Object; Tag;
+    node [shape=diamond,style=filled]; Triple;
+    {
+        User   -- Triple [headlabel = "1", labeldistance=2.5, labelangle=20]; // 逆时针20度
+        Object -- Triple [headlabel = "1", labeldistance=1.5, labelangle=-20];// 顺时针20度
+    }
+    {
+        rank=same;
+        User;
+        Object;
+    }
+    Triple -- Tag [label="n", headlabel = "2"];
 }
 ```
 

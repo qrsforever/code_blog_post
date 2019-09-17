@@ -13,9 +13,12 @@ categories: [ML]
 <!-- vim-markdown-toc GFM -->
 
 * [关键字](#关键字)
+* [符号注解](#符号注解)
 * [RNN(BPTT)](#rnnbptt)
     * [隐马尔可夫模型](#隐马尔可夫模型)
     * [BPTT](#bptt)
+        * [思考](#思考)
+        * [求导](#求导)
 * [长期依赖](#长期依赖)
 * [梯度消失](#梯度消失)
 * [应用场景](#应用场景)
@@ -59,11 +62,11 @@ $V\in\mathbb{R}^{K\times H}$ | 隐藏层到输出层的权值
 $$
 \left\{
   \begin{align*}
-    s_t &= Uh_{t-1} + Wx_t \\ 
-    h_t &= tanh(s_t) \\ 
-    z_t &= Vh_t \\ 
-    \hat{y}_t &= softmax(z_t) \\ 
-    E_t &= -y_t^Tlog\hat{y}_t \\ 
+    s_t &= Uh_{t-1} + Wx_t \\
+    h_t &= tanh(s_t) \\
+    z_t &= Vh_t \\
+    \hat{y}_t &= softmax(z_t) \\
+    E_t &= -y_t^Tlog\hat{y}_t \\
   \end{align*}
 \right.
 $$
@@ -202,11 +205,11 @@ There are a few things to note here:
 digraph BPTT {
 
     rankdir=BT;
-    nodesep=0.4; ranksep=0.4;
-    size="6,6"; center=true; margin=0.2
+    nodesep=0.6; ranksep=0.4;
+    size="8,6"; center=true; margin=0.2
     penwidth=0;
 
-    edge  [style=solid]
+    edge  [style=solid, arrowhead=vee, labelfloat=true]
     node  [shape=circle, fixedsize=true]
 
     y_t0 [label=$y_{t-1}$]
@@ -229,9 +232,9 @@ digraph BPTT {
     x_t1 [label=$x_t$]
     x_t2 [label=$x_{t+1}$]
 
-    x_t0 -> h_t0 [label="W"]
-    x_t1 -> h_t1 [label="W"]
-    x_t2 -> h_t2 [label="W"]
+    x_t0 -> h_t0 [xlabel="W"]
+    x_t1 -> h_t1 [xlabel="W", headlabel=$s_t$, labelangle=70, labeldistance=1.2]
+    x_t2 -> h_t2 [xlabel="W", headlabel=$s_{t+1}$, labelangle=70, labeldistance=1.2]
 
     h_t0 -> o_t0 [label="V"]
     h_t1 -> o_t1 [label="V"]
@@ -245,7 +248,12 @@ digraph BPTT {
     l_t1 -> y_t1 [dir=back]
     l_t2 -> y_t2 [dir=back]
 
-    { rank=same; h_t0 -> h_t1 -> h_t2 [label="U"]; }
+    {
+        edge [xlabel="U"];
+        rank=same;
+        h_t0 -> h_t1 [taillabel=$h_{t-1}$, labelangle=-70, labeldistance=2, headlabel=$Wx_t + Uh_{t-1}=\qquad \qquad \qquad$];
+        h_t1 -> h_t2 [taillabel=$\qquad \quad h_t=\phi(s_t)$, labelangle=-70, labeldistance=2, headlabel=$Wx_{t+1} + Uh_t=\qquad \qquad \qquad$];
+    }
 }
 ```
 
