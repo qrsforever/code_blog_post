@@ -17,7 +17,8 @@ categories: [ML]
     * [隐马尔可夫模型](#隐马尔可夫模型)
     * [BPTT](#bptt)
         * [思考](#思考)
-        * [求导](#求导)
+        * [梯度](#梯度)
+        * [计算例子](#计算例子)
 * [LSTM](#lstm)
     * [长期依赖](#长期依赖)
     * [梯度消失](#梯度消失)
@@ -174,6 +175,7 @@ $\hat{y}_t = softmax(z_t) = softmax(Vtanh(s_t))$ </br>
 > RNN神经网络和传统的神经网络一样由`输入层`, `隐藏层`,`输出层`组成, 不同的是RNN网络中超参数是共享的,
 > $W$将输入层的词向量映射到隐藏层的空间中, $U$是自身状态的映射, 结合上下文进行记忆的取舍,
 > $W$结合$U$形成当前时刻的隐藏层的知识状态, $V$是隐藏层到输出层的映射.
+> $U$为输入权重, $W$为递归权重; $V$为输出权重
 
 There are a few things to note here:
 
@@ -196,7 +198,7 @@ There are a few things to note here:
 
 {% endblockquote %}
 
-### 求导
+### 梯度
 
 完整图:
 
@@ -269,7 +271,7 @@ $\psi$ is $softmax()$
 
 $$
 \begin{align*}
-E_t(y_t, \hat{y}_t) &= -y_tlog\hat{y}_t \\
+E_t(y_t, \hat{y}_t) &= -\dfrac{1}{n}y_tlog\hat{y}_t \\
 E(y, \hat{y}) &= \sum_t E_t(y_t, \hat{y}_t) \\
  &= - \sum_t y_tlog\hat{y}_t
 \end{align*}
@@ -340,7 +342,132 @@ $$
 
 另$h_0$全0向量.
 
+
+### 计算例子
+
+形式和上面的有些不同, 隐藏层输入和隐藏层输出合成一个$s_t = tanh(Ux_t + Ws_{t-1})$.
+
 ![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/rnn-bptt-with-gradients.png)
+
+let:
+
+1. formulas
+
+$$
+\begin{aligned}
+& s_0 = tanh(U x_0 + W s_{-1}) \\
+& z_0 = V s_0   \\
+& o_0 \triangleq \hat{y}_{0} = sigmoid(z_0) \\\\
+& s_1 = tanh(U x_1 + W s_0) \\
+& z_1 = V s_1   \\
+& o_1 \triangleq \hat{y}_{1} = sigmoid(z_1) \\\\
+& s_2 = tanh(U x_2 + W s_1) \\
+& z_2 = V s_2   \\
+& o_2 \triangleq \hat{y}_{2} = sigmoid(z_2) \\\\
+& s_3 = tanh(U x_3 + W s_2) \\
+& z_3 = V s_3   \\
+& o_3 \triangleq \hat{y}_{3} = sigmoid(z_3) \\
+\end{aligned}
+$$
+
+2. loss
+
+$$
+\begin{aligned}
+L(y, o) = - \frac{1}{N}\sum_{n \in N}y_n \log o_n
+\end{aligned}
+$$
+
+3. partial derivative
+
+if: $d_t \triangleq \dfrac{\partial E_t}{\partial s_t}$ then:
+
+$$
+\begin{aligned}
+& d_3 \triangleq \big(\hat{y}_3 - y_3 \big) \cdot V \cdot \big(1 - s_3 ^ 2 \big) \\
+& d_2 \triangleq d_3 \cdot W \cdot \big(1 - s_2 ^ 2 \big) \\
+& d_1 \triangleq d_2 \cdot W \cdot \big(1 - s_1 ^ 2 \big) \\
+& d_0 \triangleq d_1 \cdot W \cdot \big(1 - s_0 ^ 2 \big) \\
+\end{aligned}
+$$
+
+so calculate dLdV, dLdU, dLdW:
+
+1. $\frac{\partial{L}}{\partial{V}}$
+
+$$
+\begin{aligned}
+\frac{\partial{E_3}}{\partial{V}} &= \frac{\partial{E_3}}{\partial{\hat{y}_3}} \frac{\partial{\hat{y}_3}}{\partial{z_3}} \frac{\partial{z_3}}{\partial{V}} \\
+&= (\hat{y}_{3} - y_3)  s_3
+\end{aligned}
+$$
+
+2. $\frac{\partial{L}}{\partial{U}}$
+
+$$
+\begin{aligned}
+\frac{\partial{s_0}}{\partial{U}} &= \big(1 - s_0 ^ 2 \big) \left(x_0 + \frac{\partial{s_{-1}}}{\partial{U}} \right) \\
+&= \big(1 - s_0 ^ 2 \big) \cdot x_0 \\\\
+\frac{\partial{s_1}}{\partial{U}} &= \big(1 - s_1 ^ 2 \big) \left(x_1 + W \cdot \frac{\partial{s_{0}}}{\partial{U}} \right) \\
+&= \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \\\\
+\frac{\partial{s_2}}{\partial{U}} &= \big(1 - s_2 ^ 2 \big) \left(x_2 + W \cdot \frac{\partial{s_{1}}}{\partial{U}} \right) \\
+&= \big(1 - s_2 ^ 2 \big) \Big(x_2 + W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \Big)\\\\
+\frac{\partial{s_3}}{\partial{U}} &= \big(1 - s_3 ^ 2 \big) \left(x_3 + W \cdot \frac{\partial{s_{2}}}{\partial{U}} \right) \\
+&= \big(1 - s_3 ^ 2 \big) \\
+& \bigg(x_3 + W \cdot \big(1 - s_2 ^ 2 \big) \Big(x_2 + W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \Big)  \bigg)\\\\
+\end{aligned}
+$$
+
+-----
+
+$$
+\begin{aligned}
+\frac{\partial{E_3}}{\partial{U}} &= \frac{\partial{E_3}}{\partial{\hat{y}_3}} \frac{\partial{\hat{y}_3}}{\partial{z_3}} \frac{\partial{z_3}}{\partial{s_3}} \frac{\partial{s_3}}{\partial{U}}  \\
+&= \left(\frac{\partial{E_3}}{\partial{\hat{y}_3}} \frac{\partial{\hat{y}_3}}{\partial{z_3}} \right) \cdot \frac{\partial{z_3}}{\partial{s_3}} \cdot \frac{\partial{s_3}}{\partial{U}}  \\
+&= \big(\hat{y}_3 - y_3 \big) \cdot V \cdot \frac{\partial{s_3}}{\partial{U}}  \\
+&= \big(\hat{y}_3 - y_3 \big) \cdot V \cdot \big(1 - s_3 ^ 2 \big) \bigg(x_3 + W \cdot \big(1 - s_2 ^ 2 \big) \Big(x_2 + W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \Big)  \bigg)\\
+& \triangleq d_3 \big[x_3 + W \cdot  \big(1 - s_2 ^ 2 \big) \Big(x_2 + W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \Big)   \big]\\
+&= d_3 x_3 + d_3 W \cdot \big(1 - s_2 ^ 2 \big) \Big(x_2 + W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \Big) \\
+& \triangleq d_3 x_3 + d_2 \Big(x_2 + W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big)\Big) \\
+&= d_3 x_3 + d_2 x_2 + d_2 W \cdot \big(1 - s_1 ^ 2 \big) \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \\
+& \triangleq d_3 x_3 + d_2 x_2 + d_1 \big(x_1 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0 \big) \\
+&= d_3 x_3 + d_2 x_2 + d_1 x_1 + d_1 W \cdot \big(1 - s_0 ^ 2 \big) \cdot x_0  \\
+& \triangleq d_3 x_3 + d_2 x_2 + d_1 x_1 + d_0 \cdot x_0  \\
+\end{aligned}
+$$
+
+3. $\frac{\partial{L}}{\partial{W}}$
+
+$$
+\begin{aligned}
+\frac{\partial{s_0}}{\partial{W}} &= \big(1 - s_0 ^ 2 \big) \left(s_{-1} + \frac{\partial{s_{-1}}}{\partial{W}} \right) \\
+&= \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \\\\
+\frac{\partial{s_1}}{\partial{W}} &= \big(1 - s_1 ^ 2 \big) \left(s_0 + W \cdot \frac{\partial{s_{0}}}{\partial{W}} \right) \\
+&= \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \\\\
+\frac{\partial{s_2}}{\partial{W}} &= \big(1 - s_2 ^ 2 \big) \left(s_1 + W \cdot \frac{\partial{s_{1}}}{\partial{W}} \right) \\
+&= \big(1 - s_2 ^ 2 \big) \Big(s_1 + W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \Big)\\\\
+\frac{\partial{s_3}}{\partial{W}} &= \big(1 - s_3 ^ 2 \big) \left(s_2 + W \cdot \frac{\partial{s_{2}}}{\partial{W}} \right) \\
+&= \big(1 - s_3 ^ 2 \big) \bigg(s_2 + W \cdot \big(1 - s_2 ^ 2 \big) \Big(s_1 + W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \Big)  \bigg)\\\\
+\end{aligned}
+$$
+
+-----
+
+$$
+\begin{aligned}
+\frac{\partial{E_3}}{\partial{W}} &= \frac{\partial{E_3}}{\partial{\hat{y}_3}} \frac{\partial{\hat{y}_3}}{\partial{z_3}} \frac{\partial{z_3}}{\partial{s_3}} \frac{\partial{s_3}}{\partial{W}}  \\
+&= \left(\frac{\partial{E_3}}{\partial{\hat{y}_3}} \frac{\partial{\hat{y}_3}}{\partial{z_3}} \right) \cdot \frac{\partial{z_3}}{\partial{s_3}} \cdot \frac{\partial{s_3}}{\partial{W}}  \\
+&= \big(\hat{y}_3 - y_3 \big) \cdot V \cdot \frac{\partial{s_3}}{\partial{W}}  \\
+&= \big(\hat{y}_3 - y_3 \big) \cdot V \cdot \big(1 - s_3 ^ 2 \big) \bigg(s_2 + W \cdot \big(1 - s_2 ^ 2 \big) \Big(s_1 + W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \Big)  \bigg)\\
+& \triangleq d_3    \bigg(s_2 + W \cdot \big(1 - s_2 ^ 2 \big) \Big(s_1 + W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \Big)  \bigg)   \\
+&= d_3 s_2 + d_3 W \cdot \big(1 - s_2 ^ 2 \big) \Big(s_1 + W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \Big) \\
+& \triangleq d_3 s_2 + d_2 \Big(s_1 + W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \Big) \\
+&= d_3 s_2 + d_2 s_1 + d_2 W \cdot \big(1 - s_1 ^ 2 \big) \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \\
+& \triangleq d_3 s_2 + d_2 s_1 + d_1 \big(s_0 + W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1} \big) \\
+&= d_3 s_2 + d_2 s_1 + d_1 s_0 + d_1 W \cdot \big(1 - s_0 ^ 2 \big) \cdot s_{-1}  \\
+& \triangleq d_3 s_2 + d_2 s_1 + d_1 s_0 + d_0 \cdot s_{-1}  \\
+\end{aligned}
+$$
 
 # LSTM
 
@@ -398,3 +525,5 @@ VS
 - [BTPP推导1](https://github.com/hschen0712/machine-learning-notes/blob/master/Deep-Learning/back-propagation-through-time.ipynb)
 - [BTPP推导2](https://www.cnblogs.com/wacc/p/5341670.html)
 - [deriving-back-propagation-on-simple-rnn-lstm](https://towardsdatascience.com/back-to-basics-deriving-back-propagation-on-simple-rnn-lstm-feat-aidan-gomez-c7f286ba973d)
+- [RNN-BPTT](https://blog.csdn.net/flyinglittlepig/article/details/71598144)
+- [build-recurrent-neural-network-from-scratch](https://songhuiming.github.io/pages/2017/08/20/build-recurrent-neural-network-from-scratch/)

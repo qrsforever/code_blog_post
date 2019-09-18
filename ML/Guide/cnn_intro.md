@@ -11,23 +11,23 @@ categories: [ML]
 
 ## 网络资源
 
-[Intuitively Understanding Convolutions for Deep Learning][1]  
-[卷积神经网络CNN总结][2]  
-[卷积要旋转180度][3]  
-[卷积神经网络简介][4]  
-[别怕,"卷积"其实很简单][5]  
-[wikipedia:convolution][6]  
-[wikipedia:卷积][7]  
-[mathworld][8]  
-[图形Demo1][9]  
-[图形Demo2][10]  
-[最容易理解的对卷积(convolution)的解释][11]
-[Understanding Convolutions][12]
-[离散卷积过程举例图示详解][13]
-[必看: ConvNets][14]
+[Intuitively Understanding Convolutions for Deep Learning][1] </br>
+[卷积神经网络CNN总结][2] </br>
+[卷积要旋转180度][3] </br>
+[卷积神经网络简介][4] </br>
+[别怕,"卷积"其实很简单][5] </br>
+[wikipedia:convolution][6] </br>
+[wikipedia:卷积][7] </br>
+[mathworld][8] </br>
+[图形Demo1][9] </br>
+[图形Demo2][10] </br>
+[最容易理解的对卷积(convolution)的解释][11] </br>
+[Understanding Convolutions][12] </br>
+[离散卷积过程举例图示详解][13] </br>
+[必看: ConvNets][14] </br>
 
 
-[推荐: 卷积介绍][100]  
+[推荐: 卷积介绍][100] </br>
 
 [1]:https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1
 [2]:https://www.cnblogs.com/skyfsm/p/6790245.html

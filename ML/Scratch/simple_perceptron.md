@@ -3,7 +3,7 @@
 title: (原创)简单感知机-初探
 
 date: 2019-06-03 23:53:37
-tags: [Python, Scracth]
+tags: [Python, Scratch]
 categories: [ML]
 
 ---
