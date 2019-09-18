@@ -3,8 +3,8 @@
 title: 丢弃法
 
 date: 2019-08-27 13:28:58
-tags: [ML]
-categories: [Books]
+tags: [Guide]
+categories: [ML]
 
 ---
 

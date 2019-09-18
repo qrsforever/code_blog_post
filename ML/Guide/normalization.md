@@ -3,8 +3,8 @@
 title: 归一化
 
 date: 2019-08-27 09:58:25
-tags: [ML]
-categories: [Books]
+tags: [Guide]
+categories: [ML]
 
 ---
 

@@ -4,13 +4,16 @@ title: 数学符号表
 
 date: 2019-06-25 09:53:18
 tags: [Math]
-categories: [Tools]
+categories: [Note]
 
 ---
+
+[RAWCODE](https://raw.githubusercontent.com/qrsforever/code_blog_post/master/Tools/Math/symbols.md)
 
 <!-- vim-markdown-toc GFM -->
 
 * [统计学](#统计学)
+* [数学操作符](#数学操作符)
 * [机器学习](#机器学习)
 
 <!-- vim-markdown-toc -->

@@ -3,8 +3,8 @@
 title: 正则化
 
 date: 2019-08-27 10:24:46
-tags: [ML]
-categories: [Books]
+tags: [Guide]
+categories: [ML]
 
 ---
 

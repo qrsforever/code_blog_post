@@ -8,6 +8,20 @@ categories: [Node]
 
 ---
 
+[RAWCODE](https://raw.githubusercontent.com/qrsforever/code_blog_post/master/Note/Math/matrix_derivative.md)
+
+<!-- vim-markdown-toc GFM -->
+
+* [注解](#注解)
+* [一元微分: 导数](#一元微分-导数)
+* [多元微分: 梯度](#多元微分-梯度)
+* [矩阵导数](#矩阵导数)
+* [References](#references)
+
+<!-- vim-markdown-toc -->
+
+<!-- more -->
+
 # 注解
 
 符号 | 表示

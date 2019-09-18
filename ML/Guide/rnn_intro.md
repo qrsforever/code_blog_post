@@ -12,29 +12,28 @@ categories: [ML]
 
 <!-- vim-markdown-toc GFM -->
 
-* [关键字](#关键字)
 * [符号注解](#符号注解)
 * [RNN(BPTT)](#rnnbptt)
     * [隐马尔可夫模型](#隐马尔可夫模型)
     * [BPTT](#bptt)
         * [思考](#思考)
         * [求导](#求导)
-* [长期依赖](#长期依赖)
-* [梯度消失](#梯度消失)
+* [LSTM](#lstm)
+    * [长期依赖](#长期依赖)
+    * [梯度消失](#梯度消失)
+    * [与标准RNN对比](#与标准rnn对比)
 * [应用场景](#应用场景)
     * [语音识别](#语音识别)
     * [语言翻译](#语言翻译)
     * [股票预测](#股票预测)
     * [图像识别(图里的内容)](#图像识别图里的内容)
+* [其他](#其他)
+    * [关键字](#关键字)
 * [References](#references)
 
 <!-- vim-markdown-toc -->
 
 <!-- more -->
-
-# 关键字
-
-神经注意力模块(Attention) = 向前预测单元 + 后向回顾单元
 
 # 符号注解
 
@@ -145,7 +144,7 @@ at $t=4$, we would need to backpropagate 3 steps and sum up the gradients.
 
 ![A recurrent neural network and the unfolding in time of the computation involved in its forward computation][bptt-1]
 
-[bptt-1]: https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/rnn_classic_BPTT.png
+[bptt-1]: https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/rnn_classic_BPTT.jpg
 
 Formulas:
 
@@ -208,20 +207,21 @@ digraph BPTT {
     nodesep=0.6; ranksep=0.4;
     size="8,6"; center=true; margin=0.2
     penwidth=0;
+    forcelabels=true
 
-    edge  [style=solid, arrowhead=vee, labelfloat=true]
+    edge  [style=solid, arrowhead=vee, labelfloat=true, fontsize=12, penwidth=0.8]
     node  [shape=circle, fixedsize=true]
 
     y_t0 [label=$y_{t-1}$]
     y_t1 [label=$y_t$]
     y_t2 [label=$y_{t+1}$]
 
-    l_t0 [label=$l_{t-1}$]
-    l_t1 [label=$l_t$]
-    l_t2 [label=$l_{t+1}$]
+    e_t0 [label=$E_{t-1}$]
+    e_t1 [label=$E_t$]
+    e_t2 [label=$E_{t+1}$, xlabel=$E_t(y_t, \hat{y}_t)$]
 
     o_t0 [label=$\psi$]
-    o_t1 [label=$\psi$]
+    o_t1 [label=$\psi$, xlabel=$z_t=Vh_t$]
     o_t2 [label=$\psi$]
 
     h_t0 [label=$\phi$]
@@ -232,36 +232,123 @@ digraph BPTT {
     x_t1 [label=$x_t$]
     x_t2 [label=$x_{t+1}$]
 
-    x_t0 -> h_t0 [xlabel="W"]
-    x_t1 -> h_t1 [xlabel="W", headlabel=$s_t$, labelangle=70, labeldistance=1.2]
-    x_t2 -> h_t2 [xlabel="W", headlabel=$s_{t+1}$, labelangle=70, labeldistance=1.2]
+    x_t0 -> h_t0 [xlabel="U"]
+    x_t1 -> h_t1 [xlabel="U", headlabel=$s_t$, labelangle=70, labeldistance=1.2]
+    x_t2 -> h_t2 [xlabel="U", headlabel=$s_{t+1}$, labelangle=70, labeldistance=1.2]
 
     h_t0 -> o_t0 [label="V"]
     h_t1 -> o_t1 [label="V"]
     h_t2 -> o_t2 [label="V"]
 
-    o_t0 -> l_t0
-    o_t1 -> l_t1
-    o_t2 -> l_t2
+    o_t0 -> e_t0
+    o_t1 -> e_t1 [taillabel=$\hat{y}_t=\psi(z_t)$, labelangle=70, labeldistance=4.5]
+    o_t2 -> e_t2
 
-    l_t0 -> y_t0 [dir=back]
-    l_t1 -> y_t1 [dir=back]
-    l_t2 -> y_t2 [dir=back]
+    e_t0 -> y_t0 [dir=back]
+    e_t1 -> y_t1 [dir=back]
+    e_t2 -> y_t2 [dir=back]
 
     {
-        edge [xlabel="U"];
+        edge [xlabel="W"];
         rank=same;
-        h_t0 -> h_t1 [taillabel=$h_{t-1}$, labelangle=-70, labeldistance=2, headlabel=$Wx_t + Uh_{t-1}=\qquad \qquad \qquad$];
-        h_t1 -> h_t2 [taillabel=$\qquad \quad h_t=\phi(s_t)$, labelangle=-70, labeldistance=2, headlabel=$Wx_{t+1} + Uh_t=\qquad \qquad \qquad$];
+        h_t0 -> h_t1 [taillabel=$h_{t-1}$, labelangle=-70, labeldistance=2, headlabel=$Ux_t+Wh_{t-1}=\qquad \qquad \qquad$];
+        h_t1 -> h_t2 [taillabel=$\qquad \quad h_t=\phi(s_t)$, labelangle=-70, labeldistance=2, headlabel=$Ux_{t+1}+Wh_t=\qquad \qquad \qquad$];
     }
 }
 ```
 
-# 长期依赖
+从上图可以看到, 梯度不仅从空间结构上传播(纵向), 而且从时间结构上传播(横向), 这也是BPTT名字的由来.
+
+if:
+
+$\phi$ is $tanh()$
+
+$\psi$ is $softmax()$
+
+损失函数使用CEE(cross entropy loss), 总误差(所有输出节点的误差总和):
+
+$$
+\begin{align*}
+E_t(y_t, \hat{y}_t) &= -y_tlog\hat{y}_t \\
+E(y, \hat{y}) &= \sum_t E_t(y_t, \hat{y}_t) \\
+ &= - \sum_t y_tlog\hat{y}_t
+\end{align*}
+$$
+
+then:
+
+$$
+\begin{align*}
+\dfrac{\partial E_t}{\partial z_t} &= \dfrac{\partial E_t}{\partial \hat{y}_t} \psi'(z_t) \\
+ &= \hat{y}_t - y_t \qquad \text{ if } \psi \text { is softmax() } \tag{1}
+\end{align*}
+$$
+
+很多公式某些地方没考虑矩阵或向量不同维度相乘的情况, 不是很严谨(严格说是**错误**的), 仅供参考.
+
+1. 对$V$梯度
+
+$$
+\begin{align*}
+\dfrac{\partial E_t}{\partial V} &= \dfrac{\partial E_t}{\partial z_t} \dfrac{\partial z_t}{\partial V} \\
+ &= \dfrac{\partial E_t}{\partial \hat{y}_t} \psi'(z_t) \otimes h_t \\
+ &= (\hat{y} - y_t) {h_t}^T \tag{2} \\
+\end{align*}
+$$
+
+$$
+\dfrac{\partial E}{\partial V} = \sum_{k=0}{t} (\hat{y}_k - y_k) \otimes h_k
+$$
+
+只和当前状态的输出有关.
+
+2. 对$U$求梯度
+
+$$
+\begin{align*}
+\dfrac{\partial E_t}{\partial U} &= \dfrac{\partial E_t}{\partial z_t}
+    \dfrac{\partial z_t}{\partial h_t} \phi'(s_t) \dfrac{\partial s_t}{\partial U}
+    \dfrac{\partial s_t}{\partial h_{t-1}} \phi'(s_{t-1}) \dfrac{\partial s_{t-1}}{\partial U}\cdots \\
+ &= \dfrac{\partial E_t}{\partial z_t} V^T \phi'(s_t) \dfrac{\partial s_t}{\partial U}
+    W^T \phi'(s_{t-1}) \dfrac{\partial s_{t-1}}{\partial U}\cdots \\
+ &= \sum_{k=1}^{t} \dfrac{\partial E_t}{\partial z_t}\dfrac{\partial z_t}{\partial h_t}
+    \dfrac{\partial h_t}{\partial h_k} \dfrac{\partial h_k}{\partial s_k}
+    \dfrac{\partial s_k}{\partial U} \\
+ &= \sum_{k=1}^{t} \dfrac{\partial E_t}{\partial h_k}
+    \dfrac{\partial h_k}{\partial s_k} {x_k}^T \tag {3}
+\end{align*}
+$$
+
+由于$s_t$的上一个状态输出$h_{t-1}$依然含有$U$的分量, 形式变为:
+
+3. 对$W$求梯度
+
+$$
+\begin{align*}
+\dfrac{\partial E_t}{\partial W} &= \dfrac{\partial E_t}{\partial z_t}
+    \dfrac{\partial z_t}{\partial h_t} \phi'(s_t) \dfrac{\partial s_t}{\partial W}
+    \dfrac{\partial s_t}{\partial h_{t-1}} \phi'(s_{t-1}) \dfrac{\partial s_{t-1}}{\partial W}\cdots \\
+ &= \dfrac{\partial E_t}{\partial z_t} V^T \phi'(s_t) \dfrac{\partial s_t}{\partial W}
+    W^T \phi'(s_{t-1}) \dfrac{\partial s_{t-1}}{\partial W}\cdots \\
+ &= \sum_{k=1}^{t} \dfrac{\partial E_t}{\partial z_t}\dfrac{\partial z_t}{\partial h_t}
+    \dfrac{\partial h_t}{\partial h_k} \dfrac{\partial h_k}{\partial s_k}
+    \dfrac{\partial s_k}{\partial W} \\
+ &= \sum_{k=1}^{t} \dfrac{\partial E_t}{\partial h_k}
+    \dfrac{\partial h_k}{\partial s_k} {h_{k-1}}^T \tag {4}
+\end{align*}
+$$
+
+另$h_0$全0向量.
+
+![](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/rnn-bptt-with-gradients.png)
+
+# LSTM
+
+## 长期依赖
 
 LSTM 解决避免长时期依赖(long-term dependency)的问题
 
-# 梯度消失
+## 梯度消失
 
 LSTM 在某种程度上可以克服梯度消失问题.
 
@@ -273,6 +360,16 @@ LSTM 在某种程度上可以克服梯度消失问题.
 
 [^1]: https://baijiahao.baidu.com/s?id=1612358810937334377&wfr=spider&for=p
 
+## 与标准RNN对比
+
+![The repeating module in a standard RNN contains a single layer.](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/LSTM3-SimpleRNN.png)
+
+VS
+
+![The repeating module in an LSTM contains four interacting layers.](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/LSTM3-chain.png)
+
+非常详细的介绍请点击[这里](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+
 # 应用场景
 
 ## 语音识别
@@ -283,6 +380,12 @@ LSTM 在某种程度上可以克服梯度消失问题.
 
 ## 图像识别(图里的内容)
 
+
+# 其他
+
+## 关键字
+
+神经注意力模块(Attention) = 向前预测单元 + 后向回顾单元
 
 # References
 
