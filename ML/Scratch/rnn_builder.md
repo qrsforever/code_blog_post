@@ -56,7 +56,7 @@ $$
 
 # Notebook
 
-{% asset_jupyter python3 notebook/rnn_builder.ipynb %}
+{% asset_jupyter python3 notebook/rnn_builder.ipynb 300 %}
 
 # References
 
