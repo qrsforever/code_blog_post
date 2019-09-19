@@ -45,6 +45,7 @@ $T$ | 句子的长度
 $H$ | 隐藏层单元数
 $\mathbb{x}={x_1, x_2,...,x_T}$ | 句子的单词序列
 $x_t\in\mathbb{R}^{K\times 1}$ | t时刻RNN的输入,为one-hot vector,1表示一个单词的出现,0表示不出现
+$x\in \mathbb{R}^{T \times K}$ | 一个完整的句子, 句子的长度T
 $\hat{y}_t\in\mathbb{R}^{K\times 1}$ | t时刻softmax层的输出, 估计每个词出现的概率, 有时用$o_t$
 $y_t\in\mathbb{R}^{K\times 1}$ | t时刻的label, 真实每个词出现的概率, one-hot vector.
 $E_t$ | 第t个时刻(第t个word)的损失函数,定义为交叉熵误差$E_t=−y_t^Tlog(\hat{y}_t)$
