@@ -35,6 +35,10 @@ categories: [Note]
     Mlxtend (machine learning extensions) is a Python library of useful tools for the day-to-day data
     science tasks.
 
+#. https://gluon.mxnet.io/index.html
+
+    This repo contains an incremental sequence of notebooks designed to teach deep learning, Apache MXNet
+    (incubating), and the gluon interface. 
 
 # Other
 

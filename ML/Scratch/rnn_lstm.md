@@ -59,6 +59,8 @@ logits (未归一化的概率)一般作为softmax的输入参数(归一化).
 
 # Codes
 
+[百度云盘Datasets](https://pan.baidu.com/s/1gAFZ9gSf4pHJBt5W6_PgPQ "提取码: gxk4")
+
 {% asset_jupyter python3 notebook/rnn_lstm.ipynb 1200 %}
 
 # References
