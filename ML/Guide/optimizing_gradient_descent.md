@@ -13,6 +13,7 @@ categories: [ML]
 <!-- vim-markdown-toc GFM -->
 
 * [Keys](#keys)
+    * [Newton Method](#newton-method)
 * [Defination](#defination)
 * [Draft](#draft)
 * [Gradient descent](#gradient-descent)
@@ -24,8 +25,14 @@ categories: [ML]
     * [NAG (Nesterov's accelerated gradient)](#nag-nesterovs-accelerated-gradient)
     * [Adagrad](#adagrad)
     * [Adadelta](#adadelta)
+        * [Accumulate Over Window](#accumulate-over-window)
+        * [Correct Units with Hessian Approximation](#correct-units-with-hessian-approximation)
     * [RMSprop](#rmsprop)
     * [Adam](#adam)
+    * [AdaMax](#adamax)
+    * [Nadam](#nadam)
+    * [AMSGrad](#amsgrad)
+* [Compare](#compare)
 * [References](#references)
 
 <!-- vim-markdown-toc -->
@@ -34,7 +41,14 @@ categories: [ML]
 
 # Keys
 
-损坏函数(误差函数), 凸误差函数, 非凸误差函数, 学习率, 鞍点, 参数更新
+损坏函数(误差函数), 凸误差函数, 非凸误差函数, 学习率, 鞍点, 参数更新, 海瑟矩阵, 指数衰减, 泰勒级数
+
+## Newton Method
+
+牛顿法的基本思想是利用迭代点$x_k$处的一阶导数(梯度)和二阶导数(Hessen矩阵)对目标函数进行二次函数近似,然后把二次
+模型的极小点作为新的迭代点,并不断重复这一过程,直至求得满足精度的近似**极小值**.
+
+**核心思想**是对函数进行泰勒级数展开
 
 # Defination
 
@@ -132,6 +146,11 @@ $$
 
 # Algorithms
 
+上面传统的梯度下降最优算法与将要介绍的下面的算法有些不同, 下面将要介绍的算法learning rate会变化, 传统的算
+法则是单一的learning rate进行更新权重.
+
+![算法关系](https://raw.githubusercontent.com/qrsforever/assets_blog_post/master/ML/Guide/sgd_algorithms_tree.png){.center}
+
 ## Momentum
 
 动量法
@@ -205,7 +224,7 @@ $$
 
 ## Adagrad
 
-自适应学习率调整
+适应性梯度算法, 梯度二阶矩
 
 *Defination*:
 
@@ -232,28 +251,184 @@ $$
 这个算法存在一个问题, $G_{t}$记载所有参数历史梯度累加平方和, 在整个训练过程中, 这个累加和不断增大, 这会导
 致学习率变小, 无限变小时, 这个算法就会再也获取不到额外的信息.
 
+$G_{t}$可以表示为:$\sum_{\tau=1}^{t}(g_{\tau})^{2}$, 注意累加的是梯度(gradient),不是参数$\theta$.
+
+由$\Delta \theta_{t} = - \dfrac{\eta}{\sqrt{\sum_{\tau=1}^{t}(g_{\tau})^{2} + \epsilon}} \odot g_{t}$得:
+
+- 训练前期**激励阶段**: 累加梯度平方值小, 从而$\Delta \theta_{t}$值较大, 参数变化明显.
+
+- 训练后期**惩罚阶段**: 累加梯度平方值大, 从而$\Delta \theta_{t}$值较小, 参数变化非常小 (缺点).
+
 ## Adadelta
 
-自适应学习率调整
+自适应学习率调整, 梯度二阶矩均值
 
 *Defination*:
 
 Adadelta is an extension of Adagrad, Instead of accumulating all past squared gradients, Adadelta
 restricts the window of accumulated past gradients to some fixed size $w$
 
+正如上面描述的**Adagrad**的缺点, 如果数据集很大, 会导致累加的梯度平方和很大, 导致继续训练很难得到额外的信
+息. Adadelta试图寻找一个平衡, 不用计算所有的(时间序列)梯度平方和, **Adagrad**为了每次计算所有的梯度平方和,
+需要额外保存历史梯度值的记录, **Adadelta**是将梯度的平方和递归的表示成所有历史梯度平方的衰减均值: **the
+sum of gradients is recursively defined as a decaying average of all past squared gradients.**
+
+注意, 因为即使存放$w$个之前的梯度(对窗口w中的梯度求和), 这方法也是低效的, 所以最终采用的对所有梯度平方衰减
+均值的方式实现.
+
+*TODO*
+
+> 不明白什么是**decaying average**?, 为了继续下面的内容, 对**decaying average**的理解, 可以先用下面的例
+> 子忽悠一下 (纯属自娱自乐):
+>
+> hypothesis data: $x_1, x_2, \cdots, x_n$
+>
+> then: $E[x]_n = \dfrac{1}{n}\sum_{i}^{n} x_i \label{adadelta_1} \tag{1}$
+>
+> if we insert $x_{n+1}$ into data: $x_1, x_2, \cdots, x_n, x_{n+1}$
+>
+> then: $E[x]_{n+1} = \dfrac{1}{n+1} \sum_{i}^{n+1} x_i \label{adadelta_2} \tag{2}$
+>
+> from ($\ref{adadelta_1}$) and ($\ref{adadelta_2}$) we can get:
+>
+> $$
+> \begin{align*}
+> E[x]_{n+1} &= \dfrac{nE[x]_n + x_{n+1}}{n+1} \\
+>     &= \dfrac{n}{n+1}E[x]_n + \dfrac{1}{n+1} x_{n+1}
+> \end{align*}
+> $$
+>
+> if let $\gamma = \dfrac{n}{n+1}$
+>
+> then: $1-\gamma = \dfrac{1}{n+1}$
+>
+> then: $E[x]_{n+1} = \gamma E[x]_n + (1-\gamma)x_{n+1}$
+
+### Accumulate Over Window
+
+已知前面元素的均值, 在训练过程中不断加入新值, 再重新计算所有元素均值, 使用近似的方法(个人认为这也是why
+call decaying)求得, 忽略真实的训练次数, 使用$\gamma$表示:
+$$
+E[g^2]_t = \gamma E[g^2]_{t-1} + (1 - \gamma) g^2_t
+$$
+
+使用(平方和)均值的方式可以杜绝(解决)**Adagrad**累加(平方和)渐进增大的问题.
+
+with the decaying average over past squared gradients:
+
+$$
+\Delta \theta_t = - \dfrac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_{t} = - \dfrac{\eta}{RMS[g]_{t}} g_t
+$$
+
+then:
+
+$$
+E[\Delta \theta^2]_t = \gamma E[\Delta \theta^2]_{t-1} + (1 - \gamma) \Delta \theta^2_t
+$$
+
+最终得到Accumulate Over Window的形式为:
+
+$$
+\begin{align*}
+\theta_{t+1} &= \theta_t + \Delta \theta_t \\
+    &= \theta_t - \dfrac{\eta}{RMS[g]_{t}} g_t
+\end{align*}
+$$
+
+### Correct Units with Hessian Approximation
+
+TODO 没明白, 后续补充, 先把公式列出:
+
+$$
+E[\Delta \theta^2]_t = \gamma E[\Delta \theta^2]_{t-1} + (1 - \gamma) \Delta \theta^2_t
+$$
+
+$$
+RMS[\Delta \theta]_{t} = \sqrt{E[\Delta \theta^2]_t + \epsilon}
+$$
+
+$$
+\begin{align}
+\begin{split}
+\Delta \theta_t &= - \dfrac{RMS[\Delta \theta]_{t-1}}{RMS[g]_{t}} g_{t} \\
+\theta_{t+1} &= \theta_t + \Delta \theta_t
+\end{split}
+\end{align}
+$$
+
 ## RMSprop
 
+均方根传播
+
+RMSprop and Adadelta have both been developed independently around the same time stemming from the need to
+resolve Adagrad's radically diminishing learning rates.
+
+$$
+\begin{align}
+\begin{split}
+E[g^2]_t &= 0.9 E[g^2]_{t-1} + 0.1 g^2_t \\
+\theta_{t+1} &= \theta_{t} - \dfrac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_{t}
+\end{split}
+\end{align}
+$$
 
 ## Adam
 
+Adaptive Moment Estimation 自适应矩估计 亚当
+
+一阶矩(均值) with exponentially decaying average of past gradients $m_t$:
+
+$$m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t$$ like **momentum**.
+
+
+二阶矩(非中心的方差) with exponentially decaying average of past squared gradients $v_t$:
+
+$$v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2$$ like **Adadelta** or **RMSprop**.
+
+偏差校正:
+
+$$
+\begin{align}
+\begin{split}
+\hat{m}_t &= \dfrac{m_t}{1 - \beta^t_1} \\
+\hat{v}_t &= \dfrac{v_t}{1 - \beta^t_2} \end{split}
+\end{align}
+$$
+
+and last:
+
+$$
+\theta_{t+1} = \theta_{t} - \dfrac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t
+$$
+
+算法完美, 即使用到了**momentum**的动量特性(梯度方向不变, 越来越快), 同时具有**RMSprop**的自动更新学习速率.
 
 ## AdaMax
 
+亚当的变种, L范数
+
+TODO
+
+$$
+\begin{align}
+\begin{split}
+u_t &= \beta_2^\infty v_{t-1} + (1 - \beta_2^\infty) |g_t|^\infty\\
+& = \max(\beta_2 \cdot v_{t-1}, |g_t|)
+\end{split}
+\end{align}
+$$
+
+$\theta_{t+1} = \theta_{t} - \dfrac{\eta}{u_t} \hat{m}_t$
 
 ## Nadam
 
+Nesterov-accelerated Adaptive Moment Estimation, 那达慕, 带有**Nesterov**动量项的亚当
+
+TODO
 
 ## AMSGrad
+
+TODO
 
 # Compare
 
@@ -277,3 +452,4 @@ restricts the window of accumulated past gradients to some fixed size $w$
 - <https://mc.ai/learning-parameters-part-2-momentum-based-and-nesterov-accelerated-gradient-descent/>
 - <https://gist.github.com/akshaychandra21>
 - <https://blog.csdn.net/yzy_1996/article/details/84618536>
+- <https://www.cnblogs.com/neopenx/p/4768388.html>
