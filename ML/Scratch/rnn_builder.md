@@ -56,6 +56,8 @@ $$
 
 # Notebook
 
+[百度云盘Datasets](https://pan.baidu.com/s/1gAFZ9gSf4pHJBt5W6_PgPQ "提取码: gxk4")
+
 {% asset_jupyter python3 notebook/rnn_builder.ipynb 300 %}
 
 # References

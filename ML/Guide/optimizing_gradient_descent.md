@@ -120,6 +120,24 @@ $$
 >         params = params - learning_rate * params_grad
 > ```
 
+### SGD with Gaussian Noise
+
+{% blockquote Deplip Rao https://deliprao.com/archives/153 "Make your Stochastic Gradient Descent more Stochastic" %}
+Results in Deep Learning never cease to surprise me. One ICLR 2016 paper from Google Brain team suggests a simple 1-line code change to improve your parameter estimation across the board — by adding a Gaussian noise to the computed gradients. Typical SGD updates parameters by taking a step in the direction of the gradient (simplified):
+$$
+\mathbf{\Theta}_{t+1} \leftarrow \mathbf{\Theta}_{t} + \alpha_{t}\nabla\mathbf{\Theta}
+$$
+Instead of doing that the suggestion is add a small random noise to the update:
+$$
+\mathbf{\Theta}_{t+1} \leftarrow \mathbf{\Theta}_{t} + \alpha_{t}(\nabla\mathbf{\Theta} + N(0, \sigma_t^2))
+$$
+Further, $\sigma$ is prescribed to be:
+$$
+\sigma_t^2 = \frac{\eta}{(1 + t)^{0.55}}
+$$
+and $\eta$ is one of $\{0.01, 0.3, 1.0\}$!
+{% endblockquote %}
+
 ## MGD (mini-batch gradient descent)
 
 小批量梯度下降法
@@ -172,7 +190,7 @@ $$
 
 SGD波动最容易发生在局部最优处, 假设从山顶到山底通过一个斜坡滑下(最斜的一条), 则动量会累加, 即越靠近山底,
 滑下的速度越快, SGD因为抖动做不到, 而**动量法**的原理就是在从山顶到山底滑下的通道上(梯度向量)加上一个累加
-分量$\gamma$, 如果滑下的过程中斜坡不变, $\gamma$一直累加, 即参数更新的step变大, 收敛更快.
+分量$\gamma$(衰减因子), 如果滑下的过程中斜坡不变, $\gamma$一直累加, 即参数更新的step变大, 收敛更快.
 
 {% blockquote ruder.io http://ruder.io/optimizing-gradient-descent/index.html#momentum momentum %}
 The momentum term increases for dimensions whose gradients point in the same directions and reduces
@@ -194,6 +212,8 @@ reduced oscillation.
 ## NAG (Nesterov's accelerated gradient)
 
 内斯特罗夫加速梯度(Look ahead)
+
+动量法的高阶版本
 
 *Defination*:
 
@@ -320,12 +340,6 @@ $$
 \Delta \theta_t = - \dfrac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_{t} = - \dfrac{\eta}{RMS[g]_{t}} g_t
 $$
 
-then:
-
-$$
-E[\Delta \theta^2]_t = \gamma E[\Delta \theta^2]_{t-1} + (1 - \gamma) \Delta \theta^2_t
-$$
-
 最终得到Accumulate Over Window的形式为:
 
 $$
@@ -358,7 +372,7 @@ $$
 
 ## RMSprop
 
-均方根传播
+均方根传播, Adadelta的一个特殊情况 (Accumulate Over Window)
 
 RMSprop and Adadelta have both been developed independently around the same time stemming from the need to
 resolve Adagrad's radically diminishing learning rates.
@@ -375,6 +389,8 @@ $$
 ## Adam
 
 Adaptive Moment Estimation 自适应矩估计 亚当
+
+Adam可以看做是RMSprop和动量法的结合.
 
 一阶矩(均值) with exponentially decaying average of past gradients $m_t$:
 
@@ -401,7 +417,7 @@ $$
 \theta_{t+1} = \theta_{t} - \dfrac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t
 $$
 
-算法完美, 即使用到了**momentum**的动量特性(梯度方向不变, 越来越快), 同时具有**RMSprop**的自动更新学习速率.
+算法完美, 既使用到了**momentum**的动量特性(梯度方向不变, 越来越快), 同时具有**RMSprop**的自动更新学习速率.
 
 ## AdaMax
 
@@ -424,7 +440,60 @@ $\theta_{t+1} = \theta_{t} - \dfrac{\eta}{u_t} \hat{m}_t$
 
 Nesterov-accelerated Adaptive Moment Estimation, 那达慕, 带有**Nesterov**动量项的亚当
 
-TODO
+Nadam (Nesterov-accelerated Adaptive Moment Estimation) thus combines Adam and NAG. 即它是Adam和NAG的组合
+
+回顾一下Momentum动量formulas:
+
+$$
+\begin{align*} 
+g_t &= \nabla_{\theta_t}J(\theta_t)\\ 
+m_t &= \gamma m_{t-1} + \eta g_t\\ 
+\theta_{t+1} &= \theta_t - m_t 
+\end{align*}
+$$
+
+回顾一下NAG具有预测能力(先一步$J(\theta_t - \gamma m_{t-1})$)的算法 formulas:
+
+$$
+\begin{align*} 
+g_t &= \nabla_{\theta_t}J(\theta_t - \gamma m_{t-1}) \\ 
+m_t &= \gamma m_{t-1} + \eta g_t \\ 
+\theta_{t+1} &= \theta_t - m_t 
+\end{align*}
+$$
+
+从上面的公式会发现动量计算出现2处, 一处为了更新梯度$J(\theta_t - \gamma m_{t-1})$, 另一处最后更新参数时,
+Dozat提出了一种方式修正NAG (look-ahead of weights, not gradient):
+
+$$
+\begin{align*} 
+g_t &= \nabla_{\theta_t}J(\theta_t) \\ 
+m_t &= \gamma m_{t-1} + \eta g_t \\ 
+\theta_{t+1} &= \theta_t - (\gamma m_t + \eta g_t) 
+\end{align*}
+$$
+
+回顾一下Adam:
+
+$$
+\begin{align*} 
+m_t &= \beta_1 m_{t-1} + (1 - \beta_1) g_t \\ 
+v_t &= \beta_2 v_{t-1} + (1 - \beta_2) g_t^2  \\
+\hat{m}_t & = \frac{m_t}{1 - \beta^t_1} \\ 
+\hat{v}_t &= \dfrac{v_t}{1 - \beta^t_2} \\
+\theta_{t+1} &= \theta_{t} - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t  \\
+\theta_{t+1} &= \theta_{t} - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} (\frac{\beta_1 m_{t-1}}{1 - \beta^t_1} + \dfrac{(1 - \beta_1) g_t}{1 - \beta^t_1})
+\end{align*}
+$$
+
+Nadam真容:
+
+$$
+\theta_{t+1} = \theta_{t} - \dfrac{\eta}{\sqrt{\hat{v}_t} + \epsilon} (\beta_1 \hat{m}_t + \dfrac{(1 - \beta_1) g_t}{1 - \beta^t_1})
+$$
+
+把$\dfrac{m_{t-1}}{1 - \beta_1^t} = \hat{m_{t-1}}$换成$\hat{m_t}$ ignore that the denominator is
+$1 - \beta^t_1$ and not $1 - \beta^{t-1}_1$
 
 ## AMSGrad
 
