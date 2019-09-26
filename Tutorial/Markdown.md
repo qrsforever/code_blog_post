@@ -71,19 +71,19 @@ Pandoc pass attributes via {}. see [锚点](#myanchor)
 每行后面2个空格,不多不少, 嵌套时层级之间加一个` > `
 
 ```
-> 块注释0  
+> 块注释0
 >
-> > 块注释1  
->  
-> > > 块注释2  
+> > 块注释1
+>
+> > > 块注释2
 
-> ## This is a header.
-> 
+> ### This is a header.
+>
 > 1.   This is the first list item.
 > 2.   This is the second list item.
-> 
+>
 > Here's some example code:
-> 
+>
 >     return shell_exec("echo $input | $markdown_script");
 
 > This is a block quote. This
@@ -101,19 +101,19 @@ the sum denotes $\sum_{a=0}^{n}$
 
 ```
 
-> 块注释0  
+> 块注释0
 >
-> > 块注释1  
->  
-> > > 块注释2  
+> > 块注释1
+>
+> > > 块注释2
 
-> ## This is a header.
-> 
+> ### This is a header.
+>
 > 1.   This is the first list item.
 > 2.   This is the second list item.
-> 
+>
 > Here's some example code:
-> 
+>
 >     return shell_exec("echo $input | $markdown_script");
 
 > This is a block quote. This
@@ -138,8 +138,8 @@ the sum denotes $\sum_{a=0}^{n}$
 _斜体1_
 ```
 
-*斜体0*  
-_斜体1_  
+*斜体0*
+_斜体1_
 
 ### 粗体
 
@@ -148,8 +148,8 @@ _斜体1_
 __粗体1__
 ```
 
-**粗体0**  
-__粗体1__  
+**粗体0**
+__粗体1__
 
 ## 列表
 
@@ -176,6 +176,34 @@ __粗体1__
 1. 有序0
 2. 有序1
 3. 有序2
+
+### 自动有序
+
+```
+#. You can use integers or the `#` symbol in enumerated lists.
+#. This is quite convenient. For example,
+       i. You don't have to count
+      ii. If you want to change the order, no numbering needs to be changed
+#. You can also use roman numerals, obviously.
+```
+
+#. You can use integers or the `#` symbol in enumerated lists.
+#. This is quite convenient. For example,
+       i. You don't have to count
+      ii. If you want to change the order, no numbering needs to be changed
+#. You can also use roman numerals, obviously.
+
+### 标签序列
+
+    (@case-1)  This is Example1.
+    (@case-2) This is Example2.
+
+    You can refer to an example by its label. For instance Example (@case-2).
+
+(@case-1)  This is Example1.
+(@case-2) This is Example2.
+
+You can refer to an example by its label. For instance Example (@case-2).
 
 ### 定义型列表
 
@@ -266,17 +294,17 @@ Pandoc在标题行直接加`{#myanchor}`, 可以实现锚点, 不需要[]{#myanc
 [AnchorText]{#mytext}
 
 <span id="m1">锚点1:</span>
-anchor1  
-anchor1  
-anchor1  
+anchor1
+anchor1
+anchor1
 <span id="m2">锚点2:</span>
-anchor2  
-anchor2  
-anchor2  
+anchor2
+anchor2
+anchor2
 
 [锚点1](#m1 "anchor alt text")
 
-[锚点2][anchor2]  
+[锚点2][anchor2]
 
 [anchor2]:#m2 "anchor alt text"
 
@@ -286,17 +314,17 @@ anchor2
 [AnchorText]{#mytext}
 
 <span id="m1">锚点1:</span>
-anchor1  
-anchor1  
-anchor1  
+anchor1
+anchor1
+anchor1
 <span id="m2">锚点2:</span>
-anchor2  
-anchor2  
-anchor2  
+anchor2
+anchor2
+anchor2
 
 [锚点1](#m1 "anchor alt text")
 
-[锚点2][anchor2]  
+[锚点2][anchor2]
 
 [anchor2]:#m2 "anchor alt text"
 
@@ -307,7 +335,7 @@ anchor2
 ```
 <div align='center'>
 内联方式:![alt text](/img/avatar.jpg "Title")
-引用方式:![alt text][id] 
+引用方式:![alt text][id]
 </div>
 [id]: /img/avatar.jpg    "Title"
 
@@ -315,11 +343,13 @@ pandoc:
 
 ![link text](/img/avatar.jpg){.float-right width=20px height=10%}
 
+图片居中: .center
+
 ```
 
 <div align='center'>
 内联方式:![alt text](/img/avatar.jpg "Title")
-引用方式:![alt text][id] 
+引用方式:![alt text][id]
 </div>
 [id]: /img/avatar.jpg    "Title"
 
@@ -333,40 +363,40 @@ pandoc:
 \`one line\`
 
 \`\`\`java
-for (int i = 0; i < 100; ++i)  
+for (int i = 0; i < 100; ++i)
     printf(i);
 \`\`\`
 
 \`\`\`
-for (int i = 0; i < 100; ++i)  
+for (int i = 0; i < 100; ++i)
     printf("longggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg line");
 \`\`\`
 
-    for (int i = 0; i < 100; ++i)  
+    for (int i = 0; i < 100; ++i)
         printf(i);
-    for (int i = 0; i < 100; ++i)  
+    for (int i = 0; i < 100; ++i)
         printf(i);
-    for (int i = 0; i < 100; ++i)  
+    for (int i = 0; i < 100; ++i)
         printf(i);
 ```
 
 `one line`
 
 ```java
-for (int i = 0; i < 100; ++i)  
+for (int i = 0; i < 100; ++i)
     printf(i);
 ```
 
 ```
-for (int i = 0; i < 100; ++i)  
+for (int i = 0; i < 100; ++i)
     printf("longggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg line");
 ```
 
-    for (int i = 0; i < 100; ++i)  
+    for (int i = 0; i < 100; ++i)
         printf(i);
-    for (int i = 0; i < 100; ++i)  
+    for (int i = 0; i < 100; ++i)
         printf(i);
-    for (int i = 0; i < 100; ++i)  
+    for (int i = 0; i < 100; ++i)
         printf(i);
 
 ## 引用
@@ -376,34 +406,34 @@ for (int i = 0; i < 100; ++i)
 ### 简单
 
 ```
-> 这是一个有两段文字的引用,  
-  无意义的占行文字1.  
-  无意义的占行文字2.  
-> 
-  无意义的占行文字3.  
-  无意义的占行文字4.  
+> 这是一个有两段文字的引用,
+  无意义的占行文字1.
+  无意义的占行文字2.
+>
+  无意义的占行文字3.
+  无意义的占行文字4.
 ```
 
-> 这是一个有两段文字的引用,  
-  无意义的占行文字1.  
-  无意义的占行文字2.  
-> 
-  无意义的占行文字3.  
-  无意义的占行文字4.  
+> 这是一个有两段文字的引用,
+  无意义的占行文字1.
+  无意义的占行文字2.
+>
+  无意义的占行文字3.
+  无意义的占行文字4.
 
 ### 嵌套
 
 ```
-> > > 请问 Markdwon 怎么用? - 小白  
-> > 
-> > 自己看教程! - 愤青  
-> 教程在哪? - 小白  
+> > > 请问 Markdwon 怎么用? - 小白
+> >
+> > 自己看教程! - 愤青
+> 教程在哪? - 小白
 ```
 
-> > > 请问 Markdwon 怎么用? - 小白  
-> > 
-> > 自己看教程! - 愤青  
-> 教程在哪? - 小白  
+> > > 请问 Markdwon 怎么用? - 小白
+> >
+> > 自己看教程! - 愤青
+> 教程在哪? - 小白
 
 [更多](#blockquote)
 
@@ -412,7 +442,7 @@ for (int i = 0; i < 100; ++i)
 ```
 > 1.   这是第一行列表项.
 > 2.   这是第二行列表项.
-> 
+>
 > 给出一些例子代码:
 > ```c
 >    return shell_exec("echo  $input | $markdown_script");
@@ -421,7 +451,7 @@ for (int i = 0; i < 100; ++i)
 
 > 1.   这是第一行列表项.
 > 2.   这是第二行列表项.
-> 
+>
 > 给出一些例子代码:
 > ```c
 >    return shell_exec("echo  $input | $markdown_script");
@@ -463,42 +493,58 @@ Here's a simple footnote,[^1] and here's a longer one.[^bignote]
 ` * ` 后有个空格, 最多3个, 如果每一项多个段落, 则段落前4个空格
 
 ```
-*   轻轻的我走了， 正如我轻轻的来； 我轻轻的招手， 作别西天的云彩。   
-那河畔的金柳， 是夕阳中的新娘； 波光里的艳影， 在我的心头荡漾。  
-软泥上的青荇， 油油的在水底招摇； 在康河的柔波里， 我甘心做一条水草！  
+*   轻轻的我走了， 正如我轻轻的来； 我轻轻的招手， 作别西天的云彩。
+那河畔的金柳， 是夕阳中的新娘； 波光里的艳影， 在我的心头荡漾。
+软泥上的青荇， 油油的在水底招摇； 在康河的柔波里， 我甘心做一条水草！
 
-    那榆荫下的一潭， 不是清泉， 是天上虹； 揉碎在浮藻间， 沉淀着彩虹似的梦。 
-寻梦？撑一支长篙， 向青草更青处漫溯； 满载一船星辉， 在星辉斑斓里放歌。  
-但我不能放歌， 悄悄是别离的笙箫； 夏虫也为我沉默， 沉默是今晚康桥！  
+    那榆荫下的一潭， 不是清泉， 是天上虹； 揉碎在浮藻间， 沉淀着彩虹似的梦。
+寻梦？撑一支长篙， 向青草更青处漫溯； 满载一船星辉， 在星辉斑斓里放歌。
+但我不能放歌， 悄悄是别离的笙箫； 夏虫也为我沉默， 沉默是今晚康桥！
 
-*   悄悄的我走了， 正如我悄悄的来； 我挥一挥衣袖， 不带走一片云彩。 
+*   悄悄的我走了， 正如我悄悄的来； 我挥一挥衣袖， 不带走一片云彩。
 ```
 
-*   轻轻的我走了， 正如我轻轻的来； 我轻轻的招手， 作别西天的云彩。  
-那河畔的金柳， 是夕阳中的新娘； 波光里的艳影， 在我的心头荡漾。  
-软泥上的青荇， 油油的在水底招摇； 在康河的柔波里， 我甘心做一条水草！  
+*   轻轻的我走了， 正如我轻轻的来； 我轻轻的招手， 作别西天的云彩。
+那河畔的金柳， 是夕阳中的新娘； 波光里的艳影， 在我的心头荡漾。
+软泥上的青荇， 油油的在水底招摇； 在康河的柔波里， 我甘心做一条水草！
 
-    那榆荫下的一潭， 不是清泉， 是天上虹； 揉碎在浮藻间， 沉淀着彩虹似的梦。  
-寻梦？撑一支长篙， 向青草更青处漫溯； 满载一船星辉， 在星辉斑斓里放歌。  
-但我不能放歌， 悄悄是别离的笙箫； 夏虫也为我沉默， 沉默是今晚的康桥！  
+    那榆荫下的一潭， 不是清泉， 是天上虹； 揉碎在浮藻间， 沉淀着彩虹似的梦。
+寻梦？撑一支长篙， 向青草更青处漫溯； 满载一船星辉， 在星辉斑斓里放歌。
+但我不能放歌， 悄悄是别离的笙箫； 夏虫也为我沉默， 沉默是今晚的康桥！
 
-*   悄悄的我走了， 正如我悄悄的来； 我挥一挥衣袖， 不带走一片云彩。  
+*   悄悄的我走了， 正如我悄悄的来； 我挥一挥衣袖， 不带走一片云彩。
 
+
+### 行块
+
+```
+| I'm very good at integral and differential calculus;
+| I know the scientific names of beings animalculous:
+|     In short, in matters vegetable, animal, and mineral,
+|     I am the very model of a modern Major-General.
+|
+```
+
+| I'm very good at integral and differential calculus;
+| I know the scientific names of beings animalculous:
+|     In short, in matters vegetable, animal, and mineral,
+|     I am the very model of a modern Major-General.
+|
 
 ## 换行
 
 ```
 longggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
-newlongggggggggggggggggggggg  
-gggggggggggggggggggggggggggg(我后面有两个空格)  
+newlongggggggggggggggggggggg
+gggggggggggggggggggggggggggg(我后面有两个空格)
 gggggggggggggggggggggggggggg
 
 aaa<br/><br/>bbb<br/><br/>
 ```
 
 longggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
-newlongggggggggggggggggggggg  
-gggggggggggggggggggggggggggg(我后面有两个空格)  
+newlongggggggggggggggggggggg
+gggggggggggggggggggggggggggg(我后面有两个空格)
 gggggggggggggggggggggggggggg
 
 aaa<br/><br/>bbb<br/><br/>
@@ -593,7 +639,7 @@ ______
 ```
 {% blockquote QRS, https://qrsforever.github.io https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" %}
 
-npm config set registry https://registry.npm.taobao.org  
+npm config set registry https://registry.npm.taobao.org
 npm config get registry
 
 {% endblockquote %}
@@ -601,7 +647,7 @@ npm config get registry
 
 {% blockquote QRS, https://qrsforever.github.io https://qrsforever.github.io/2019/07/18/Tools/How/china_images/#npm "国内npm下载源镜像" %}
 
-npm config set registry https://registry.npm.taobao.org  
+npm config set registry https://registry.npm.taobao.org
 npm config get registry
 
 {% endblockquote %}
@@ -635,4 +681,8 @@ for (int i = 0; i < 10; ++i) {
 [查找](https://www.emojicopy.com/)
 
 {% emoji_hj people/thinking-face %}
+
+# References
+
+- <http://www.nrstickley.com/pandoc-markdown/>
 

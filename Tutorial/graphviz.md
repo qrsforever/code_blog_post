@@ -26,6 +26,7 @@ categories: [Tutorial]
     * [subgraph](#subgraph)
     * [edge direction](#edge-direction)
     * [edge position](#edge-position)
+    * [prog](#prog)
     * [rank](#rank)
     * [label](#label)
         * [demo1](#demo1)
@@ -202,44 +203,42 @@ sametail | -- | 同上,尾结点
 
 ## office example
 
-```{.numberLines startFrom="1"}
-digraph G {
+    ```{.graph .center caption="Demo" fileName="test"}
+    digraph G {
+      bgcolor="#ffffff00"
 
-  bgcolor="#ffffff00"
+      subgraph cluster_0 {
+        style="filled, rounded";
+        color="#E6EAF2"
+        node [style=filled,color=white];
+        a0 -> a1 -> a2 -> a3;
+        a3 -> a1 [label = " -10" color=red fontcolor=red];
+        label = "System A";
+      }
 
-  subgraph cluster_0 {
-    style="filled, rounded";
-    color="#E6EAF2"
-    node [style=filled,color=white];
-    a0 -> a1 -> a2 -> a3;
-    a3 -> a1 [label = " -10" color=red fontcolor=red];
-    label = "System A";
-  }
+      subgraph cluster_1 {
+        node [style=filled color="#E6EAF2"];
+        b0 -> b1 -> b2 -> b3;
+        b0 -> b2 [label = " +12" color=green fontcolor=green];
+        label = "System B";
+        style="dashed, rounded"
+        color=blue
+      }
 
-  subgraph cluster_1 {
-    node [style=filled color="#E6EAF2"];
-    b0 -> b1 -> b2 -> b3;
-    b0 -> b2 [label = " +12" color=green fontcolor=green];
-    label = "System B";
-    style="dashed, rounded"
-    color=blue
-  }
+      start -> a0;
+      start -> b0;
+      a1 -> b3;
+      a3 -> end;
+      b3 -> end;
 
-  start -> a0;
-  start -> b0;
-  a1 -> b3;
-  a3 -> end;
-  b3 -> end;
-
-  start [label="load" shape=folder];
-  end [label="store" shape=box3d];
-}
-```
+      start [label="load" shape=folder];
+      end [label="store" shape=box3d];
+    }
+    ```
 
 output:
 
 ```{.graph .center caption="Demo" fileName="test"}
-
 digraph G {
 
   bgcolor="#ffffff00"
@@ -275,6 +274,7 @@ digraph G {
 
 ## subgraph
 
+    ```{.graph .center caption="Subgraph Demo" fileName="graphviz_subgraph_1"}
     digraph G {
       compound=true;
       node [ shape = "Mrecord" ];
@@ -298,6 +298,7 @@ digraph G {
       NodeA -> Node_1_0 [lhead = cluster_1];
       NodeA -> Node_2_0 [lhead = cluster_2];
     }
+    ```
 
 output:
 
@@ -330,12 +331,14 @@ digraph G {
 
 ## edge direction
 
+    ```{.graph .center caption="Edge Direction Demo" fileName="graphviz_edge_1"}
     digraph G {
         A -> B[dir = both]
         B -> C[dir = nonc]
         C -> D[dir = back]
         D -> A[dir = forward]
     }
+    ```
 
 output:
 
@@ -350,6 +353,7 @@ digraph G {
 
 ## edge position
 
+    ```{.graph .center caption="Edge Position Demo" fileName="graphviz_edge_2"}
     digraph G {
        node[shape = box]
        c:n -> d[label = n]
@@ -361,6 +365,7 @@ digraph G {
        c6:w -> d6[label = w]
        c7:nw -> d7[label = nw]
     }
+    ```
 
 output:
 
@@ -378,8 +383,37 @@ digraph G {
 }
 ```
 
+## prog
+
+默认prog=dot, neato更适合画无向图
+
+    ```{.graph .center prog=neato fileName="graphviz_prog" caption="Star network topology."}
+    graph ER {
+        bgcolor="#ffffff00"
+        A -- 1
+        A -- 2
+        A -- 3
+        A -- 4
+        A -- 5
+    }
+    ```
+
+output:
+
+```{.graph .center prog=neato fileName="graphviz_prog" caption="Star network topology."}
+graph ER {
+    bgcolor="#ffffff00"
+    A -- 1
+    A -- 2
+    A -- 3
+    A -- 4
+    A -- 5
+}
+```
+
 ## rank
 
+    ```{.graph .center caption="Rank Demo" fileName="graphviz_rank_1"}
     digraph G {
        rankdir = LR
        {
@@ -398,6 +432,7 @@ digraph G {
         {rank = same 2001 DOTA}
        }
     }
+    ```
 
 output:
 
@@ -426,6 +461,7 @@ digraph G {
 
 ### demo1
 
+    ```{.graph .center caption="Label Demo 1" fileName="graphviz_label_1"}
     graph G {
        label = "我爱你" /*为图设置标签*/
        labelloc = b    /*图标签的位置在底部，也可以设置为t到顶部*/
@@ -441,6 +477,7 @@ digraph G {
        edge[decorate = false, labelfontcolor = blue, fontcolor = red]
        C1 -- D1[headlabel = "d1", taillabel = "c1", label = "c1 - d1"]
     }
+    ```
 
 output:
 
@@ -464,6 +501,7 @@ graph G1 {
 
 ### demo2
 
+    ```{.graph .center caption="Label Demo 2" fileName="graphviz_label_2"}
     graph G2 {
         node [shape=box]; User; Object; Tag;
         node [shape=diamond,style=filled]; Triple;
@@ -478,6 +516,7 @@ graph G1 {
         }
         Triple -- Tag [label="n", headlabel = "2"];
     }
+    ```
 
 output:
 
@@ -500,6 +539,7 @@ graph G2 {
 
 ## distance
 
+    ```{.graph .center caption="Distance Demo" fileName="graphviz_distance_1"}
     digraph A {
       rankdir=LR;
       center=true; margin=1;    // 居中, 空白地方的大小
@@ -514,6 +554,7 @@ graph G2 {
       a -> b -> c;
       a -> c;
     }
+    ```
 
 output:
 
@@ -536,19 +577,16 @@ digraph A {
 
 ## latex graph
 
-```{.numberLines startFrom="1"}
-
-{.graph .center caption="Latex Graph Demo" fileName="ladotdemo" latex="true" resolution="1080" desity="100"}
-
-digraph mydot {
-    rankdir=LR
-    node [shape=plaintext, width=0]
-    $v_1$(2)
-    $v_1$ -> $v_2$(2) [label=$\sqrt{2}+\frac{1}{x+5}$(9)]
-    $v_2$ -> $v_3$(2) [label=$S \subseteq \{1,2,3\}^4$(6)]
-    $v_3$ -> $v_1$ [label=$(f \circ g)^{-1}$(7)]
-}
-```
+    ```{.graph .center caption="Latex_Graph_Demo" fileName="ladotdemo" latex="true" resolution="1080" desity="100"}
+    digraph mydot {
+        rankdir=LR
+        node [shape=plaintext, width=0]
+        $v_1$(2)
+        $v_1$ -> $v_2$(2) [label=$\sqrt{2}+\frac{1}{x+5}$(9)]
+        $v_2$ -> $v_3$(2) [label=$S \subseteq \{1,2,3\}^4$(6)]
+        $v_3$ -> $v_1$ [label=$(f \circ g)^{-1}$(7)]
+    }
+    ```
 
 output:
 
@@ -567,126 +605,119 @@ digraph mydot {
 
 ### simplest
 
-```{.numberLines startFrom="1"}
+    ```{.graph .center caption="simplest" fileName="graphviz_simplest"}
+    digraph G {
+        rankdir=LR;   /* makes the directed graphs drawn from left to right */
+        splines=line; /* force edges to be straight, no curves or angles */
+        nodesep=.05;  /* forces edges to become invisible */
+        node [label=""];   /* [ ] sets the default node property */
 
-{.graph .center caption="simplest" fileName="graphviz_simplest"}
+        subgraph cluster_0 {
+            color=white;
+            node [style=solid,color=blue4, shape=circle];
+            x1 x2 x3;
+            label = "layer 1";
+        }
 
-digraph G {
+        subgraph cluster_1 {
+            color=white;
+            node [style=solid,color=red2, shape=circle];
+            a12 a22 a32 a42 a52;
+            label = "layer 2";
+        }
 
-    rankdir=LR;   /* makes the directed graphs drawn from left to right */
-    splines=line; /* force edges to be straight, no curves or angles */
-    nodesep=.05;  /* forces edges to become invisible */
+        subgraph cluster_2 {
+            color=white;
+            node [style=solid,color=red2, shape=circle];
+            a13 a23 a33 a43 a53;
+            label = "layer 3";
+        }
 
-    node [label=""];   /* [ ] sets the default node property */
+        subgraph cluster_3 {
+            color=white;
+            node [style=solid,color=seagreen2, shape=circle];
+            O1 O2 O3 O4;
+            label="layer 4";
+        }
 
-    subgraph cluster_0 {
-        color=white;
-        node [style=solid,color=blue4, shape=circle];
-        x1 x2 x3;
-        label = "layer 1";
+        x1 -> a12;
+        x1 -> a22;
+        x1 -> a32;
+        x1 -> a42;
+        x1 -> a52;
+
+        x2 -> a12;
+        x2 -> a22;
+        x2 -> a32;
+        x2 -> a42;
+        x2 -> a52;
+
+        x3 -> a12;
+        x3 -> a22;
+        x3 -> a32;
+        x3 -> a42;
+        x3 -> a52;
+
+        a12 -> a13
+        a22 -> a13
+        a32 -> a13
+        a42 -> a13
+        a52 -> a13
+
+        a12 -> a23
+        a22 -> a23
+        a32 -> a23
+        a42 -> a23
+        a52 -> a23
+
+        a12 -> a33
+        a22 -> a33
+        a32 -> a33
+        a42 -> a33
+        a52 -> a33
+
+        a12 -> a43
+        a22 -> a43
+        a32 -> a43
+        a42 -> a43
+        a52 -> a43
+
+        a12 -> a53
+        a22 -> a53
+        a32 -> a53
+        a42 -> a53
+        a52 -> a53
+
+        a13 -> O1
+        a23 -> O1
+        a33 -> O1
+        a43 -> O1
+        a53 -> O1
+
+        a13 -> O2
+        a23 -> O2
+        a33 -> O2
+        a43 -> O2
+        a53 -> O2
+
+        a13 -> O3
+        a23 -> O3
+        a33 -> O3
+        a43 -> O3
+        a53 -> O3
+
+        a13 -> O4
+        a23 -> O4
+        a33 -> O4
+        a43 -> O4
+        a53 -> O4
     }
-
-    subgraph cluster_1 {
-        color=white;
-        node [style=solid,color=red2, shape=circle];
-        a12 a22 a32 a42 a52;
-        label = "layer 2";
-    }
-
-    subgraph cluster_2 {
-        color=white;
-        node [style=solid,color=red2, shape=circle];
-        a13 a23 a33 a43 a53;
-        label = "layer 3";
-    }
-
-    subgraph cluster_3 {
-        color=white;
-        node [style=solid,color=seagreen2, shape=circle];
-        O1 O2 O3 O4;
-        label="layer 4";
-    }
-
-    x1 -> a12;
-    x1 -> a22;
-    x1 -> a32;
-    x1 -> a42;
-    x1 -> a52;
-
-    x2 -> a12;
-    x2 -> a22;
-    x2 -> a32;
-    x2 -> a42;
-    x2 -> a52;
-
-    x3 -> a12;
-    x3 -> a22;
-    x3 -> a32;
-    x3 -> a42;
-    x3 -> a52;
-
-    a12 -> a13
-    a22 -> a13
-    a32 -> a13
-    a42 -> a13
-    a52 -> a13
-
-    a12 -> a23
-    a22 -> a23
-    a32 -> a23
-    a42 -> a23
-    a52 -> a23
-
-    a12 -> a33
-    a22 -> a33
-    a32 -> a33
-    a42 -> a33
-    a52 -> a33
-
-    a12 -> a43
-    a22 -> a43
-    a32 -> a43
-    a42 -> a43
-    a52 -> a43
-
-    a12 -> a53
-    a22 -> a53
-    a32 -> a53
-    a42 -> a53
-    a52 -> a53
-
-    a13 -> O1
-    a23 -> O1
-    a33 -> O1
-    a43 -> O1
-    a53 -> O1
-
-    a13 -> O2
-    a23 -> O2
-    a33 -> O2
-    a43 -> O2
-    a53 -> O2
-
-    a13 -> O3
-    a23 -> O3
-    a33 -> O3
-    a43 -> O3
-    a53 -> O3
-
-    a13 -> O4
-    a23 -> O4
-    a33 -> O4
-    a43 -> O4
-    a53 -> O4
-}
-```
+    ```
 
 output:
 
 ```{.graph .center caption="simplest" fileName="graphviz_simplest"}
-
 digraph G {
-
     rankdir=LR
     splines=line
     nodesep=.05;
@@ -797,82 +828,81 @@ digraph G {
 
 ### complicated case
 
-```{.numberLines startFrom="1"}
+    ```{.graph .center caption="complicated" fileName="graphviz_complicated"}
+    digraph G {
+        rankdir = LR;
+        splines=false;
+        edge[style=invis];  /* hide the edges */
+        ranksep= 1.4;
 
-digraph G {
-    rankdir = LR;
-    splines=false;
-    edge[style=invis];  /* hide the edges */
-    ranksep= 1.4;
-
-    /* {...} specifies the scope of the node property */
-    {
-        node [shape=circle, color=yellow, style=filled, fillcolor=yellow];
-        x0 [label=<x<sub>0</sub>>];
-        a02 [label=<a<sub>0</sub><sup>(2)</sup>>];
-        a03 [label=<a<sub>0</sub><sup>(3)</sup>>];
+        /* {...} specifies the scope of the node property */
+        {
+            node [shape=circle, color=yellow, style=filled, fillcolor=yellow];
+            x0 [label=<x<sub>0</sub>>];
+            a02 [label=<a<sub>0</sub><sup>(2)</sup>>];
+            a03 [label=<a<sub>0</sub><sup>(3)</sup>>];
+        }
+        {
+            node [shape=circle, color=chartreuse, style=filled, fillcolor=chartreuse];
+            x1 [label=<x<sub>1</sub>>];
+            x2 [label=<x<sub>2</sub>>];
+            x3 [label=<x<sub>3</sub>>];
+        }
+        {
+            node [shape=circle, color=dodgerblue, style=filled, fillcolor=dodgerblue];
+            a12 [label=<a<sub>1</sub><sup>(2)</sup>>];
+            a22 [label=<a<sub>2</sub><sup>(2)</sup>>];
+            a32 [label=<a<sub>3</sub><sup>(2)</sup>>];
+            a42 [label=<a<sub>4</sub><sup>(2)</sup>>];
+            a52 [label=<a<sub>5</sub><sup>(2)</sup>>];
+            a13 [label=<a<sub>1</sub><sup>(3)</sup>>];
+            a23 [label=<a<sub>2</sub><sup>(3)</sup>>];
+            a33 [label=<a<sub>3</sub><sup>(3)</sup>>];
+            a43 [label=<a<sub>4</sub><sup>(3)</sup>>];
+            a53 [label=<a<sub>5</sub><sup>(3)</sup>>];
+        }
+        {
+            node [shape=circle, color=coral1, style=filled, fillcolor=coral1];
+            O1 [label=<a<sub>1</sub><sup>(4)</sup>>];
+            O2 [label=<a<sub>2</sub><sup>(4)</sup>>];
+            O3 [label=<a<sub>3</sub><sup>(4)</sup>>];
+            O4 [label=<a<sub>4</sub><sup>(4)</sup>>];
+        }
+        {
+            rank=same;       /* Rank constraints on the nodes in a subgraph. */
+            x0->x1->x2->x3;  /* specifies the relative position of the four nodes */
+        }
+        {
+            rank=same;
+            a02->a12->a22->a32->a42->a52;
+        }
+        {
+            rank=same;
+            a03->a13->a23->a33->a43->a53;
+        }
+        {
+            rank=same;
+            O1->O2->O3->O4;
+        }
+        a02->a03;  // prevent tilting
+        l0 [shape=plaintext, label="layer 1 (input layer)"];
+        l0->x0;
+        {rank=same; l0;x0};
+        l1 [shape=plaintext, label="layer 2 (hidden layer)"];
+        l1->a02;
+        {rank=same; l1;a02};
+        l2 [shape=plaintext, label="layer 3 (hidden layer)"];
+        l2->a03;
+        {rank=same; l2;a03};
+        l3 [shape=plaintext, label="layer 4 (output layer)"];
+        l3->O1;
+        {rank=same; l3;O1};
+        edge[style=solid, tailport=e, headport=w];  /* let all the edges point to the same position. */
+        {x0; x1; x2; x3} -> {a12;a22;a32;a42;a52};
+        {a02;a12;a22;a32;a42;a52} -> {a13;a23;a33;a43;a53};
+        {a03;a13;a23;a33;a43;a53} -> {O1,O2,O3,O4};
     }
-    {
-        node [shape=circle, color=chartreuse, style=filled, fillcolor=chartreuse];
-        x1 [label=<x<sub>1</sub>>];
-        x2 [label=<x<sub>2</sub>>];
-        x3 [label=<x<sub>3</sub>>];
-    }
-    {
-        node [shape=circle, color=dodgerblue, style=filled, fillcolor=dodgerblue];
-        a12 [label=<a<sub>1</sub><sup>(2)</sup>>];
-        a22 [label=<a<sub>2</sub><sup>(2)</sup>>];
-        a32 [label=<a<sub>3</sub><sup>(2)</sup>>];
-        a42 [label=<a<sub>4</sub><sup>(2)</sup>>];
-        a52 [label=<a<sub>5</sub><sup>(2)</sup>>];
-        a13 [label=<a<sub>1</sub><sup>(3)</sup>>];
-        a23 [label=<a<sub>2</sub><sup>(3)</sup>>];
-        a33 [label=<a<sub>3</sub><sup>(3)</sup>>];
-        a43 [label=<a<sub>4</sub><sup>(3)</sup>>];
-        a53 [label=<a<sub>5</sub><sup>(3)</sup>>];
-    }
-    {
-        node [shape=circle, color=coral1, style=filled, fillcolor=coral1];
-        O1 [label=<a<sub>1</sub><sup>(4)</sup>>];
-        O2 [label=<a<sub>2</sub><sup>(4)</sup>>];
-        O3 [label=<a<sub>3</sub><sup>(4)</sup>>];
-        O4 [label=<a<sub>4</sub><sup>(4)</sup>>];
-    }
-    {
-        rank=same;       /* Rank constraints on the nodes in a subgraph. */
-        x0->x1->x2->x3;  /* specifies the relative position of the four nodes */
-    }
-    {
-        rank=same;
-        a02->a12->a22->a32->a42->a52;
-    }
-    {
-        rank=same;
-        a03->a13->a23->a33->a43->a53;
-    }
-    {
-        rank=same;
-        O1->O2->O3->O4;
-    }
-    a02->a03;  // prevent tilting
-    l0 [shape=plaintext, label="layer 1 (input layer)"];
-    l0->x0;
-    {rank=same; l0;x0};
-    l1 [shape=plaintext, label="layer 2 (hidden layer)"];
-    l1->a02;
-    {rank=same; l1;a02};
-    l2 [shape=plaintext, label="layer 3 (hidden layer)"];
-    l2->a03;
-    {rank=same; l2;a03};
-    l3 [shape=plaintext, label="layer 4 (output layer)"];
-    l3->O1;
-    {rank=same; l3;O1};
-    edge[style=solid, tailport=e, headport=w];  /* let all the edges point to the same position. */
-    {x0; x1; x2; x3} -> {a12;a22;a32;a42;a52};
-    {a02;a12;a22;a32;a42;a52} -> {a13;a23;a33;a43;a53};
-    {a03;a13;a23;a33;a43;a53} -> {O1,O2,O3,O4};
-}
-```
+    ```
 
 output:
 
@@ -954,23 +984,25 @@ digraph G {
 
 ### 节点形状
 
-```{.numberLines startFrom="1"}
-digraph G {
-    size = "4, 4";
-    main [shape=box]; /* 这是注释 */
-    main -> parse [weight=8];
-    parse -> execute;
-    main -> init [style=dotted];
-    main -> cleanup;
-    execute -> { make_string; printf}
-    init -> make_string;
-    edge [color=red]; // 设置生效
-    main -> printf [style=bold,label="100 times"];
-    make_string [label="make a\n字符串"];
-    node [shape=box,style=filled,color=".7 .3 1.0"];
-    execute -> compare;
-}
-```
+    ```{.graph .center caption="节点形状" fileName="graphviz_demo_other_1"}
+    digraph G {
+        size = "4, 4";
+        main [shape=box]; /* 这是注释 */
+        main -> parse [weight=8];
+        parse -> execute;
+        main -> init [style=dotted];
+        main -> cleanup;
+        execute -> { make_string; printf}
+        init -> make_string;
+        edge [color=red]; // 设置生效
+        main -> printf [style=bold,label="100 times"];
+        make_string [label="make a\n字符串"];
+        node [shape=box,style=filled,color=".7 .3 1.0"];
+        execute -> compare;
+    }
+    ```
+
+output:
 
 ```{.graph .center caption="节点形状" fileName="graphviz_demo_other_1"}
 digraph G {
@@ -992,16 +1024,18 @@ digraph G {
 
 ### 标签
 
-```{.numberLines startFrom="1"}
-digraph G {
-    a -> b -> c;
-    b -> d;
-    a [shape=polygon,sides=5,peripheries=3,color=lightblue,style=filled];
-    c [shape=polygon,sides=4,skew=.4,label="hello world"]
-    d [shape=invtriangle];
-    e [shape=polygon,sides=4,distortion=.7];
-}
-```
+    ```{.graph .center caption="标签实例" fileName="graphviz_demo_other_2"}
+    digraph G {
+        a -> b -> c;
+        b -> d;
+        a [shape=polygon,sides=5,peripheries=3,color=lightblue,style=filled];
+        c [shape=polygon,sides=4,skew=.4,label="hello world"]
+        d [shape=invtriangle];
+        e [shape=polygon,sides=4,distortion=.7];
+    }
+    ```
+
+output:
 
 ```{.graph .center caption="标签实例" fileName="graphviz_demo_other_2"}
 digraph G {
@@ -1016,28 +1050,30 @@ digraph G {
 
 ### 二分查找树
 
-```{.numberLines startFrom="1"}
-digraph g {
-    node [shape = record,height=.1];
-    node0[label = "<f0> |<f1> G|<f2> "];
-    node1[label = "<f0> |<f1> E|<f2> "];
-    node2[label = "<f0> |<f1> B|<f2> "];
-    node3[label = "<f0> |<f1> F|<f2> "];
-    node4[label = "<f0> |<f1> R|<f2> "];
-    node5[label = "<f0> |<f1> H|<f2> "];
-    node6[label = "<f0> |<f1> Y|<f2> "];
-    node7[label = "<f0> |<f1> A|<f2> "];
-    node8[label = "<f0> |<f1> C|<f2> "];
-    "node0":f2 -> "node4":f1;
-    "node0":f0 -> "node1":f1;
-    "node1":f0 -> "node2":f1;
-    "node1":f2 -> "node3":f1;
-    "node2":f2 -> "node8":f1;
-    "node2":f0 -> "node7":f1;
-    "node4":f2 -> "node6":f1;
-    "node4":f0 -> "node5":f1;
-}
-```
+    ```{.graph .center caption="二分查找树" fileName="graphviz_demo_other_3"}
+    digraph g {
+        node [shape = record,height=.1];
+        node0[label = "<f0> |<f1> G|<f2> "];
+        node1[label = "<f0> |<f1> E|<f2> "];
+        node2[label = "<f0> |<f1> B|<f2> "];
+        node3[label = "<f0> |<f1> F|<f2> "];
+        node4[label = "<f0> |<f1> R|<f2> "];
+        node5[label = "<f0> |<f1> H|<f2> "];
+        node6[label = "<f0> |<f1> Y|<f2> "];
+        node7[label = "<f0> |<f1> A|<f2> "];
+        node8[label = "<f0> |<f1> C|<f2> "];
+        "node0":f2 -> "node4":f1;
+        "node0":f0 -> "node1":f1;
+        "node1":f0 -> "node2":f1;
+        "node1":f2 -> "node3":f1;
+        "node2":f2 -> "node8":f1;
+        "node2":f0 -> "node7":f1;
+        "node4":f2 -> "node6":f1;
+        "node4":f0 -> "node5":f1;
+    }
+    ```
+
+output:
 
 ```{.graph .center caption="二分查找树" fileName="graphviz_demo_other_3"}
 digraph g {
@@ -1064,18 +1100,20 @@ digraph g {
 
 ### cluster
 
-```{.numberLines startFrom="1"}
-digraph G {
-    compound=true;
-    subgraph cluster0 {
-        a;
+    ```{.graph .center caption="边直接指向cluster" fileName="graphviz_demo_other_4"}
+    digraph G {
+        compound=true;
+        subgraph cluster0 {
+            a;
+        }
+        subgraph cluster1 {
+            b;
+        }
+        a -> b [lhead=cluster1];
     }
-    subgraph cluster1 {
-        b;
-    }
-    a -> b [lhead=cluster1];
-}
-```
+    ```
+
+output:
 
 ```{.graph .center caption="边直接指向cluster" fileName="graphviz_demo_other_4"}
 digraph G {
@@ -1092,49 +1130,46 @@ digraph G {
 
 ### matrix
 
-```{ caption="graphviz_matrix_code" .numberLines startFrom="1"}
-
-digraph matrix {
-    723->722
-    505->732
-    729->732
-    731->730->729
-    726->729
-    730->726
-    726->810->725
-    729->810->725
-    729->733->792->793
-    722->731
-    732->737->736->733
-    733->810->725
-    729->505
-    736->506
-    505->506
-    179->759
-    759->725
-    759->737
-    759->769->768->778
-    768->303
-    737->739->736->778
-    736->769
-    778->303
-    506->303
-    769->506
-    769->780
-    778->779
-    736->773->774->779->780
-    779->303
-    780->303
-    506->780
-    505->724
-}
-
-```
+    ```{.graph .center caption="graphviz matrix" .numberLines startFrom="1" fileName="graphviz_matrix"}
+    digraph matrix {
+        723->722
+        505->732
+        729->732
+        731->730->729
+        726->729
+        730->726
+        726->810->725
+        729->810->725
+        729->733->792->793
+        722->731
+        732->737->736->733
+        733->810->725
+        729->505
+        736->506
+        505->506
+        179->759
+        759->725
+        759->737
+        759->769->768->778
+        768->303
+        737->739->736->778
+        736->769
+        778->303
+        506->303
+        769->506
+        769->780
+        778->779
+        736->773->774->779->780
+        779->303
+        780->303
+        506->780
+        505->724
+    }
+    ```
 
 output:
 
 ```{.graph .center caption="graphviz matrix" .numberLines startFrom="1" fileName="graphviz_matrix"}
-
 digraph matrix {
     723->722
     505->732

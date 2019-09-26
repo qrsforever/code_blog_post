@@ -8,6 +8,7 @@ categories: [ML]
 
 ---
 
+[RAWCODE](https://raw.githubusercontent.com/qrsforever/code_blog_post/master/ML/Guide/cross_entropy_loss.md)
 
 <!-- vim-markdown-toc GFM -->
 

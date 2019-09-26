@@ -3,7 +3,7 @@
 title: matplotlib colors
 
 date: 2019-09-23 19:46:40
-tags: [Python]
+tags: [Python, Tricks]
 categories: [Note]
 
 ---

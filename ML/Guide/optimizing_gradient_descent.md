@@ -73,6 +73,8 @@ determines the size of the steps we take to reach a (local) minimum.
 
 [代码实现(old)](https://qrsforever.github.io/2019/05/28/ML/Scratch/GD/)
 
+[代码实现(new)](https://qrsforever.github.io/2019/09/23/ML/Scratch/gradient_descent_algorithms)
+
 ## BGD (batch gradient descent)
 
 批量梯度下降
