@@ -17,25 +17,29 @@ categories: [Note]
 <!-- vim-markdown-toc -->
 <!-- more -->
 
+# Math
+
+#. 可汗学院: <https://www.khanacademy.org/math>
+
 # AI
 
-#. http://neuralnetworksanddeeplearning.com/about.html
+#. <http://neuralnetworksanddeeplearning.com/about.html>
 
     The purpose of this book is to help you master the core concepts of neural networks, including modern
     techniques for deep learning. After working through the book you will have written code that uses
     neural networks and deep learning to solve complex pattern recognition problems. And you will have a
     foundation to use neural networks and deep learning to attack problems of your own devising.
 
-#. https://datascience-enthusiast.com/DL/dlindex.html
+#. <https://datascience-enthusiast.com/DL/dlindex.html>
 
     个人博客(Fisseha Berhane), 其中Deep Learning几篇文章可以参考学习.
 
-#. https://github.com/rasbt/mlxtend
+#. <https://github.com/rasbt/mlxtend>
       
     Mlxtend (machine learning extensions) is a Python library of useful tools for the day-to-day data
     science tasks.
 
-#. https://gluon.mxnet.io/index.html
+#. <https://gluon.mxnet.io/index.html>
 
     This repo contains an incremental sequence of notebooks designed to teach deep learning, Apache MXNet
     (incubating), and the gluon interface. 
