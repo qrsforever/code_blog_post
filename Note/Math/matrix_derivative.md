@@ -4,7 +4,7 @@ title: (drfat)矩阵求导
 
 date: 2019-09-17 16:04:21
 tags: [Math]
-categories: [Node]
+categories: [Note]
 
 ---
 

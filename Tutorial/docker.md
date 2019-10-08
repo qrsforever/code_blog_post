@@ -66,7 +66,7 @@ wget -qO- https://get.docker.com/ | sh
 # without sudo run
 sudo usermod -aG docker $USER
 # or sudo gpasswd -a $USER docker
-newgrp docker
+newgrp docker # 当前终端有效, reboot可以解决
 ```
 
 nvidia-docker:
