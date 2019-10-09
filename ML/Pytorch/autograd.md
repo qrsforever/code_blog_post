@@ -1,6 +1,6 @@
 ---
 
-title: autograd
+title: pytorch:autograd
 
 date: 2019-10-08 22:11:47
 tags: [Pytorch, Python]
@@ -12,4 +12,4 @@ categories: [ML]
 
 <!-- more -->
 
-{% asset_jupyter python3 notebook/autograd.ipynb 300 %}
+{% asset_jupyter python3 notebook/autograd.ipynb 600 %}
