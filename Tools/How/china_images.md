@@ -11,17 +11,18 @@ categories: [Tools]
 <!-- vim-markdown-toc GFM -->
 
 * [apt](#apt)
-	* [阿里](#阿里)
-	* [清华大学](#清华大学)
-	* [东北大学](#东北大学)
+    * [阿里](#阿里)
+    * [清华大学](#清华大学)
+    * [东北大学](#东北大学)
 * [mvn](#mvn)
 * [pip](#pip)
+* [docker](#docker)
 * [npm](#npm)
 * [gradle](#gradle)
 * [anaconda](#anaconda)
-	* [清华大学](#清华大学-1)
-	* [上海交通大学](#上海交通大学)
-	* [上海科技大学](#上海科技大学)
+    * [清华大学](#清华大学-1)
+    * [上海交通大学](#上海交通大学)
+    * [上海科技大学](#上海科技大学)
 
 <!-- vim-markdown-toc -->
 
@@ -163,6 +164,26 @@ trusted-host = mirrors.aliyun.com
              pypi.mirrors.ustc.edu.cn
              pypi.douban.com
 ```
+
+# docker
+
+modify `/etc/docker/daemon.json`  and `systemctl restart docker.service`
+
+    {
+        "registry-mirrors": ["http://hub-mirror.c.163.com"]
+    }
+
+or
+
+    {
+        "registry-mirrors": ["https://registry.docker-cn.com"]
+    }
+
+or
+
+    {
+        "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"]
+    }
 
 # npm
 
