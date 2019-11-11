@@ -225,14 +225,14 @@ drun()
 {
     args=($@)
     image=$1
-    if [[ x$image == x ]] || [[ x$image != x && "$\{\#image}" -ne "12"
+    if [[ x$image == x ]] || [[ x$image != x && "${#image}" -ne "12"
     then
         bashcmd=$image
         docker images
         echo -ne "\n[RUN] Input ID: "
         read image
     else
-        bashcmd=${args[@]: 1:$\#\}
+        bashcmd=${args[@]: 1:$#}
     fi
     docker run -it -d $image $bashcmd
 }
@@ -268,9 +268,9 @@ dexe()
 {
     args=($@)
     container=$1
-    if [ "$\{\#container}" -eq "12" ]
+    if [ "${#container}" -eq "12" ]
     then
-        bashcmd=${args[@]: 1:$\#\}
+        bashcmd=${args[@]: 1:$#}
         docker exec $container bash -c "$bashcmd"
     else
         docker container ls
@@ -284,13 +284,13 @@ dexe()
 dip()
 {
     container=$1
-    if [ "$\{\#container}" -ne "12" ]
+    if [ "${#container}" -ne "12" ]
     then
         docker container ls
         echo -ne "\n[IP] Input ID: "
         read container
     fi
-    docker inspect --format="\{\{range .NetworkSettings.Networks\}\}\{\{.IPAddress\}\}\{\{end\}\}" $container
+    docker inspect --format="{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" $container
 }
 ```
 
@@ -314,9 +314,9 @@ cmd: `docker image tag <source:tag> <target:tag>`
 
 ## Display image or container information
 
-cmd: `docker inspect 4cd81e734bd8 --format  '\{\{json .ContainerConfig.Labels\}\}' | python -m json.tool`
+cmd: `docker inspect 4cd81e734bd8 --format  '{{json .ContainerConfig.Labels}}' | python -m json.tool`
 
-cmd: `docker inspect 4cd81e734bd8 --format  '\{\{json .ContainerConfig.Labels\}\}' | jq`
+cmd: `docker inspect 4cd81e734bd8 --format  '{{json .ContainerConfig.Labels}}' | jq`
 
 output:
 
@@ -342,13 +342,13 @@ output:
 
 ## Display information using index
 
-cmd: `docker inspect 98a757ed7816 --format '\{\{index .ContainerConfig.Labels "org.label-schema.docker.cmd"\}\}'`
+cmd: `docker inspect 98a757ed7816 --format '{{index .ContainerConfig.Labels "org.label-schema.docker.cmd"}}'`
 
 如果读取的key有'.'等复杂的情况, 可使用'index'命令
 
 ## Filter label and format it
 
-cmd: `docker images --filter "label=org.label-schema.vendor=ColorAI" --format "\{\{.Repository\}\}:\{\{.Tag\}\}"`
+cmd: `docker images --filter "label=org.label-schema.vendor=ColorAI" --format "{{.Repository}}:{{.Tag}}"`
 
 output:
 
@@ -359,7 +359,7 @@ colorai/cauchycv_visdom:0.2.5
 
 ## Display container running state
 
-cmd: `docker inspect 3dd6dccbce14 --format '\{\{json .State\}\}' | python -m json.tool`
+cmd: `docker inspect 3dd6dccbce14 --format '{{json .State}}' | python -m json.tool`
 
 ```json
 {
@@ -383,8 +383,9 @@ cmd: `docker container ls --filter ancestor=colorai/cauchycv_visdom:0.2.6 --filt
 
 ## Display the command in runtime
 
-cmd: `docker container ls --format "\{\{.ID\}\}: \{\{.Command\}\}" --no-trunc`
-cmd: `docker container ls --format "table \{\{.ID\}\}\t\{\{.Labels\}\}"`
+cmd: `docker container ls --format "{{.ID}}: {{.Command}}" --no-trunc`
+
+cmd: `docker container ls --format "table {{.ID}}\t{{.Labels}}"`
 
 ## Remove all containers with status=exited
 
@@ -427,7 +428,9 @@ cmd: `docker run -it -v /LOCAL_PATH:/CONTAINER_PATH <container_image>`
 
 cmd: `docker logs --follow <CONTAINER>`
 
-cmd: `docker logs --timestamps --tail 1000 <CONTAINER> 2>&1 | grep -i error
+cmd: `docker logs --timestamps --tail 1000 <CONTAINER> 2>&1 | grep -i error`
+
+cmd: `docker inspect --format='{{.LogPath}}' <CONTAINER>`
 
 ## Backup/Restore of container
 

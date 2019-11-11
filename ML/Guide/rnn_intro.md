@@ -522,6 +522,7 @@ VS
 
 - [Understanding LSTM Networks](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 - [译 Understanding LSTM Networks](https://www.cnblogs.com/mfryf/p/7904017.html)
+- [Pytorch RNN](https://blog.floydhub.com/a-beginners-guide-on-recurrent-neural-networks-with-pytorch/)
 - [如何深度理解RNN?——看图就好!](https://baijiahao.baidu.com/s?id=1612358810937334377&wfr=spider&for=pc)
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
 - [recurrent-neural-networks-tutorial-part-1-introduction-to-rnns](http://www.wildml.com/2015/09/recurrent-neural-networks-tutorial-part-1-introduction-to-rnns/)
