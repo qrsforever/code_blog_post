@@ -8,7 +8,9 @@ categories: [ML]
 
 ---
 
+Draft
 
+<!-- more -->
 
 AllenNLP是一个相对成熟的基于深度学习的NLP工具包,它 构建于 PyTorch 之上,它的设计遵循以下原则:
 (1)超模块化和轻量化.你可以使用自己喜欢的组件与 PyTorch 无缝连接.
@@ -216,9 +218,24 @@ Seq2Seq 序列问题和其他的机器学习问题最显著的一个区别就是
 
 seq2seq学习的核心是使用循环神经网络将可变长度的输入序列映射到可变长度的输出序列
 
+
+-----------------------------------------------------------------
+
+## params
+
+`sorting_keys`顾名思义是定义了我们所有instance的排序方式，排序可以提高效率（花在padding token上面的计算减少)
+
 ## References
 
 #. <https://github.com/allenai/allennlp>
+
+#. <https://mlexplained.com/2019/01/30/an-in-depth-tutorial-to-allennlp-from-basics-to-elmo-and-bert/>
+
+#. <http://mlexplained.com/2017/12/29/attention-is-all-you-need-explained/>
+
+#. <http://mlexplained.com/2019/01/07/paper-dissected-bert-pre-training-of-deep-bidirectional-transformers-for-language-understanding-explained/>
+
+#. <http://mlexplained.com/2018/06/15/paper-dissected-deep-contextualized-word-representations-explained/>
 
 #. [realworldnlpbook](https://github.com/mhagiwara/realworldnlp)
 
