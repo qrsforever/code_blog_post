@@ -33,4 +33,4 @@ categories: [Tools]
 | `m<*>, ;<*>, '<*>` | mark: `m<*> firfox used, ;<*> chrome used |
 | `o` | open |
 | `gp` | toggle pin/unpin |
-
+| `C-l` | go to url box |
