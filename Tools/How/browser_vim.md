@@ -39,7 +39,7 @@ categories: [Tools]
 | `gg,G` | page top/bottom |
 | `zi,zo` | zoom page in/out |
 | `H, L` | page history back/forword |
-| `m<*>, ;<*>, '<*>` | mark: `m<*> firfox used, ;<*> chrome used |
+| `m<*>, ;<*>, '<*>` | mark: `m<*> firfox used, ;<*> chrome used` |
 | `o` | open |
 | `gp` | toggle pin/unpin |
 | `C-l` | go to url box |
