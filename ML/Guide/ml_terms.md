@@ -15,6 +15,8 @@ categories: [ML]
     * [Epoch](#epoch)
     * [Batch Size](#batch-size)
     * [Iterations](#iterations)
+* [Optimization Algorithom](#optimization-algorithom)
+    * [Adam(Adaptive momentum algorithom)](#adamadaptive-momentum-algorithom)
 
 <!-- vim-markdown-toc -->
 

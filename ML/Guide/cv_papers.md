@@ -11,9 +11,10 @@ categories: [ML]
 <!-- vim-markdown-toc GFM -->
 
 * [Image Classification](#image-classification)
+    * [VGG: Visual Geometry Group](#vgg-visual-geometry-group)
+    * [资源](#资源)
 * [Semantic Segmentation](#semantic-segmentation)
 * [Object Detection: 目标检测算法](#object-detection-目标检测算法)
-    * [资源](#资源)
     * [YOLO: Real-Time Object Detection](#yolo-real-time-object-detection)
         * [资源](#资源-1)
     * [SSD: Single Shot MultiBox Detector](#ssd-single-shot-multibox-detector)
@@ -28,6 +29,20 @@ categories: [ML]
 
 ## Image Classification
 
+### VGG: Visual Geometry Group
+
+VGG是Oxford的Visual Geometry Group的组提出的
+
+### 资源
+
+A. 中文
+
+B. 英文
+
+- [arxiv: Very Deep Convolutional Networks for Large-Scale Image Recognition](https://arxiv.org/pdf/1409.1556v6.pdf)
+
+- [通天塔: Very Deep Convolutional Networks for Large-Scale Image Recognition](https://tongtianta.site/paper/122)
+
 
 ## Semantic Segmentation
 
@@ -41,6 +56,8 @@ You only look once (YOLO)
 #### 资源
 
 A. 中文
+
+- [YOLOv2-darknet 内容解析](https://www.cnblogs.com/pprp/p/10124591.html)
 
 B. 英文
 
