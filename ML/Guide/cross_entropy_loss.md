@@ -417,3 +417,5 @@ $a_k^{L-1}$为上一层的第k个激活函数
 [8]:https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/
 [9]:https://doug919.github.io/notes-on-backpropagation-with-cross-entropy/
 [10]:https://blog.csdn.net/qian99/article/details/78046329 "csdn"
+
+- [相对熵,交叉熵](https://www.jianshu.com/p/71d7fffcc552)

@@ -109,6 +109,37 @@ $$
 
 使用ReLU,maxout等替代sigmoid.
 
+
+## clip gradients
+
+- 首先设置一个梯度阈值：clip_gradient
+- 在后向传播中求出各参数的梯度，这里我们不直接使用梯度进去参数更新，我们求这些梯度的l2范数
+- 然后比较梯度的l2范数||g||与clip_gradient的大小
+- 如果前者大，求缩放因子clip_gradient/||g||,　由缩放因子可以看出梯度越大，则缩放因子越小，这样便很好地控制了梯度的范围
+- 最后将梯度乘上缩放因子便得到最后所需的梯度
+
+
+draft:
+
+```
+常见的 gradient clipping 有两种做法
+
+根据参数的 gradient 的值直接进行裁剪
+根据若干参数的 gradient 组成的 vector 的 L2 norm 进行裁剪
+第一种做法很容易理解，就是先设定一个 gradient 的范围如 (-1, 1), 小于 -1 的 gradient 设为 -1， 大于这个 1 的 gradient 设为 1.
+
+第二种方法则更为常见，先设定一个 clip_norm, 然后在某一次反向传播后，通过各个参数的 gradient 构成一个
+vector，计算这个 vector 的 L2 norm（平方和后开根号）记为 LNorm，然后比较 LNorm 和 clip_norm 的值，若 LNorm
+<= clip_norm 不做处理，否则计算缩放因子 scale_factor = clip_norm/LNorm ，然后令原来的梯度乘上这个缩放因子
+。这样做是为了让 gradient vector 的 L2 norm 小于预设的 clip_norm。
+```
+
 # References
 
 - <https://www.cnblogs.com/DjangoBlog/p/7699664.html>
+
+- <https://blog.csdn.net/u010814042/article/details/76154391>
+
+- <https://machinelearningmastery.com/how-to-avoid-exploding-gradients-in-neural-networks-with-gradient-clipping>
+
+- <https://blog.floydhub.com/gru-with-pytorch/>
