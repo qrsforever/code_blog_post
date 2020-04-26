@@ -87,7 +87,24 @@ Dec 13 12:51:03 omega sslocal[12018]: 2019-12-13 12:51:03 INFO     loading libso
 Dec 13 12:51:03 omega sslocal[12018]: 2019-12-13 12:51:03 INFO     starting local at 127.0.0.1:1080
 ```
 
+## SS中继
+
+- sudo apt install privoxy
+
+```json
+forward-socks5   /               127.0.0.1:1080 .
+listen-address  0.0.0.0:8118
+# local network do not use proxy
+forward         192.168.*.*/     .
+forward            10.*.*.*/     .
+forward           127.*.*.*/     .
+****
+```
+
+sudo /etc/init.d/privoxy restart
 
 ## 参考
 
 https://dylanyang.top/post/2019/05/15/centos7%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEshadowsocks%E5%AE%A2%E6%88%B7%E7%AB%AF/
+
+http://woshishagua.com/?p=89
