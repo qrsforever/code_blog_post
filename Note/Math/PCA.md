@@ -8,4 +8,4 @@ categories: [note]
 
 ---
 
-{% asset_jupyter python3 notebook/PCA.ipynb 300 %}
+{% asset_jupyter python3 notebook/PCA.ipynb 100 %}
